@@ -1,4 +1,4 @@
-import 'package:base_app/core/network/failure.dart';
+import 'package:looks_loop/core/network/failure.dart';
 
 sealed class ApiResult<T> {
   const ApiResult();

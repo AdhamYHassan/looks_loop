@@ -1,6 +1,6 @@
 {
-    "name": "base_app",
-    "short_name": "base_app",
+    "name": "looks_loop",
+    "short_name": "looks_loop",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

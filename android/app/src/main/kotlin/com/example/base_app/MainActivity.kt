@@ -1,4 +1,4 @@
-package com.example.base_app
+package com.example.looks_loop
 
 import io.flutter.embedding.android.FlutterActivity
 

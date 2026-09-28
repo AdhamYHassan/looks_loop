@@ -1,8 +1,10 @@
-import 'package:base_app/features/home/presentation/pages/home_screen.dart';
-import 'package:base_app/features/splash/presentation/splash_screen.dart';
+import 'package:looks_loop/features/home/presentation/screens/home_screen.dart';
+import 'package:looks_loop/features/shop/presentation/screens/shop_screen.dart';
+import 'package:looks_loop/features/splash/presentation/splash_screen.dart';
+import 'package:looks_loop/features/wishlist/presentation/screens/wishlist_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:base_app/core/routing/routes.dart';
+import 'package:looks_loop/core/routing/routes.dart';
 
 final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
 
@@ -47,6 +49,22 @@ class AppRouter {
           context: context,
           state: state,
           child: const HomeScreen(),
+        ),
+      ),
+      GoRoute(
+        path: Routes.shop,
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const ShopScreen(),
+        ),
+      ),
+      GoRoute(
+        path: Routes.wishlist,
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: const WishlistScreen(),
         ),
       ),
     ],

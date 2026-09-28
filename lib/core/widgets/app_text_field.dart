@@ -2,8 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:base_app/core/theming/colors_manager.dart';
-import 'package:base_app/core/theming/styles.dart';
+import 'package:looks_loop/core/theming/colors_manager.dart';
+import 'package:looks_loop/core/theming/styles.dart';
 
 class AppTextField extends StatelessWidget {
   final TextEditingController? controller;

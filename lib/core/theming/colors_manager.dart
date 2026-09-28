@@ -1,39 +1,49 @@
 import 'package:flutter/material.dart';
 
 class ColorManager {
-  // Primary Color
-  static const Color primary = Color(0xFFFF8AA0);
-  static const Color orange = Color(0xFFFE7A01);
+  // Brand Palette (Design Tokens)
+  static const Color olive = Color(0xFF3D4A2F); // Main / Primary
+  static const Color ink = Color(0xFF1F2417); // Secondary
+  static const Color cream = Color(0xFFFAF5EC);
+  static const Color white = Color(0xFFFFFFFF);
+  static const Color sage = Color(0xFFB4B7A3);
+  static const Color orange = Color(0xFFCA511D);
+  static const Color muted = Color(0xFF909387);
+  static const Color line = Color(0x141F2417); // rgba(31, 36, 23, .08)
 
-  //Light Theme
-  static const Color backgroundLight = Color(0xFFF4F6F9);
-  static const Color textLight = Color(0xFF1A202C);
-  static const Color cardLight = Color(0xFFFFFFFF);
-  static const Color borderLight = Color(0xFFE2E8F0);
+  // Primary & Secondary Aliases
+  static const Color primary = olive;
+  static const Color secondary = ink;
 
-  //Dark Theme
-  static const Color backgroundDark = Color(0xFF0D151E);
-  static const Color textDark = Color(0xFFFFFFFF);
-  static const Color cardDark = Color(0xFF161F2A);
-  static const Color borderDark = Color(0xFF2E3E52);
+  // Backgrounds
+  static const Color backgroundLight = Color(0xFFE8E4DA);
+  static const Color backgroundDark = Color(0xFF14170F);
 
-  // Login Card Gradient Colors
-  static const Color cardGradientStart = Color(0xFF014B8E);
-  static const Color cardGradientEnd = Color(0xFF001529);
+  // Surfaces & Cards
+  static const Color surfaceLight = cream;
+  static const Color surfaceDark = Color(0xFF1B2014);
+  static const Color cardLight = surfaceLight;
+  static const Color cardDark = surfaceDark;
 
-  // Text Field Overlay Colors
-  static const Color textFormFill = Color(0xFF161F2A); // ~8% opacity white
-  static const Color textFormBorder = Color(0x3DFFFFFF); // ~24% opacity white
+  // Borders
+  static const Color borderLight = Color(0x141F2417);
+  static const Color borderDark = Color(0x26FAF5EC);
 
-  // Helper getters
+  // Text
+  static const Color textLight = ink;
+  static const Color textDark = cream;
+
+  // Contextual Helpers
   static bool isDark(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark;
 
   static Color getBackground(BuildContext context) =>
       isDark(context) ? backgroundDark : backgroundLight;
 
-  static Color getCard(BuildContext context) =>
-      isDark(context) ? cardDark : cardLight;
+  static Color getSurface(BuildContext context) =>
+      isDark(context) ? surfaceDark : surfaceLight;
+
+  static Color getCard(BuildContext context) => getSurface(context);
 
   static Color getBorder(BuildContext context) =>
       isDark(context) ? borderDark : borderLight;
@@ -42,5 +52,5 @@ class ColorManager {
       isDark(context) ? textDark : textLight;
 
   static Color getTextMuted(BuildContext context) =>
-      isDark(context) ? Colors.white54 : Colors.black54;
+      isDark(context) ? sage : muted;
 }
