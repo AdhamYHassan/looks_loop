@@ -7,6 +7,9 @@ import 'package:looks_loop/core/theming/colors_manager.dart';
 import 'package:looks_loop/core/widgets/nav_bar_item.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:looks_loop/features/main/presentation/bloc/main_cubit.dart';
+
 class AppBottomNavBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int>? onTabSelected;
@@ -20,8 +23,14 @@ class AppBottomNavBar extends StatelessWidget {
   void _onItemTapped(BuildContext context, int index) {
     if (onTabSelected != null) {
       onTabSelected!(index);
-      return;
     }
+
+    try {
+      final mainCubit = context.read<MainCubit>();
+      mainCubit.changeTabByIndex(index);
+      return;
+    } catch (_) {}
+
     if (index == currentIndex) return;
     switch (index) {
       case 0:
@@ -68,14 +77,14 @@ class AppBottomNavBar extends StatelessWidget {
                     inactiveColor: inactiveColor,
                     onTap: () => _onItemTapped(context, 0),
                   ),
-                  NavBarItem(
-                    icon: LucideIcons.play,
-                    label: 'REELS',
-                    isActive: currentIndex == 1,
-                    activeColor: activeColor,
-                    inactiveColor: inactiveColor,
-                    onTap: () => _onItemTapped(context, 1),
-                  ),
+                  // NavBarItem(
+                  //   icon: LucideIcons.play,
+                  //   label: 'REELS',
+                  //   isActive: currentIndex == 1,
+                  //   activeColor: activeColor,
+                  //   inactiveColor: inactiveColor,
+                  //   onTap: () => _onItemTapped(context, 1),
+                  // ),
                   NavBarItem(
                     icon: LucideIcons.shoppingBag,
                     label: 'SHOP',

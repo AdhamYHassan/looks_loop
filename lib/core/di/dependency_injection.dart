@@ -7,17 +7,29 @@ import 'package:looks_loop/features/home/data/repositories/home_repository_impl.
 import 'package:looks_loop/features/home/domain/repositories/home_repository.dart';
 import 'package:looks_loop/features/home/domain/usecases/get_home_feed_usecase.dart';
 import 'package:looks_loop/features/home/presentation/bloc/home_cubit.dart';
+import 'package:looks_loop/features/main/presentation/bloc/main_cubit.dart';
+import 'package:looks_loop/features/main/presentation/bloc/nav_bar_scroll_cubit.dart';
 import 'package:looks_loop/features/shop/data/datasources/shop_remote_data_source.dart';
 import 'package:looks_loop/features/shop/data/repositories/shop_repository_impl.dart';
 import 'package:looks_loop/features/shop/domain/repositories/shop_repository.dart';
 import 'package:looks_loop/features/shop/domain/usecases/get_shop_feed_usecase.dart';
 import 'package:looks_loop/features/shop/presentation/bloc/shop_cubit.dart';
+import 'package:looks_loop/features/more/data/datasources/more_local_data_source.dart';
+import 'package:looks_loop/features/more/data/repositories/more_repository_impl.dart';
+import 'package:looks_loop/features/more/domain/repositories/more_repository.dart';
+import 'package:looks_loop/features/more/domain/usecases/get_user_profile_usecase.dart';
+import 'package:looks_loop/features/more/presentation/bloc/more_cubit.dart';
 import 'package:looks_loop/features/wishlist/data/datasources/wishlist_remote_data_source.dart';
 import 'package:looks_loop/features/wishlist/data/repositories/wishlist_repository_impl.dart';
 import 'package:looks_loop/features/wishlist/domain/repositories/wishlist_repository.dart';
 import 'package:looks_loop/features/wishlist/domain/usecases/get_wishlist_usecase.dart';
 import 'package:looks_loop/features/wishlist/domain/usecases/remove_from_wishlist_usecase.dart';
 import 'package:looks_loop/features/wishlist/presentation/bloc/wishlist_cubit.dart';
+import 'package:looks_loop/features/shop/data/datasources/category_detail_remote_data_source.dart';
+import 'package:looks_loop/features/shop/data/repositories/category_detail_repository_impl.dart';
+import 'package:looks_loop/features/shop/domain/repositories/category_detail_repository.dart';
+import 'package:looks_loop/features/shop/domain/usecases/get_category_detail_usecase.dart';
+import 'package:looks_loop/features/shop/presentation/bloc/category_detail_cubit.dart';
 
 final getIt = GetIt.instance;
 
@@ -42,6 +54,12 @@ Future<void> initAppDependencies() async {
   getIt.registerLazySingleton<WishlistRemoteDataSource>(
     () => WishlistRemoteDataSourceImpl(),
   );
+  getIt.registerLazySingleton<MoreLocalDataSource>(
+    () => const MoreLocalDataSourceImpl(),
+  );
+  getIt.registerLazySingleton<CategoryDetailRemoteDataSource>(
+    () => const CategoryDetailRemoteDataSourceImpl(),
+  );
 
   // Repositories
   getIt.registerLazySingleton<HomeRepository>(
@@ -52,6 +70,14 @@ Future<void> initAppDependencies() async {
   );
   getIt.registerLazySingleton<WishlistRepository>(
     () => WishlistRepositoryImpl(getIt<WishlistRemoteDataSource>()),
+  );
+  getIt.registerLazySingleton<MoreRepository>(
+    () => MoreRepositoryImpl(getIt<MoreLocalDataSource>()),
+  );
+  getIt.registerLazySingleton<CategoryDetailRepository>(
+    () => CategoryDetailRepositoryImpl(
+      getIt<CategoryDetailRemoteDataSource>(),
+    ),
   );
 
   // Use Cases
@@ -67,8 +93,16 @@ Future<void> initAppDependencies() async {
   getIt.registerLazySingleton<RemoveFromWishlistUseCase>(
     () => RemoveFromWishlistUseCase(getIt<WishlistRepository>()),
   );
+  getIt.registerLazySingleton<GetUserProfileUseCase>(
+    () => GetUserProfileUseCase(getIt<MoreRepository>()),
+  );
+  getIt.registerLazySingleton<GetCategoryDetailUseCase>(
+    () => GetCategoryDetailUseCase(getIt<CategoryDetailRepository>()),
+  );
 
   // Cubits / Blocs (Factory)
+  getIt.registerFactory<MainCubit>(() => MainCubit());
+  getIt.registerFactory<NavBarScrollCubit>(() => NavBarScrollCubit());
   getIt.registerFactory<HomeCubit>(
     () => HomeCubit(getIt<GetHomeFeedUseCase>()),
   );
@@ -80,5 +114,11 @@ Future<void> initAppDependencies() async {
       getIt<GetWishlistUseCase>(),
       getIt<RemoveFromWishlistUseCase>(),
     ),
+  );
+  getIt.registerFactory<MoreCubit>(
+    () => MoreCubit(getIt<GetUserProfileUseCase>()),
+  );
+  getIt.registerFactory<CategoryDetailCubit>(
+    () => CategoryDetailCubit(getIt<GetCategoryDetailUseCase>()),
   );
 }

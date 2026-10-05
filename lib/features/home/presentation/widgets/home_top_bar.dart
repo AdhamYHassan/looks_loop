@@ -8,12 +8,14 @@ class HomeTopBar extends StatelessWidget {
   final int bagCount;
   final VoidCallback? onSearchTap;
   final VoidCallback? onBagTap;
+  final VoidCallback? onLoaderTap;
 
   const HomeTopBar({
     super.key,
     this.bagCount = 3,
     this.onSearchTap,
     this.onBagTap,
+    this.onLoaderTap,
   });
 
   @override
@@ -28,6 +30,19 @@ class HomeTopBar extends StatelessWidget {
           _buildLogo(),
           Row(
             children: [
+              if (onLoaderTap != null) ...[
+                IconButton(
+                  icon: Icon(
+                    LucideIcons.sparkles,
+                    color: ColorManager.cream,
+                    size: 20.sp,
+                  ),
+                  padding: EdgeInsets.zero,
+                  constraints: BoxConstraints(minWidth: 36.w, minHeight: 36.h),
+                  onPressed: onLoaderTap,
+                ),
+                SizedBox(width: 8.w),
+              ],
               IconButton(
                 icon: Icon(
                   LucideIcons.search,

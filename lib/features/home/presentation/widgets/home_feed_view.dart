@@ -5,7 +5,6 @@ import 'package:looks_loop/features/home/domain/entities/home_feed_entities.dart
 import 'package:looks_loop/features/home/presentation/widgets/brand_strip_section.dart';
 import 'package:looks_loop/features/home/presentation/widgets/categories_section.dart';
 import 'package:looks_loop/features/home/presentation/widgets/hero_carousel_section.dart';
-import 'package:looks_loop/features/home/presentation/widgets/motion_reels_section.dart';
 import 'package:looks_loop/features/home/presentation/widgets/product_rail_section.dart';
 import 'package:looks_loop/features/home/presentation/widgets/shop_look_section.dart';
 import 'package:looks_loop/features/home/presentation/widgets/trending_grid_section.dart';
@@ -46,8 +45,9 @@ class HomeFeedView extends StatelessWidget {
             ),
             RepaintBoundary(child: TrendingGridSection(items: feedData.trendingItems)),
             RepaintBoundary(child: ShopLookSection(curatedLook: feedData.curatedLook)),
-            RepaintBoundary(child: MotionReelsSection(reels: feedData.motionReels)),
+            // RepaintBoundary(child: MotionReelsSection(reels: feedData.motionReels)),
             RepaintBoundary(child: BrandStripSection(brands: feedData.brands)),
+            SizedBox(height: 100.h),
           ],
         ),
       ),

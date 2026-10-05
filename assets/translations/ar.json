@@ -69,5 +69,49 @@
     "server_error": "خطأ في الخادم. يرجى المحاولة لاحقاً.",
     "timeout_error": "انتهت مهلة الطلب. يرجى المحاولة مرة أخرى.",
     "unauthorized": "انتهت الجلسة. يرجى تسجيل الدخول مجدداً."
+  },
+  "more": {
+    "title": "المزيد",
+    "guest": "زائر",
+    "easy_returns": "إرجاع سهل",
+    "login_create_account": "تسجيل الدخول / إنشاء حساب",
+    "login_subtitle": "سجل الدخول لعرض طلباتك وعناوينك وحسابك.",
+    "sign_in": "تسجيل الدخول",
+    "sections": {
+      "shopping": "التسوق",
+      "support_info": "الدعم والمعلومات",
+      "preferences": "التفضيلات"
+    },
+    "items": {
+      "addresses": "العناوين",
+      "addresses_sub": "عناوين التوصيل المحفوظة",
+      "orders": "الطلبات",
+      "orders_sub": "تتبع ومراجعة طلباتك",
+      "policies": "السياسات",
+      "policies_sub": "الإرجاع، التوصيل والخصوصية",
+      "about_us": "من نحن",
+      "about_us_sub": "قصة LOOK LOOPS",
+      "contact_us": "اتصل بنا",
+      "contact_us_sub": "نحن هنا لمساعدتك",
+      "notifications": "الإشعارات",
+      "language": "اللغة",
+      "current_language": "العربية",
+      "settings": "الإعدادات"
+    }
+  },
+  "shop": {
+    "title": "المتجر",
+    "shop_breadcrumb": "المتجر",
+    "shop_by_category": "تسوق حسب الفئة",
+    "products_count": "{} منتج",
+    "products_count_short": "{} منتج",
+    "new_drops_announcement": "إصدارات جديدة كل جمعة — 8 مساءً",
+    "the_summer_edit": "مجموعة الصيف",
+    "light_layers": "طبقات خفيفة.",
+    "new_textures": "خامات جديدة.",
+    "discover_edit": "اكتشف المجموعة",
+    "the_latest": "الأحدث",
+    "new_in": "وصل حديثاً",
+    "view_all": "عرض الكل"
   }
 }

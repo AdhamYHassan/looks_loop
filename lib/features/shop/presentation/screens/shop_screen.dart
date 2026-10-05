@@ -4,11 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:looks_loop/core/di/dependency_injection.dart';
 import 'package:looks_loop/core/routing/routes.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
 import 'package:looks_loop/core/theming/styles.dart';
 import 'package:looks_loop/core/widgets/app_bottom_nav_bar.dart';
+import 'package:looks_loop/core/widgets/loaders/loaders.dart';
 import 'package:looks_loop/features/home/presentation/widgets/announcement_bar.dart';
 import 'package:looks_loop/features/home/presentation/widgets/home_top_bar.dart';
 import 'package:looks_loop/features/shop/presentation/bloc/shop_cubit.dart';
@@ -16,19 +16,12 @@ import 'package:looks_loop/features/shop/presentation/bloc/shop_state.dart';
 import 'package:looks_loop/features/shop/presentation/widgets/shop_feed_content.dart';
 
 class ShopScreen extends StatelessWidget {
-  const ShopScreen({super.key});
+  final bool showBottomNavBar;
 
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<ShopCubit>()..fetchShopFeed(),
-      child: const _ShopScreenContent(),
-    );
-  }
-}
-
-class _ShopScreenContent extends StatelessWidget {
-  const _ShopScreenContent();
+  const ShopScreen({
+    super.key,
+    this.showBottomNavBar = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +35,7 @@ class _ShopScreenContent extends StatelessWidget {
         backgroundColor: ColorManager.getBackground(context),
         body: SafeArea(
           top: false,
+          bottom: false,
           child: Column(
             children: [
               Container(
@@ -50,9 +44,11 @@ class _ShopScreenContent extends StatelessWidget {
                   bottom: false,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      AnnouncementBar(),
-                      HomeTopBar(),
+                    children: [
+                      const AnnouncementBar(),
+                      HomeTopBar(
+                        onBagTap: () => context.push(Routes.cart),
+                      ),
                     ],
                   ),
                 ),
@@ -62,9 +58,9 @@ class _ShopScreenContent extends StatelessWidget {
                   builder: (context, state) {
                     return switch (state) {
                       ShopInitial() || ShopLoading() => Center(
-                          child: CircularProgressIndicator(
+                          child: ChasingLoopLoader(
+                            size: 64.w,
                             color: ColorManager.olive,
-                            strokeWidth: 2.w,
                           ),
                         ),
                       ShopError(:final message) => Center(
@@ -98,9 +94,10 @@ class _ShopScreenContent extends StatelessWidget {
                           selectedAudienceId: selectedAudienceId,
                           selectedQuickLink: selectedQuickLink,
                           wishlistedIds: wishlistedProductIds,
-                          onSelectAudience: (aud) => context
-                              .read<ShopCubit>()
-                              .selectAudience(aud.id),
+                          onSelectAudience: (aud) {
+                            context.read<ShopCubit>().selectAudience(aud.id);
+                            context.push(Routes.categoryDetail, extra: aud);
+                          },
                           onSelectQuickLink: (link) => context
                               .read<ShopCubit>()
                               .selectQuickLink(link),
@@ -117,16 +114,18 @@ class _ShopScreenContent extends StatelessWidget {
             ],
           ),
         ),
-        bottomNavigationBar: AppBottomNavBar(
-          currentIndex: 2,
-          onTabSelected: (index) {
-            if (index == 0) {
-              context.go(Routes.home);
-            } else if (index == 3) {
-              context.go(Routes.wishlist);
-            }
-          },
-        ),
+        bottomNavigationBar: showBottomNavBar
+            ? AppBottomNavBar(
+                currentIndex: 2,
+                onTabSelected: (index) {
+                  if (index == 0) {
+                    context.go(Routes.home);
+                  } else if (index == 3) {
+                    context.go(Routes.wishlist);
+                  }
+                },
+              )
+            : null,
       ),
     );
   }

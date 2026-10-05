@@ -3,37 +3,31 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:looks_loop/core/di/dependency_injection.dart';
 import 'package:looks_loop/core/routing/routes.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
 import 'package:looks_loop/core/theming/styles.dart';
 import 'package:looks_loop/core/widgets/app_bottom_nav_bar.dart';
+import 'package:looks_loop/core/widgets/loaders/loaders.dart';
 import 'package:looks_loop/features/home/presentation/bloc/home_cubit.dart';
 import 'package:looks_loop/features/home/presentation/bloc/home_state.dart';
 import 'package:looks_loop/features/home/presentation/widgets/announcement_bar.dart';
+import 'package:looks_loop/features/home/presentation/widgets/chasing_loop_preview_dialog.dart';
 import 'package:looks_loop/features/home/presentation/widgets/home_feed_view.dart';
 import 'package:looks_loop/features/home/presentation/widgets/home_top_bar.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  final bool showBottomNavBar;
+
+  const HomeScreen({
+    super.key,
+    this.showBottomNavBar = true,
+  });
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<HomeCubit>()..fetchHomeFeed(),
-      child: const _HomeScreenContent(),
-    );
-  }
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenContent extends StatefulWidget {
-  const _HomeScreenContent();
-
-  @override
-  State<_HomeScreenContent> createState() => _HomeScreenContentState();
-}
-
-class _HomeScreenContentState extends State<_HomeScreenContent> {
+class _HomeScreenState extends State<HomeScreen> {
   int _currentTabIndex = 0;
 
   @override
@@ -41,13 +35,14 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light, // Android: White icons
-        statusBarBrightness: Brightness.dark, // iOS: White status bar text
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.dark,
       ),
       child: Scaffold(
         backgroundColor: ColorManager.getBackground(context),
         body: SafeArea(
           top: false,
+          bottom: false,
           child: Column(
             children: [
               Container(
@@ -56,9 +51,13 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                   bottom: false,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      AnnouncementBar(),
-                      HomeTopBar(),
+                    children: [
+                      const AnnouncementBar(),
+                      HomeTopBar(
+                        onBagTap: () => context.push(Routes.cart),
+                        onLoaderTap: () =>
+                            ChasingLoopPreviewDialog.show(context),
+                      ),
                     ],
                   ),
                 ),
@@ -68,9 +67,9 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                   builder: (context, state) {
                     return switch (state) {
                       HomeInitial() || HomeLoading() => Center(
-                          child: CircularProgressIndicator(
+                          child: ChasingLoopLoader(
+                            size: 64.w,
                             color: ColorManager.olive,
-                            strokeWidth: 2.w,
                           ),
                         ),
                       HomeError(:final message) => Center(
@@ -112,17 +111,19 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
             ],
           ),
         ),
-        bottomNavigationBar: AppBottomNavBar(
-          currentIndex: _currentTabIndex,
-          onTabSelected: (index) {
-            setState(() => _currentTabIndex = index);
-            if (index == 2) {
-              context.push(Routes.shop);
-            } else if (index == 3) {
-              context.push(Routes.wishlist);
-            }
-          },
-        ),
+        bottomNavigationBar: widget.showBottomNavBar
+            ? AppBottomNavBar(
+                currentIndex: _currentTabIndex,
+                onTabSelected: (index) {
+                  setState(() => _currentTabIndex = index);
+                  if (index == 2) {
+                    context.push(Routes.shop);
+                  } else if (index == 3) {
+                    context.push(Routes.wishlist);
+                  }
+                },
+              )
+            : null,
       ),
     );
   }

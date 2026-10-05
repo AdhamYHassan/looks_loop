@@ -69,5 +69,49 @@
     "server_error": "Server error. Please try again later.",
     "timeout_error": "Request timed out. Please try again.",
     "unauthorized": "Session expired. Please log in again."
+  },
+  "more": {
+    "title": "More",
+    "guest": "GUEST",
+    "easy_returns": "EASY RETURNS",
+    "login_create_account": "LOGIN / CREATE ACCOUNT",
+    "login_subtitle": "Sign in to view your orders, addresses and account.",
+    "sign_in": "SIGN IN",
+    "sections": {
+      "shopping": "SHOPPING",
+      "support_info": "SUPPORT & INFORMATION",
+      "preferences": "PREFERENCES"
+    },
+    "items": {
+      "addresses": "Addresses",
+      "addresses_sub": "Saved delivery addresses",
+      "orders": "Orders",
+      "orders_sub": "Track and review your orders",
+      "policies": "Policies",
+      "policies_sub": "Returns, delivery & privacy",
+      "about_us": "About Us",
+      "about_us_sub": "The LOOK LOOPS story",
+      "contact_us": "Contact Us",
+      "contact_us_sub": "We’re here to help",
+      "notifications": "Notifications",
+      "language": "Language",
+      "current_language": "English",
+      "settings": "Settings"
+    }
+  },
+  "shop": {
+    "title": "Shop",
+    "shop_breadcrumb": "SHOP",
+    "shop_by_category": "SHOP BY CATEGORY",
+    "products_count": "{} PRODUCTS",
+    "products_count_short": "{} products",
+    "new_drops_announcement": "NEW DROPS EVERY FRIDAY — 8 PM",
+    "the_summer_edit": "THE SUMMER EDIT",
+    "light_layers": "LIGHT LAYERS.",
+    "new_textures": "NEW TEXTURES.",
+    "discover_edit": "DISCOVER THE EDIT",
+    "the_latest": "THE LATEST",
+    "new_in": "NEW IN",
+    "view_all": "VIEW ALL"
   }
 }

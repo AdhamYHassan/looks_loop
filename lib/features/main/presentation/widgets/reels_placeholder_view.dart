@@ -1,0 +1,38 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:looks_loop/core/theming/colors_manager.dart';
+import 'package:looks_loop/core/theming/styles.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
+
+class ReelsPlaceholderView extends StatelessWidget {
+  const ReelsPlaceholderView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: ColorManager.getBackground(context),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              LucideIcons.play,
+              size: 64.sp,
+              color: ColorManager.getTextMuted(context),
+            ),
+            SizedBox(height: 16.h),
+            Text('REELS', style: TextStyles.font11BlackCta),
+            SizedBox(height: 8.h),
+            Text(
+              'Trending videos and looks coming soon',
+              style: TextStyles.font13TextBold(context).copyWith(
+                color: ColorManager.getTextMuted(context),
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

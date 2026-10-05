@@ -4,31 +4,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:looks_loop/core/di/dependency_injection.dart';
 import 'package:looks_loop/core/routing/routes.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
 import 'package:looks_loop/core/theming/styles.dart';
 import 'package:looks_loop/core/widgets/app_bottom_nav_bar.dart';
 import 'package:looks_loop/features/home/presentation/widgets/announcement_bar.dart';
 import 'package:looks_loop/features/home/presentation/widgets/home_top_bar.dart';
+import 'package:looks_loop/features/main/domain/entities/main_tab.dart';
+import 'package:looks_loop/features/main/presentation/bloc/main_cubit.dart';
 import 'package:looks_loop/features/wishlist/presentation/bloc/wishlist_cubit.dart';
 import 'package:looks_loop/features/wishlist/presentation/bloc/wishlist_state.dart';
 import 'package:looks_loop/features/wishlist/presentation/widgets/wishlist_content.dart';
 
 class WishlistScreen extends StatelessWidget {
-  const WishlistScreen({super.key});
+  final bool showBottomNavBar;
 
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<WishlistCubit>()..fetchWishlist(),
-      child: const _WishlistScreenContent(),
-    );
-  }
-}
-
-class _WishlistScreenContent extends StatelessWidget {
-  const _WishlistScreenContent();
+  const WishlistScreen({
+    super.key,
+    this.showBottomNavBar = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +87,15 @@ class _WishlistScreenContent extends StatelessWidget {
                           items: items,
                           onRemoveItem: (id) =>
                               context.read<WishlistCubit>().removeItem(id),
-                          onBrowseTap: () => context.go(Routes.shop),
+                          onBrowseTap: () {
+                            try {
+                              context
+                                  .read<MainCubit>()
+                                  .changeTab(MainTab.shop);
+                            } catch (_) {
+                              context.go(Routes.shop);
+                            }
+                          },
                           onRefresh: () =>
                               context.read<WishlistCubit>().fetchWishlist(),
                         ),
@@ -104,16 +106,18 @@ class _WishlistScreenContent extends StatelessWidget {
             ],
           ),
         ),
-        bottomNavigationBar: AppBottomNavBar(
-          currentIndex: 3,
-          onTabSelected: (index) {
-            if (index == 0) {
-              context.go(Routes.home);
-            } else if (index == 2) {
-              context.go(Routes.shop);
-            }
-          },
-        ),
+        bottomNavigationBar: showBottomNavBar
+            ? AppBottomNavBar(
+                currentIndex: 3,
+                onTabSelected: (index) {
+                  if (index == 0) {
+                    context.go(Routes.home);
+                  } else if (index == 2) {
+                    context.go(Routes.shop);
+                  }
+                },
+              )
+            : null,
       ),
     );
   }
