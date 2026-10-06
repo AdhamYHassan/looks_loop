@@ -13,7 +13,9 @@ import 'package:looks_loop/features/more/presentation/bloc/more_cubit.dart';
 import 'package:looks_loop/features/more/presentation/screens/more_screen.dart';
 import 'package:looks_loop/features/splash/presentation/splash_screen.dart';
 import 'package:looks_loop/features/auth/presentation/bloc/login_cubit.dart';
+import 'package:looks_loop/features/auth/presentation/bloc/register_cubit.dart';
 import 'package:looks_loop/features/auth/presentation/screens/login_screen.dart';
+import 'package:looks_loop/features/auth/presentation/screens/register_screen.dart';
 import 'package:looks_loop/features/shop/domain/entities/shop_feed_entities.dart';
 import 'package:looks_loop/features/shop/presentation/bloc/category_detail_cubit.dart';
 import 'package:looks_loop/features/shop/presentation/screens/category_detail_screen.dart';
@@ -66,6 +68,17 @@ class AppRouter {
           child: BlocProvider(
             create: (_) => getIt<LoginCubit>(),
             child: const LoginScreen(),
+          ),
+        ),
+      ),
+      GoRoute(
+        path: Routes.register,
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: BlocProvider(
+            create: (_) => getIt<RegisterCubit>(),
+            child: const RegisterScreen(),
           ),
         ),
       ),

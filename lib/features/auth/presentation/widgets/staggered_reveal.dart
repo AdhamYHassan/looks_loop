@@ -21,8 +21,9 @@ class StaggeredReveal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final start = _base + index * _step;
-    final interval = Interval(start, start + _span, curve: Curves.easeOutCubic);
+    final start = (_base + index * _step).clamp(0.0, 0.7);
+    final end = (start + _span).clamp(start, 1.0);
+    final interval = Interval(start, end, curve: Curves.easeOutCubic);
 
     return AnimatedBuilder(
       animation: animation,

@@ -45,6 +45,33 @@ class TextStyles {
   static TextStyle font20Bold(BuildContext c) =>
       _style(20, weight: FontWeight.w900, letterSpacing: -0.3, color: ColorManager.getText(c));
 
+  static TextStyle font18SemiBold(BuildContext c) =>
+      _style(18, weight: FontWeight.w600, letterSpacing: -0.3, color: ColorManager.getText(c));
+
+  static TextStyle font14SemiBold(BuildContext c) =>
+      _style(14, weight: FontWeight.w600, color: ColorManager.getText(c));
+
+  static TextStyle font14Medium(BuildContext c) =>
+      _style(14, weight: FontWeight.w500, color: ColorManager.getText(c));
+
+  static TextStyle font14Regular(BuildContext c) =>
+      _style(14, weight: FontWeight.w400, color: ColorManager.getText(c));
+
+  static TextStyle font13Regular(BuildContext c) =>
+      _style(13, weight: FontWeight.w400, color: ColorManager.getText(c));
+
+  static TextStyle font13Medium(BuildContext c) =>
+      _style(13, weight: FontWeight.w500, color: ColorManager.getText(c));
+
+  static TextStyle font12Regular(BuildContext c) =>
+      _style(12, weight: FontWeight.w400, color: ColorManager.getText(c));
+
+  static TextStyle font12Medium(BuildContext c) =>
+      _style(12, weight: FontWeight.w500, color: ColorManager.getText(c));
+
+  static TextStyle font11SemiBold(BuildContext c) =>
+      _style(11, weight: FontWeight.w600, color: ColorManager.getText(c));
+
   static TextStyle font22WhiteSemiBold =
       _style(22, weight: FontWeight.w600, letterSpacing: -0.4, color: Colors.white);
 

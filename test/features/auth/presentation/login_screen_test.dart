@@ -7,6 +7,7 @@ import 'package:looks_loop/core/widgets/loaders/chasing_loop_loader.dart';
 import 'package:looks_loop/features/auth/domain/entities/auth_response_entity.dart';
 import 'package:looks_loop/features/auth/domain/entities/auth_tokens_entity.dart';
 import 'package:looks_loop/features/auth/domain/entities/auth_user_entity.dart';
+import 'package:looks_loop/features/auth/domain/entities/register_params.dart';
 import 'package:looks_loop/features/auth/domain/repositories/auth_repository.dart';
 import 'package:looks_loop/features/auth/domain/usecases/login_usecase.dart';
 import 'package:looks_loop/features/auth/presentation/bloc/login_cubit.dart';
@@ -24,6 +25,23 @@ class FakeAuthRepo implements AuthRepository {
     required String password,
     String? cartToken,
   }) async {
+    return const ApiSuccess(
+      AuthResponseEntity(
+        user: AuthUserEntity(
+          id: 1,
+          phone: '01007951864',
+          phoneLocal: '01007951864',
+          name: 'Adham',
+          email: 'adham@gmail.com',
+          preferredLanguage: 'en',
+        ),
+        tokens: AuthTokensEntity(access: 'token', refresh: 'refresh'),
+      ),
+    );
+  }
+
+  @override
+  Future<ApiResult<AuthResponseEntity>> register(RegisterParams params) async {
     return const ApiSuccess(
       AuthResponseEntity(
         user: AuthUserEntity(
@@ -92,6 +110,7 @@ void main() {
       final textFields = find.byType(TextFormField);
       await tester.enterText(textFields.at(0), '01007951864');
       await tester.enterText(textFields.at(1), 'SecretPass123');
+      await tester.pump(const Duration(milliseconds: 100));
 
       final submitBtn = find.byType(LoginSubmitButton);
       await tester.tap(submitBtn);

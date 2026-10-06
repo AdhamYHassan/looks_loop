@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:looks_loop/core/network/network_result.dart';
 import 'package:looks_loop/features/auth/domain/entities/auth_response_entity.dart';
+import 'package:looks_loop/features/auth/domain/entities/register_params.dart';
 import 'package:looks_loop/features/auth/domain/repositories/auth_repository.dart';
 import 'package:looks_loop/features/auth/domain/usecases/logout_usecase.dart';
 
@@ -15,6 +16,11 @@ class FakeAuthRepoForLogout implements AuthRepository {
     required String password,
     String? cartToken,
   }) async {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<ApiResult<AuthResponseEntity>> register(RegisterParams params) async {
     throw UnimplementedError();
   }
 

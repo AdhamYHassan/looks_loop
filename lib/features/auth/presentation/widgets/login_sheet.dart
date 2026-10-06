@@ -16,10 +16,8 @@ class LoginSheet extends StatelessWidget {
       tween: Tween<double>(begin: 1.0, end: 0.0),
       duration: _slideDuration,
       curve: Curves.easeOutCubic,
-      builder: (context, value, child) => Transform.translate(
-        offset: Offset(0, 100.h * value),
-        child: child,
-      ),
+      builder: (context, value, child) =>
+          Transform.translate(offset: Offset(0, 100.h * value), child: child),
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.fromLTRB(24.w, 32.h, 24.w, 24.h),
@@ -30,7 +28,10 @@ class LoginSheet extends StatelessWidget {
             topRight: Radius.circular(14.r),
           ),
         ),
-        child: child,
+        child: SafeArea(
+          top: false,
+          child: child,
+        ),
       ),
     );
   }

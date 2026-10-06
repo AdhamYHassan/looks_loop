@@ -1,4 +1,3 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
@@ -23,18 +22,7 @@ class LoginHero extends StatelessWidget {
           children: [
             const LoginHeaderLockup(),
             SizedBox(height: 16.h),
-            Text(
-              'auth.welcome_back'.tr(),
-              style: TextStyle(
-                color: ColorManager.cream,
-                fontSize: 32.sp,
-                fontWeight: FontWeight.w800,
-                letterSpacing: -0.5,
-                height: 1.1,
-                fontFamily: 'Cairo',
-              ),
-            ),
-            SizedBox(height: 6.h),
+
             const LoginAnimatedTagline(),
           ],
         ),

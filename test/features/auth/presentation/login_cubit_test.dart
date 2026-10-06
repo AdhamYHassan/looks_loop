@@ -4,6 +4,7 @@ import 'package:looks_loop/core/network/network_result.dart';
 import 'package:looks_loop/features/auth/domain/entities/auth_response_entity.dart';
 import 'package:looks_loop/features/auth/domain/entities/auth_tokens_entity.dart';
 import 'package:looks_loop/features/auth/domain/entities/auth_user_entity.dart';
+import 'package:looks_loop/features/auth/domain/entities/register_params.dart';
 import 'package:looks_loop/features/auth/domain/repositories/auth_repository.dart';
 import 'package:looks_loop/features/auth/domain/usecases/login_usecase.dart';
 import 'package:looks_loop/features/auth/presentation/bloc/login_cubit.dart';
@@ -20,6 +21,10 @@ class MockAuthRepository implements AuthRepository {
     required String password,
     String? cartToken,
   }) async =>
+      result;
+
+  @override
+  Future<ApiResult<AuthResponseEntity>> register(RegisterParams params) async =>
       result;
 
   @override

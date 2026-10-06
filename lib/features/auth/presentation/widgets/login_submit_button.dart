@@ -28,7 +28,8 @@ class LoginSubmitButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: ColorManager.ink,
           foregroundColor: ColorManager.cream,
-          disabledBackgroundColor: ColorManager.olive,
+          disabledBackgroundColor: ColorManager.ink.withValues(alpha: 0.38),
+          disabledForegroundColor: ColorManager.cream.withValues(alpha: 0.6),
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(

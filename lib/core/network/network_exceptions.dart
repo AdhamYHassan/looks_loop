@@ -113,75 +113,53 @@ class NetworkExceptions {
     }
   }
 
-  /// Extracts error message from response data
+  /// Dynamically extracts user-facing error messages from any response structure
+  /// (Map, List, String, or nested dictionaries) without hardcoding specific field keys.
   static String? _getMessageFromResponse(dynamic responseData) {
-    if (responseData != null && responseData is Map) {
-      // Handle common API error response formats
-      if (responseData.containsKey('non_field_errors')) {
-        var nonFieldErrors = responseData['non_field_errors'];
-        if (nonFieldErrors is List && nonFieldErrors.isNotEmpty) {
-          return nonFieldErrors.first.toString();
-        } else if (nonFieldErrors is String) {
-          return nonFieldErrors;
-        }
-      }
-      if (responseData.containsKey('password')) {
-        var passwordError = responseData['password'];
-        if (passwordError is List && passwordError.isNotEmpty) {
-          return passwordError.first.toString();
-        } else if (passwordError is String) {
-          return passwordError;
-        }
-      }
-      if (responseData.containsKey('detail') &&
-          responseData['detail'] is String &&
-          responseData['detail'].isNotEmpty) {
-        return responseData['detail'];
-      }
-      if (responseData.containsKey('message')) {
-        return responseData['message'];
-      } else if (responseData.containsKey('error')) {
-        if (responseData['error'] is String) {
-          return responseData['error'];
-        } else if (responseData['error'] is Map &&
-            responseData['error'].containsKey('message')) {
-          return responseData['error']['message'];
-        }
-      } else if (responseData.containsKey('errors')) {
-        // Handle Laravel/similar validation errors format
-        var errors = responseData['errors'];
-        if (errors is Map && errors.isNotEmpty) {
-          // Get first error message from the map
-          var firstError = errors.entries.first;
-          if (firstError.value is List &&
-              (firstError.value as List).isNotEmpty) {
-            return (firstError.value as List).first.toString();
-          }
-        } else if (errors is List && errors.isNotEmpty) {
-          return errors.first.toString();
-        }
-      }
-      // If none of the known keys match, try to find the first error message recursively
-      return _findFirstErrorMessage(responseData);
+    if (responseData == null) return null;
+    if (responseData is String) {
+      final trimmed = responseData.trim();
+      return trimmed.isNotEmpty ? trimmed : null;
     }
-    return null;
-  }
 
-  /// Recursively finds the first string error message in a nested structure
-  static String? _findFirstErrorMessage(dynamic data) {
-    if (data is String) return data;
-    if (data is List && data.isNotEmpty) {
-      for (var item in data) {
-        final error = _findFirstErrorMessage(item);
-        if (error != null) return error;
+    if (responseData is List) {
+      final messages = responseData
+          .map(_getMessageFromResponse)
+          .where((m) => m != null && m.isNotEmpty)
+          .cast<String>()
+          .toList();
+      return messages.isNotEmpty ? messages.join('\n') : null;
+    }
+
+    if (responseData is Map) {
+      // 1. Direct standard message keys if present
+      if (responseData['detail'] is String &&
+          (responseData['detail'] as String).trim().isNotEmpty) {
+        return (responseData['detail'] as String).trim();
+      }
+      if (responseData['message'] is String &&
+          (responseData['message'] as String).trim().isNotEmpty) {
+        return (responseData['message'] as String).trim();
+      }
+      if (responseData['error'] is String &&
+          (responseData['error'] as String).trim().isNotEmpty) {
+        return (responseData['error'] as String).trim();
+      }
+
+      // 2. Iterate dynamically over all entries regardless of key name
+      final List<String> extractedMessages = [];
+      for (final value in responseData.values) {
+        final parsed = _getMessageFromResponse(value);
+        if (parsed != null && parsed.isNotEmpty) {
+          extractedMessages.add(parsed);
+        }
+      }
+
+      if (extractedMessages.isNotEmpty) {
+        return extractedMessages.join('\n');
       }
     }
-    if (data is Map && data.isNotEmpty) {
-      for (var value in data.values) {
-        final error = _findFirstErrorMessage(value);
-        if (error != null) return error;
-      }
-    }
+
     return null;
   }
 }

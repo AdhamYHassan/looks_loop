@@ -33,6 +33,7 @@ class _LoginFormState extends State<LoginForm>
   final _passwordController = TextEditingController();
   late final AnimationController _entrance;
   bool _isObscure = true;
+  bool _isFormFilled = false;
 
   @override
   void initState() {
@@ -41,22 +42,38 @@ class _LoginFormState extends State<LoginForm>
       vsync: this,
       duration: const Duration(milliseconds: 1400),
     )..forward();
+
+    _phoneController.addListener(_validateInputs);
+    _passwordController.addListener(_validateInputs);
   }
 
   @override
   void dispose() {
     _entrance.dispose();
+    _phoneController.removeListener(_validateInputs);
+    _passwordController.removeListener(_validateInputs);
     _phoneController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
+  void _validateInputs() {
+    final filled = _phoneController.text.trim().isNotEmpty &&
+        _passwordController.text.isNotEmpty;
+    if (filled != _isFormFilled) {
+      setState(() => _isFormFilled = filled);
+    }
+  }
+
   void _toggleObscure() => setState(() => _isObscure = !_isObscure);
 
-  void _submit() => widget.onSubmit?.call(
-        _phoneController.text.trim(),
-        _passwordController.text,
-      );
+  void _submit() {
+    if (!_isFormFilled) return;
+    widget.onSubmit?.call(
+      _phoneController.text.trim(),
+      _passwordController.text,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +81,18 @@ class _LoginFormState extends State<LoginForm>
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
+        Text(
+          'auth.welcome_back'.tr(),
+          style: TextStyle(
+            color: ColorManager.backgroundDark,
+            fontSize: 32.sp,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.5,
+            height: 1.1,
+            fontFamily: 'Cairo',
+          ),
+        ),
+        SizedBox(height: 6.h),
         StaggeredReveal(
           animation: _entrance,
           index: 0,
@@ -117,16 +146,14 @@ class _LoginFormState extends State<LoginForm>
           child: LoginSubmitButton(
             label: 'auth.sign_in'.tr(),
             isLoading: widget.isLoading,
-            onPressed: _submit,
+            onPressed: _isFormFilled ? _submit : null,
           ),
         ),
         SizedBox(height: 20.h),
         StaggeredReveal(
           animation: _entrance,
           index: 4,
-          child: LoginCreateAccountPrompt(
-            onTap: widget.onCreateAccount,
-          ),
+          child: LoginCreateAccountPrompt(onTap: widget.onCreateAccount),
         ),
       ],
     );

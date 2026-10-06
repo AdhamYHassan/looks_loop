@@ -10,12 +10,14 @@ import 'package:looks_loop/features/more/presentation/widgets/more_item_tile.dar
 import 'package:looks_loop/features/more/presentation/widgets/more_section_card.dart';
 import 'package:looks_loop/features/more/presentation/widgets/more_user_card.dart';
 import 'package:looks_loop/features/more/presentation/widgets/sign_out_button.dart';
+import 'package:looks_loop/features/address/presentation/widgets/address_list_sheet.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class MoreContent extends StatelessWidget {
   final UserProfileEntity profile;
   final VoidCallback? onSignInTap;
   final VoidCallback? onSignOutTap;
+  final VoidCallback? onAddressesTap;
   final VoidCallback? onLanguageTap;
   final Future<void> Function()? onRefresh;
 
@@ -24,6 +26,7 @@ class MoreContent extends StatelessWidget {
     required this.profile,
     this.onSignInTap,
     this.onSignOutTap,
+    this.onAddressesTap,
     this.onLanguageTap,
     this.onRefresh,
   });
@@ -62,7 +65,7 @@ class MoreContent extends StatelessWidget {
                   icon: LucideIcons.mapPin,
                   label: 'more.items.addresses'.tr(),
                   subtitle: 'more.items.addresses_sub'.tr(),
-                  onTap: () {},
+                  onTap: onAddressesTap ?? () => AddressListSheet.show(context),
                 ),
                 MoreItemTile(
                   icon: LucideIcons.package,

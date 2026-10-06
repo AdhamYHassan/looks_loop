@@ -74,6 +74,8 @@ class LoginScreen extends StatelessWidget {
                                         password: password,
                                       );
                                 },
+                                onCreateAccount: () =>
+                                    context.push(Routes.register),
                               ),
                               const Spacer(),
                               SizedBox(height: 24.h),

@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:looks_loop/core/helpers/secure_storage_helper.dart';
-import 'package:looks_loop/core/network/failure.dart';
+import 'package:looks_loop/core/network/network_exceptions.dart';
 import 'package:looks_loop/core/network/network_result.dart';
 import 'package:looks_loop/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:looks_loop/features/auth/data/models/login_request_model.dart';
+import 'package:looks_loop/features/auth/data/models/register_request_model.dart';
 import 'package:looks_loop/features/auth/domain/entities/auth_response_entity.dart';
+import 'package:looks_loop/features/auth/domain/entities/register_params.dart';
 import 'package:looks_loop/features/auth/domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -37,14 +39,42 @@ class AuthRepositoryImpl implements AuthRepository {
 
       return ApiSuccess(responseModel.toEntity());
     } on DioException catch (e) {
-      final message = e.response?.data is Map
-          ? (e.response?.data['message'] ?? e.message ?? 'Server error')
-          : (e.message ?? 'Server error');
-      return ApiFailure(
-        ServerFailure(message.toString(), statusCode: e.response?.statusCode),
-      );
+      return ApiFailure(NetworkExceptions.getFailure(e));
     } catch (e) {
-      return ApiFailure(UnknownFailure(e.toString()));
+      return ApiFailure(NetworkExceptions.getFailure(e));
+    }
+  }
+
+  @override
+  Future<ApiResult<AuthResponseEntity>> register(RegisterParams params) async {
+    try {
+      final effectiveCartToken =
+          params.cartToken ?? await SecureStorageHelper.getCartToken();
+      final requestParams = RegisterParams(
+        phone: params.phone,
+        password: params.password,
+        name: params.name,
+        email: params.email,
+        preferredLanguage: params.preferredLanguage,
+        gender: params.gender,
+        birthday: params.birthday,
+        cartToken: effectiveCartToken,
+      );
+
+      final request = RegisterRequestModel.fromDomain(requestParams);
+      final responseModel = await _remoteDataSource.register(request);
+
+      await SecureStorageHelper.saveToken(responseModel.tokens.access);
+      await SecureStorageHelper.saveRefreshToken(responseModel.tokens.refresh);
+      await SecureStorageHelper.savePhoneNumber(responseModel.user.phone);
+      await SecureStorageHelper.saveUserName(responseModel.user.name);
+      await SecureStorageHelper.saveUserEmail(responseModel.user.email);
+
+      return ApiSuccess(responseModel.toEntity());
+    } on DioException catch (e) {
+      return ApiFailure(NetworkExceptions.getFailure(e));
+    } catch (e) {
+      return ApiFailure(NetworkExceptions.getFailure(e));
     }
   }
 
@@ -63,15 +93,10 @@ class AuthRepositoryImpl implements AuthRepository {
       return const ApiSuccess(null);
     } on DioException catch (e) {
       await SecureStorageHelper.clearAll();
-      final message = e.response?.data is Map
-          ? (e.response?.data['message'] ?? e.message ?? 'Server error')
-          : (e.message ?? 'Server error');
-      return ApiFailure(
-        ServerFailure(message.toString(), statusCode: e.response?.statusCode),
-      );
+      return ApiFailure(NetworkExceptions.getFailure(e));
     } catch (e) {
       await SecureStorageHelper.clearAll();
-      return ApiFailure(UnknownFailure(e.toString()));
+      return ApiFailure(NetworkExceptions.getFailure(e));
     }
   }
 }
