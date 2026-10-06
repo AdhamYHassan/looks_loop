@@ -8,11 +8,14 @@ import 'package:looks_loop/features/more/presentation/widgets/more_guest_card.da
 import 'package:looks_loop/features/more/presentation/widgets/more_header.dart';
 import 'package:looks_loop/features/more/presentation/widgets/more_item_tile.dart';
 import 'package:looks_loop/features/more/presentation/widgets/more_section_card.dart';
+import 'package:looks_loop/features/more/presentation/widgets/more_user_card.dart';
+import 'package:looks_loop/features/more/presentation/widgets/sign_out_button.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class MoreContent extends StatelessWidget {
   final UserProfileEntity profile;
   final VoidCallback? onSignInTap;
+  final VoidCallback? onSignOutTap;
   final VoidCallback? onLanguageTap;
   final Future<void> Function()? onRefresh;
 
@@ -20,14 +23,16 @@ class MoreContent extends StatelessWidget {
     super.key,
     required this.profile,
     this.onSignInTap,
+    this.onSignOutTap,
     this.onLanguageTap,
     this.onRefresh,
   });
 
   @override
   Widget build(BuildContext context) {
-    final currentLanguage =
-        context.locale.languageCode == 'ar' ? 'العربية' : 'English';
+    final localeCode =
+        Localizations.maybeLocaleOf(context)?.languageCode ?? 'en';
+    final currentLanguage = localeCode == 'ar' ? 'العربية' : 'English';
 
     return RefreshIndicator(
       color: ColorManager.olive,
@@ -41,10 +46,15 @@ class MoreContent extends StatelessWidget {
               greeting:
                   profile.isGuest ? 'more.guest'.tr() : profile.name,
             ),
-            if (profile.isGuest) ...[
-              MoreGuestCard(onSignInTap: onSignInTap),
-              Gap(20.h),
-            ],
+            if (profile.isGuest)
+              MoreGuestCard(onSignInTap: onSignInTap)
+            else
+              MoreUserCard(
+                name: profile.name,
+                phone: profile.phone,
+                onViewAccountTap: () {},
+              ),
+            Gap(20.h),
             MoreSectionCard(
               title: 'more.sections.shopping'.tr(),
               items: [
@@ -108,6 +118,10 @@ class MoreContent extends StatelessWidget {
                 ),
               ],
             ),
+            if (!profile.isGuest) ...[
+              Gap(24.h),
+              SignOutButton(onSignOutTap: onSignOutTap),
+            ],
             Gap(36.h),
           ],
         ),

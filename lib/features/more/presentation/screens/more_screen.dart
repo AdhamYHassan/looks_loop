@@ -86,6 +86,14 @@ class MoreScreen extends StatelessWidget {
                           profile: profile,
                           onRefresh: () =>
                               context.read<MoreCubit>().loadUserProfile(),
+                          onSignInTap: () async {
+                            await context.push(Routes.login);
+                            if (context.mounted) {
+                              context.read<MoreCubit>().loadUserProfile();
+                            }
+                          },
+                          onSignOutTap: () =>
+                              context.read<MoreCubit>().logout(),
                         ),
                     };
                   },

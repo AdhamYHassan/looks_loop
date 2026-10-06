@@ -32,7 +32,11 @@
     "already_have_account": "لديك حساب بالفعل؟ تسجيل الدخول",
     "dont_have_account": "ليس لديك حساب؟ إنشاء حساب",
     "welcome_back": "مرحباً بعودتك!",
-    "create_account": "إنشاء حساب جديد"
+    "create_account": "إنشاء حساب جديد",
+    "new_to_looks_loop": "جديد في لوك لوبس؟",
+    "terms_notice": "بالمتابعة، فإنك توافق على {terms} و{privacy}.",
+    "terms": "الشروط والأحكام",
+    "privacy": "سياسة الخصوصية"
   },
   "home": {
     "title": "الرئيسية",
@@ -77,6 +81,7 @@
     "login_create_account": "تسجيل الدخول / إنشاء حساب",
     "login_subtitle": "سجل الدخول لعرض طلباتك وعناوينك وحسابك.",
     "sign_in": "تسجيل الدخول",
+    "view_account": "عرض الحساب",
     "sections": {
       "shopping": "التسوق",
       "support_info": "الدعم والمعلومات",

@@ -13,12 +13,14 @@ class MoreLocalDataSourceImpl implements MoreLocalDataSource {
     final token = await SecureStorageHelper.getToken();
     final name = await SecureStorageHelper.getUserName();
     final email = await SecureStorageHelper.getUserEmail();
+    final phone = await SecureStorageHelper.getPhoneNumber();
 
     if (token != null && token.isNotEmpty && name != null && name.isNotEmpty) {
       return UserProfileEntity(
         name: name,
         isGuest: false,
         email: email,
+        phone: phone,
       );
     }
 

@@ -46,22 +46,28 @@ class ChasingLoopPreviewDialog extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Icon(
-                      LucideIcons.sparkles,
-                      color: ColorManager.sage,
-                      size: 18.sp,
-                    ),
-                    SizedBox(width: 8.w),
-                    Text(
-                      'Brand Loop Loader',
-                      style: TextStyles.font16WhiteBold.copyWith(
-                        color: ColorManager.cream,
-                        fontSize: 15.sp,
+                Expanded(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        LucideIcons.sparkles,
+                        color: ColorManager.sage,
+                        size: 18.sp,
                       ),
-                    ),
-                  ],
+                      SizedBox(width: 8.w),
+                      Flexible(
+                        child: Text(
+                          'Brand Loop Loader',
+                          style: TextStyles.font16WhiteBold.copyWith(
+                            color: ColorManager.cream,
+                            fontSize: 15.sp,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 IconButton(
                   icon: Icon(

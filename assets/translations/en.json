@@ -32,7 +32,11 @@
     "already_have_account": "Already have an account? Log In",
     "dont_have_account": "Don't have an account? Sign Up",
     "welcome_back": "Welcome Back!",
-    "create_account": "Create an Account"
+    "create_account": "Create an Account",
+    "new_to_looks_loop": "New to LookLoops?",
+    "terms_notice": "By continuing, you agree to our {terms} and {privacy}.",
+    "terms": "Terms & Conditions",
+    "privacy": "Privacy Policy"
   },
   "home": {
     "title": "Home",
@@ -77,6 +81,7 @@
     "login_create_account": "LOGIN / CREATE ACCOUNT",
     "login_subtitle": "Sign in to view your orders, addresses and account.",
     "sign_in": "SIGN IN",
+    "view_account": "VIEW ACCOUNT",
     "sections": {
       "shopping": "SHOPPING",
       "support_info": "SUPPORT & INFORMATION",

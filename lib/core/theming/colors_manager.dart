@@ -53,4 +53,7 @@ class ColorManager {
 
   static Color getTextMuted(BuildContext context) =>
       isDark(context) ? sage : muted;
+
+  static Color getAccent(BuildContext context) =>
+      isDark(context) ? sage : olive;
 }

@@ -9,10 +9,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 class MoreGuestCard extends StatelessWidget {
   final VoidCallback? onSignInTap;
 
-  const MoreGuestCard({
-    super.key,
-    this.onSignInTap,
-  });
+  const MoreGuestCard({super.key, this.onSignInTap});
 
   @override
   Widget build(BuildContext context) {
@@ -40,11 +37,7 @@ class MoreGuestCard extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: Center(
-              child: Icon(
-                LucideIcons.userRound,
-                size: 24.sp,
-                color: textColor,
-              ),
+              child: Icon(LucideIcons.userRound, size: 24.sp, color: textColor),
             ),
           ),
           Gap(12.h),
@@ -61,11 +54,9 @@ class MoreGuestCard extends StatelessWidget {
           Text(
             'more.login_subtitle'.tr(),
             textAlign: TextAlign.center,
-            style: TextStyles.font13MutedMedium(context).copyWith(
-              fontSize: 12.sp,
-              color: mutedColor,
-              height: 1.3,
-            ),
+            style: TextStyles.font13MutedMedium(
+              context,
+            ).copyWith(fontSize: 12.sp, color: mutedColor, height: 1.3),
           ),
           Gap(16.h),
           SizedBox(
@@ -76,6 +67,7 @@ class MoreGuestCard extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: ColorManager.ink,
                 foregroundColor: ColorManager.cream,
+                disabledBackgroundColor: ColorManager.olive,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.r),

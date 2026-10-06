@@ -30,6 +30,14 @@ import 'package:looks_loop/features/shop/data/repositories/category_detail_repos
 import 'package:looks_loop/features/shop/domain/repositories/category_detail_repository.dart';
 import 'package:looks_loop/features/shop/domain/usecases/get_category_detail_usecase.dart';
 import 'package:looks_loop/features/shop/presentation/bloc/category_detail_cubit.dart';
+import 'package:looks_loop/core/network/dio_factory.dart';
+import 'package:looks_loop/core/network/network_helper.dart';
+import 'package:looks_loop/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:looks_loop/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:looks_loop/features/auth/domain/repositories/auth_repository.dart';
+import 'package:looks_loop/features/auth/domain/usecases/login_usecase.dart';
+import 'package:looks_loop/features/auth/domain/usecases/logout_usecase.dart';
+import 'package:looks_loop/features/auth/presentation/bloc/login_cubit.dart';
 
 final getIt = GetIt.instance;
 
@@ -60,6 +68,9 @@ Future<void> initAppDependencies() async {
   getIt.registerLazySingleton<CategoryDetailRemoteDataSource>(
     () => const CategoryDetailRemoteDataSourceImpl(),
   );
+  getIt.registerLazySingleton<AuthRemoteDataSource>(
+    () => AuthRemoteDataSourceImpl(NetworkHelper(DioFactory.getDio())),
+  );
 
   // Repositories
   getIt.registerLazySingleton<HomeRepository>(
@@ -78,6 +89,9 @@ Future<void> initAppDependencies() async {
     () => CategoryDetailRepositoryImpl(
       getIt<CategoryDetailRemoteDataSource>(),
     ),
+  );
+  getIt.registerLazySingleton<AuthRepository>(
+    () => AuthRepositoryImpl(getIt<AuthRemoteDataSource>()),
   );
 
   // Use Cases
@@ -99,6 +113,12 @@ Future<void> initAppDependencies() async {
   getIt.registerLazySingleton<GetCategoryDetailUseCase>(
     () => GetCategoryDetailUseCase(getIt<CategoryDetailRepository>()),
   );
+  getIt.registerLazySingleton<LoginUseCase>(
+    () => LoginUseCase(getIt<AuthRepository>()),
+  );
+  getIt.registerLazySingleton<LogoutUseCase>(
+    () => LogoutUseCase(getIt<AuthRepository>()),
+  );
 
   // Cubits / Blocs (Factory)
   getIt.registerFactory<MainCubit>(() => MainCubit());
@@ -116,9 +136,15 @@ Future<void> initAppDependencies() async {
     ),
   );
   getIt.registerFactory<MoreCubit>(
-    () => MoreCubit(getIt<GetUserProfileUseCase>()),
+    () => MoreCubit(
+      getIt<GetUserProfileUseCase>(),
+      getIt<LogoutUseCase>(),
+    ),
   );
   getIt.registerFactory<CategoryDetailCubit>(
     () => CategoryDetailCubit(getIt<GetCategoryDetailUseCase>()),
+  );
+  getIt.registerFactory<LoginCubit>(
+    () => LoginCubit(getIt<LoginUseCase>()),
   );
 }
