@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
 import 'package:looks_loop/core/theming/styles.dart';
 import 'package:looks_loop/features/address/domain/entities/address_entity.dart';
+import 'package:looks_loop/features/address/presentation/widgets/address_card_contact.dart';
+import 'package:looks_loop/features/address/presentation/widgets/address_card_header.dart';
+import 'package:looks_loop/features/address/presentation/widgets/address_undeliverable_notice.dart';
 
 class AddressCard extends StatelessWidget {
   final AddressEntity address;
@@ -29,7 +32,7 @@ class AddressCard extends StatelessWidget {
           border: Border.all(
             color: canDeliver
                 ? (address.isDefault
-                    ? ColorManager.olive.withValues(alpha: 0.4)
+                    ? ColorManager.olive.withValues(alpha: 0.5)
                     : ColorManager.getBorder(context))
                 : (isDark
                     ? Colors.red.withValues(alpha: 0.3)
@@ -45,7 +48,7 @@ class AddressCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildHeader(context),
+                AddressCardHeader(address: address),
                 const SizedBox(height: 10),
                 Text(
                   address.formattedAddress,
@@ -64,118 +67,16 @@ class AddressCard extends StatelessWidget {
                     ),
                   ),
                 ],
-                const SizedBox(height: 10),
-                _buildContactInfo(context),
+                const SizedBox(height: 12),
+                AddressCardContact(address: address),
                 if (!canDeliver) ...[
                   const SizedBox(height: 12),
-                  _buildUndeliverableNotice(context),
+                  const AddressUndeliverableNotice(),
                 ],
               ],
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-          decoration: BoxDecoration(
-            color: ColorManager.olive.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Text(
-            address.displayLabel.toUpperCase(),
-            style: TextStyles.font11SemiBold(context).copyWith(
-              color: ColorManager.olive,
-              letterSpacing: 0.5,
-            ),
-          ),
-        ),
-        if (address.title.isNotEmpty && address.title != address.label) ...[
-          const SizedBox(width: 8),
-          Text(
-            address.title,
-            style: TextStyles.font14SemiBold(context).copyWith(
-              color: ColorManager.getText(context),
-            ),
-          ),
-        ],
-        const Spacer(),
-        if (address.isDefault)
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(
-              color: ColorManager.olive,
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Text(
-              'address.default_badge'.tr(),
-              style: TextStyles.font11SemiBold(context).copyWith(
-                color: ColorManager.cream,
-              ),
-            ),
-          ),
-      ],
-    );
-  }
-
-  Widget _buildContactInfo(BuildContext context) {
-    return Row(
-      children: [
-        Icon(
-          Icons.person_outline_rounded,
-          size: 16,
-          color: ColorManager.getTextMuted(context),
-        ),
-        const SizedBox(width: 6),
-        Text(
-          address.contactName,
-          style: TextStyles.font13Medium(context).copyWith(
-            color: ColorManager.getText(context),
-          ),
-        ),
-        const SizedBox(width: 16),
-        Icon(
-          Icons.phone_outlined,
-          size: 15,
-          color: ColorManager.getTextMuted(context),
-        ),
-        const SizedBox(width: 6),
-        Text(
-          address.phone,
-          style: TextStyles.font13Regular(context).copyWith(
-            color: ColorManager.getTextMuted(context),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildUndeliverableNotice(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.red.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.info_outline_rounded, size: 16, color: Colors.red),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              'address.cannot_deliver'.tr(),
-              style: TextStyles.font12Regular(context).copyWith(
-                color: Colors.red.shade700,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

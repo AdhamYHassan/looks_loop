@@ -2,11 +2,14 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import 'package:looks_loop/core/routing/routes.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
 import 'package:looks_loop/features/more/domain/entities/user_profile_entity.dart';
 import 'package:looks_loop/features/more/presentation/widgets/more_guest_card.dart';
 import 'package:looks_loop/features/more/presentation/widgets/more_header.dart';
 import 'package:looks_loop/features/more/presentation/widgets/more_item_tile.dart';
+import 'package:looks_loop/features/more/presentation/widgets/more_preferences_section.dart';
 import 'package:looks_loop/features/more/presentation/widgets/more_section_card.dart';
 import 'package:looks_loop/features/more/presentation/widgets/more_user_card.dart';
 import 'package:looks_loop/features/more/presentation/widgets/sign_out_button.dart';
@@ -33,10 +36,6 @@ class MoreContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localeCode =
-        Localizations.maybeLocaleOf(context)?.languageCode ?? 'en';
-    final currentLanguage = localeCode == 'ar' ? 'العربية' : 'English';
-
     return RefreshIndicator(
       color: ColorManager.olive,
       onRefresh: onRefresh ?? () async {},
@@ -71,7 +70,9 @@ class MoreContent extends StatelessWidget {
                   icon: LucideIcons.package,
                   label: 'more.items.orders'.tr(),
                   subtitle: 'more.items.orders_sub'.tr(),
-                  onTap: () {},
+                  onTap: profile.isGuest
+                      ? onSignInTap ?? () {}
+                      : () => context.push(Routes.orders),
                 ),
               ],
             ),
@@ -100,26 +101,8 @@ class MoreContent extends StatelessWidget {
               ],
             ),
             Gap(20.h),
-            MoreSectionCard(
-              title: 'more.sections.preferences'.tr(),
-              items: [
-                MoreItemTile(
-                  icon: LucideIcons.bell,
-                  label: 'more.items.notifications'.tr(),
-                  onTap: () {},
-                ),
-                MoreItemTile(
-                  icon: LucideIcons.globe,
-                  label: 'more.items.language'.tr(),
-                  subtitle: currentLanguage,
-                  onTap: onLanguageTap ?? () => _toggleLanguage(context),
-                ),
-                MoreItemTile(
-                  icon: LucideIcons.settings,
-                  label: 'more.items.settings'.tr(),
-                  onTap: () {},
-                ),
-              ],
+            MorePreferencesSection(
+              onLanguageTap: onLanguageTap,
             ),
             if (!profile.isGuest) ...[
               Gap(24.h),
@@ -130,12 +113,5 @@ class MoreContent extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void _toggleLanguage(BuildContext context) {
-    final newLocale = context.locale.languageCode == 'en'
-        ? const Locale('ar')
-        : const Locale('en');
-    context.setLocale(newLocale);
   }
 }

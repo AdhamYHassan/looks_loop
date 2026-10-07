@@ -122,6 +122,9 @@
       "notifications": "Notifications",
       "language": "Language",
       "current_language": "English",
+      "theme": "Theme",
+      "dark_mode": "Dark Mode",
+      "light_mode": "Light Mode",
       "settings": "Settings"
     }
   },
@@ -169,5 +172,45 @@
     "set_as_default": "Set as default address",
     "save_address": "SAVE ADDRESS",
     "address_saved_success": "Address saved successfully"
+  },
+  "orders": {
+    "title": "My Orders",
+    "details_title": "ORDER DETAILS",
+    "placed_on": "PLACED {}",
+    "empty_title": "No orders yet",
+    "empty_subtitle": "When you place an order, it will show up here.",
+    "items_count": "{} items",
+    "items_section_title": "ITEMS ({})",
+    "qty": "Qty",
+    "currency": "EGP",
+    "order_tracking": "ORDER TRACKING",
+    "tracking": {
+      "placed": "ORDER PLACED",
+      "confirmed": "CONFIRMED",
+      "processing": "PROCESSING",
+      "shipped": "SHIPPED",
+      "out_for_delivery": "OUT FOR DELIVERY",
+      "delivered": "DELIVERED"
+    },
+    "delivery_address": "DELIVERY ADDRESS",
+    "delivery_method": "DELIVERY METHOD",
+    "standard_delivery": "Standard Delivery",
+    "delivery_days": "2-4 Business Days",
+    "payment_method": "PAYMENT METHOD",
+    "order_summary": "ORDER SUMMARY",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
+    "delivery": "Delivery",
+    "free": "FREE",
+    "total": "TOTAL",
+    "cancel_order": "CANCEL ORDER",
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "processing": "Processing",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    }
   }
 }

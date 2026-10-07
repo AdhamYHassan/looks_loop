@@ -22,6 +22,10 @@ import 'package:looks_loop/features/shop/presentation/screens/category_detail_sc
 import 'package:looks_loop/features/cart/presentation/screens/cart_screen.dart';
 import 'package:looks_loop/features/wishlist/presentation/bloc/wishlist_cubit.dart';
 import 'package:looks_loop/features/wishlist/presentation/screens/wishlist_screen.dart';
+import 'package:looks_loop/features/orders/presentation/bloc/order_detail_cubit.dart';
+import 'package:looks_loop/features/orders/presentation/bloc/orders_cubit.dart';
+import 'package:looks_loop/features/orders/presentation/screens/order_detail_screen.dart';
+import 'package:looks_loop/features/orders/presentation/screens/orders_screen.dart';
 
 final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
 
@@ -98,6 +102,32 @@ class AppRouter {
             child: const MainScreen(),
           ),
         ),
+      ),
+      GoRoute(
+        path: Routes.orders,
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: BlocProvider(
+            create: (_) => getIt<OrdersCubit>()..loadOrders(),
+            child: const OrdersScreen(),
+          ),
+        ),
+      ),
+      GoRoute(
+        path: Routes.orderDetail,
+        pageBuilder: (context, state) {
+          final orderNumber = state.pathParameters['orderNumber'] ?? '';
+          return _buildPageWithTransition(
+            context: context,
+            state: state,
+            child: BlocProvider(
+              create: (_) => getIt<OrderDetailCubit>()
+                ..loadOrderDetail(orderNumber),
+              child: OrderDetailScreen(orderNumber: orderNumber),
+            ),
+          );
+        },
       ),
       GoRoute(
         path: Routes.home,

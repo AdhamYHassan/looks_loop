@@ -4,5 +4,6 @@ class ApiEndpoints {
   static const String register = 'auth/register/';
   static const String logout = 'auth/logout/';
   static const String addresses = 'me/addresses/';
+  static const String orders = 'orders/';
   static const String provincesNested = 'provinces/nested/?country=1';
 }

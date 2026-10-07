@@ -9,4 +9,7 @@ class Routes {
   static const String more = '/more';
   static const String categoryDetail = '/category-detail';
   static const String cart = '/cart';
+  static const String orders = '/orders';
+  static const String orderDetail = '/orders/:orderNumber';
+  static String orderDetailPath(String orderNumber) => '/orders/$orderNumber';
 }

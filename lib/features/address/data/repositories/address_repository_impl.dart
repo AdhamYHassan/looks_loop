@@ -13,7 +13,7 @@ class AddressRepositoryImpl implements AddressRepository {
   final AddressRemoteDataSource _remoteDataSource;
   final AddressLocalDataSource _localDataSource;
 
-  // Session In-Memory Cache for fast repeated lookups during the active session
+  List<AddressEntity>? _memoryAddresses;
   List<ProvinceEntity>? _memoryProvinces;
 
   AddressRepositoryImpl(
@@ -23,20 +23,31 @@ class AddressRepositoryImpl implements AddressRepository {
 
   @override
   Future<ApiResult<List<AddressEntity>>> getAddresses() async {
+    // 1. Fast path: return in-memory cache if already available in active session
+    if (_memoryAddresses != null) {
+      return ApiSuccess(_memoryAddresses!);
+    }
+
+    // 2. Offline Hive check
+    final localCached = await _localDataSource.getCachedAddresses();
+    if (localCached != null && localCached.isNotEmpty) {
+      _memoryAddresses = localCached.map((m) => m.toEntity()).toList();
+    }
+
     try {
       final models = await _remoteDataSource.getAddresses();
       await _localDataSource.cacheAddresses(models);
-      return ApiSuccess(models.map((m) => m.toEntity()).toList());
+      final entities = models.map((m) => m.toEntity()).toList();
+      _memoryAddresses = entities;
+      return ApiSuccess(entities);
     } on DioException catch (e) {
-      final cached = await _localDataSource.getCachedAddresses();
-      if (cached != null && cached.isNotEmpty) {
-        return ApiSuccess(cached.map((m) => m.toEntity()).toList());
+      if (_memoryAddresses != null && _memoryAddresses!.isNotEmpty) {
+        return ApiSuccess(_memoryAddresses!);
       }
       return ApiFailure(NetworkExceptions.getFailure(e));
     } catch (e) {
-      final cached = await _localDataSource.getCachedAddresses();
-      if (cached != null && cached.isNotEmpty) {
-        return ApiSuccess(cached.map((m) => m.toEntity()).toList());
+      if (_memoryAddresses != null && _memoryAddresses!.isNotEmpty) {
+        return ApiSuccess(_memoryAddresses!);
       }
       return ApiFailure(NetworkExceptions.getFailure(e));
     }
@@ -48,10 +59,13 @@ class AddressRepositoryImpl implements AddressRepository {
       final request = AddAddressRequestModel.fromEntity(params);
       final model = await _remoteDataSource.addAddress(request);
 
+      final entity = model.toEntity();
+      _memoryAddresses = [entity, ...?_memoryAddresses];
+
       final currentCache = await _localDataSource.getCachedAddresses() ?? [];
       await _localDataSource.cacheAddresses([model, ...currentCache]);
 
-      return ApiSuccess(model.toEntity());
+      return ApiSuccess(entity);
     } on DioException catch (e) {
       return ApiFailure(NetworkExceptions.getFailure(e));
     } catch (e) {

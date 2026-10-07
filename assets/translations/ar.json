@@ -122,6 +122,9 @@
       "notifications": "الإشعارات",
       "language": "اللغة",
       "current_language": "العربية",
+      "theme": "المظهر",
+      "dark_mode": "الوضع الداكن",
+      "light_mode": "الوضع الفاتح",
       "settings": "الإعدادات"
     }
   },
@@ -169,5 +172,45 @@
     "set_as_default": "تعيين كعنوان افتراضي",
     "save_address": "حفظ العنوان",
     "address_saved_success": "تم حفظ العنوان بنجاح"
+  },
+  "orders": {
+    "title": "طلباتي",
+    "details_title": "تفاصيل الطلب",
+    "placed_on": "تم الطلب في {}",
+    "empty_title": "لا توجد طلبات بعد",
+    "empty_subtitle": "عند إتمام طلب، سيظهر هنا.",
+    "items_count": "{} منتجات",
+    "items_section_title": "المنتجات ({})",
+    "qty": "الكمية",
+    "currency": "ج.م",
+    "order_tracking": "تتبع الطلب",
+    "tracking": {
+      "placed": "تم الطلب",
+      "confirmed": "تم التأكيد",
+      "processing": "قيد التجهيز",
+      "shipped": "تم الشحن",
+      "out_for_delivery": "خرج للتوصيل",
+      "delivered": "تم التوصيل"
+    },
+    "delivery_address": "عنوان التوصيل",
+    "delivery_method": "طريقة التوصيل",
+    "standard_delivery": "توصيل قياسي",
+    "delivery_days": "2-4 أيام عمل",
+    "payment_method": "طريقة الدفع",
+    "order_summary": "ملخص الطلب",
+    "subtotal": "المجموع الفرعي",
+    "discount": "الخصم",
+    "delivery": "التوصيل",
+    "free": "مجاناً",
+    "total": "الإجمالي",
+    "cancel_order": "إلغاء الطلب",
+    "status": {
+      "pending": "قيد الانتظار",
+      "confirmed": "تم التأكيد",
+      "processing": "قيد التجهيز",
+      "shipped": "تم الشحن",
+      "delivered": "تم التوصيل",
+      "cancelled": "ملغي"
+    }
   }
 }

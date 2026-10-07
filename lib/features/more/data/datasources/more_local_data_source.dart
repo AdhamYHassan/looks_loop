@@ -15,9 +15,15 @@ class MoreLocalDataSourceImpl implements MoreLocalDataSource {
     final email = await SecureStorageHelper.getUserEmail();
     final phone = await SecureStorageHelper.getPhoneNumber();
 
-    if (token != null && token.isNotEmpty && name != null && name.isNotEmpty) {
+    if (token != null && token.trim().isNotEmpty) {
+      final displayName = (name != null && name.trim().isNotEmpty)
+          ? name.trim()
+          : (phone != null && phone.trim().isNotEmpty
+              ? phone.trim()
+              : 'User');
+
       return UserProfileEntity(
-        name: name,
+        name: displayName,
         isGuest: false,
         email: email,
         phone: phone,

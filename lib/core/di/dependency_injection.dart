@@ -1,5 +1,10 @@
 import 'package:flutter/painting.dart';
 import 'package:get_it/get_it.dart';
+import 'package:looks_loop/features/orders/data/datasources/orders_remote_data_source.dart';
+import 'package:looks_loop/features/orders/data/repositories/orders_repository_impl.dart';
+import 'package:looks_loop/features/orders/domain/repositories/orders_repository.dart';
+import 'package:looks_loop/features/orders/domain/usecases/get_orders_usecase.dart';
+import 'package:looks_loop/features/orders/presentation/bloc/orders_cubit.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:looks_loop/core/helpers/shared_prefs_helper.dart';
 import 'package:looks_loop/core/network/dio_factory.dart';
@@ -33,6 +38,8 @@ import 'package:looks_loop/features/more/data/repositories/more_repository_impl.
 import 'package:looks_loop/features/more/domain/repositories/more_repository.dart';
 import 'package:looks_loop/features/more/domain/usecases/get_user_profile_usecase.dart';
 import 'package:looks_loop/features/more/presentation/bloc/more_cubit.dart';
+import 'package:looks_loop/features/orders/domain/usecases/get_order_detail_usecase.dart';
+import 'package:looks_loop/features/orders/presentation/bloc/order_detail_cubit.dart';
 import 'package:looks_loop/features/shop/data/datasources/category_detail_remote_data_source.dart';
 import 'package:looks_loop/features/shop/data/datasources/shop_remote_data_source.dart';
 import 'package:looks_loop/features/shop/data/repositories/category_detail_repository_impl.dart';
@@ -71,6 +78,7 @@ Future<void> initAppDependencies() async {
   getIt.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceImpl(NetworkHelper(DioFactory.getDio())));
   getIt.registerLazySingleton<AddressLocalDataSource>(() => AddressLocalDataSourceImpl(addressBox));
   getIt.registerLazySingleton<AddressRemoteDataSource>(() => AddressRemoteDataSourceImpl(NetworkHelper(DioFactory.getDio())));
+  getIt.registerLazySingleton<OrdersRemoteDataSource>(() => OrdersRemoteDataSourceImpl(NetworkHelper(DioFactory.getDio())));
 
   // Repositories
   getIt.registerLazySingleton<HomeRepository>(() => HomeRepositoryImpl(getIt<HomeRemoteDataSource>()));
@@ -80,6 +88,7 @@ Future<void> initAppDependencies() async {
   getIt.registerLazySingleton<CategoryDetailRepository>(() => CategoryDetailRepositoryImpl(getIt<CategoryDetailRemoteDataSource>()));
   getIt.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(getIt<AuthRemoteDataSource>()));
   getIt.registerLazySingleton<AddressRepository>(() => AddressRepositoryImpl(getIt<AddressRemoteDataSource>(), getIt<AddressLocalDataSource>()));
+  getIt.registerLazySingleton<OrdersRepository>(() => OrdersRepositoryImpl(getIt<OrdersRemoteDataSource>()));
 
   // Use Cases
   getIt.registerLazySingleton<GetHomeFeedUseCase>(() => GetHomeFeedUseCase(getIt<HomeRepository>()));
@@ -94,6 +103,8 @@ Future<void> initAppDependencies() async {
   getIt.registerLazySingleton<GetAddressesUseCase>(() => GetAddressesUseCase(getIt<AddressRepository>()));
   getIt.registerLazySingleton<AddAddressUseCase>(() => AddAddressUseCase(getIt<AddressRepository>()));
   getIt.registerLazySingleton<GetProvincesUseCase>(() => GetProvincesUseCase(getIt<AddressRepository>()));
+  getIt.registerLazySingleton<GetOrdersUseCase>(() => GetOrdersUseCase(getIt<OrdersRepository>()));
+  getIt.registerLazySingleton<GetOrderDetailUseCase>(() => GetOrderDetailUseCase(getIt<OrdersRepository>()));
 
   // Cubits (Factory)
   getIt.registerFactory<MainCubit>(() => MainCubit());
@@ -105,6 +116,8 @@ Future<void> initAppDependencies() async {
   getIt.registerFactory<CategoryDetailCubit>(() => CategoryDetailCubit(getIt<GetCategoryDetailUseCase>()));
   getIt.registerFactory<LoginCubit>(() => LoginCubit(getIt<LoginUseCase>()));
   getIt.registerFactory<RegisterCubit>(() => RegisterCubit(getIt<RegisterUseCase>()));
+  getIt.registerFactory<OrdersCubit>(() => OrdersCubit(getIt<GetOrdersUseCase>()));
+  getIt.registerFactory<OrderDetailCubit>(() => OrderDetailCubit(getIt<GetOrderDetailUseCase>()));
   getIt.registerFactory<AddressCubit>(() => AddressCubit(
     getIt<GetAddressesUseCase>(),
     getIt<AddAddressUseCase>(),

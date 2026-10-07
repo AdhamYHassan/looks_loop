@@ -12,8 +12,13 @@ class AuthTokensModel extends Equatable {
 
   factory AuthTokensModel.fromJson(Map<String, dynamic> json) {
     return AuthTokensModel(
-      access: json['access'] as String? ?? '',
-      refresh: json['refresh'] as String? ?? '',
+      access: json['access'] as String? ??
+          json['access_token'] as String? ??
+          json['token'] as String? ??
+          '',
+      refresh: json['refresh'] as String? ??
+          json['refresh_token'] as String? ??
+          '',
     );
   }
 

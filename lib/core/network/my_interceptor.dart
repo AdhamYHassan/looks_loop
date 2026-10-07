@@ -22,8 +22,8 @@ class MyInterceptor extends Interceptor {
     );
 
     final String? token = await SecureStorageHelper.getToken();
-    if (token != null) {
-      options.headers['Authorization'] = 'Bearer $token';
+    if (token != null && token.trim().isNotEmpty) {
+      options.headers['Authorization'] = 'Bearer ${token.trim()}';
     }
 
     _log('Headers: ${options.headers}', 'Network-Request');

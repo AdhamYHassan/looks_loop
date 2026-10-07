@@ -95,24 +95,29 @@ class _AddAddressSheetState extends State<AddAddressSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final maxHeight = MediaQuery.of(context).size.height * 0.90;
+
     return Container(
+      constraints: BoxConstraints(maxHeight: maxHeight),
       padding: EdgeInsets.only(
         left: 20,
         right: 20,
-        top: 20,
+        top: 12,
         bottom: MediaQuery.of(context).viewInsets.bottom + 24,
       ),
       decoration: BoxDecoration(
         color: ColorManager.getBackground(context),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      child: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
+      child: SafeArea(
+        top: true,
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
               const AddAddressHeader(),
               const SizedBox(height: 16),
               AddAddressLabelSelector(
@@ -180,6 +185,7 @@ class _AddAddressSheetState extends State<AddAddressSheet> {
           ),
         ),
       ),
-    );
+    ),
+  );
   }
 }

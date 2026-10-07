@@ -4,12 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:looks_loop/core/di/dependency_injection.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
 import 'package:looks_loop/core/theming/styles.dart';
-import 'package:looks_loop/core/widgets/loaders/look_around_eyes_loader.dart';
 import 'package:looks_loop/features/address/domain/entities/address_entity.dart';
 import 'package:looks_loop/features/address/presentation/bloc/address_cubit.dart';
 import 'package:looks_loop/features/address/presentation/bloc/address_state.dart';
 import 'package:looks_loop/features/address/presentation/widgets/address_card.dart';
 import 'package:looks_loop/features/address/presentation/widgets/address_empty_view.dart';
+import 'package:looks_loop/features/address/presentation/widgets/address_skeleton_loader.dart';
 import 'package:looks_loop/features/address/presentation/widgets/add_address_sheet.dart';
 
 class AddressListSheet extends StatelessWidget {
@@ -19,6 +19,7 @@ class AddressListSheet extends StatelessWidget {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (_) => BlocProvider(
         create: (_) => getIt<AddressCubit>()..loadAddresses(),
@@ -31,6 +32,7 @@ class AddressListSheet extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (_) => BlocProvider.value(
         value: context.read<AddressCubit>(),
@@ -49,17 +51,20 @@ class AddressListSheet extends StatelessWidget {
         color: ColorManager.getBackground(context),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildHeader(context),
-          const Divider(height: 1, color: ColorManager.line),
-          Flexible(
-            child: BlocBuilder<AddressCubit, AddressState>(
-              builder: (context, state) => _buildBody(context, state),
+      child: SafeArea(
+        top: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildHeader(context),
+            const Divider(height: 1, color: ColorManager.line),
+            Flexible(
+              child: BlocBuilder<AddressCubit, AddressState>(
+                builder: (context, state) => _buildBody(context, state),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -88,9 +93,8 @@ class AddressListSheet extends StatelessWidget {
 
   Widget _buildBody(BuildContext context, AddressState state) {
     return switch (state) {
-      AddressLoading() || AddressInitial() => const Padding(
-          padding: EdgeInsets.all(48.0),
-          child: Center(child: LookAroundEyesLoader(width: 100)),
+      AddressLoading() || AddressInitial() => const AddressSkeletonLoader(
+          itemCount: 2,
         ),
       AddressLoaded(:final addresses) when addresses.isEmpty =>
         AddressEmptyView(
@@ -125,7 +129,7 @@ class AddressListSheet extends StatelessWidget {
 
   Widget _buildAddressList(List<AddressEntity> addresses) {
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       itemCount: addresses.length,
       shrinkWrap: true,
       itemBuilder: (context, index) {

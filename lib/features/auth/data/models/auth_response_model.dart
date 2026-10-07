@@ -13,13 +13,19 @@ class AuthResponseModel extends Equatable {
   });
 
   factory AuthResponseModel.fromJson(Map<String, dynamic> json) {
+    final effectiveJson = (json['data'] is Map<String, dynamic>)
+        ? json['data'] as Map<String, dynamic>
+        : json;
+
+    final userMap = effectiveJson['user'] as Map<String, dynamic>? ??
+        (json['user'] as Map<String, dynamic>? ?? effectiveJson);
+
+    final tokensMap = effectiveJson['tokens'] as Map<String, dynamic>? ??
+        (json['tokens'] as Map<String, dynamic>? ?? effectiveJson);
+
     return AuthResponseModel(
-      user: AuthUserModel.fromJson(
-        json['user'] as Map<String, dynamic>? ?? {},
-      ),
-      tokens: AuthTokensModel.fromJson(
-        json['tokens'] as Map<String, dynamic>? ?? {},
-      ),
+      user: AuthUserModel.fromJson(userMap),
+      tokens: AuthTokensModel.fromJson(tokensMap),
     );
   }
 

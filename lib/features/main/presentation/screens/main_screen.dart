@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:looks_loop/core/di/dependency_injection.dart';
 import 'package:looks_loop/features/home/presentation/screens/home_screen.dart';
+import 'package:looks_loop/features/main/domain/entities/main_tab.dart';
 import 'package:looks_loop/features/main/presentation/bloc/main_cubit.dart';
 import 'package:looks_loop/features/main/presentation/bloc/main_state.dart';
 import 'package:looks_loop/features/main/presentation/bloc/nav_bar_scroll_cubit.dart';
 import 'package:looks_loop/features/main/presentation/widgets/dynamic_floating_nav_bar.dart';
 import 'package:looks_loop/features/main/presentation/widgets/reels_placeholder_view.dart';
 import 'package:looks_loop/features/more/presentation/screens/more_screen.dart';
+import 'package:looks_loop/features/more/presentation/bloc/more_cubit.dart';
 import 'package:looks_loop/features/shop/presentation/screens/shop_screen.dart';
 import 'package:looks_loop/features/wishlist/presentation/screens/wishlist_screen.dart';
 
@@ -32,6 +34,9 @@ class MainScreen extends StatelessWidget {
             listenWhen: (prev, curr) => prev.currentTab != curr.currentTab,
             listener: (context, state) {
               context.read<NavBarScrollCubit>().reset();
+              if (state.currentTab == MainTab.more) {
+                context.read<MoreCubit>().loadUserProfile();
+              }
             },
             child: Scaffold(
               extendBody: true,

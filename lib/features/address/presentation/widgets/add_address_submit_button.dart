@@ -9,10 +9,7 @@ import 'package:looks_loop/features/address/presentation/bloc/address_state.dart
 class AddAddressSubmitButton extends StatelessWidget {
   final VoidCallback onSubmit;
 
-  const AddAddressSubmitButton({
-    super.key,
-    required this.onSubmit,
-  });
+  const AddAddressSubmitButton({super.key, required this.onSubmit});
 
   @override
   Widget build(BuildContext context) {
@@ -43,10 +40,9 @@ class AddAddressSubmitButton extends StatelessWidget {
                   )
                 : Text(
                     'address.save_address'.tr(),
-                    style: TextStyles.font14SemiBold(context).copyWith(
-                      color: ColorManager.cream,
-                      letterSpacing: 0.8,
-                    ),
+                    style: TextStyles.font14SemiBold(
+                      context,
+                    ).copyWith(color: ColorManager.cream, letterSpacing: 0.8),
                   ),
           ),
         );
