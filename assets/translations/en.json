@@ -17,6 +17,13 @@
     "see_all": "See All",
     "close": "Close"
   },
+  "nav": {
+    "home": "Home",
+    "reels": "Reels",
+    "shop": "Shop",
+    "wishlist": "Wishlist",
+    "more": "More"
+  },
   "auth": {
     "login": "Login",
     "register": "Register",
@@ -212,5 +219,29 @@
       "delivered": "Delivered",
       "cancelled": "Cancelled"
     }
+  },
+  "home": {
+    "title": "Home",
+    "view_all": "VIEW ALL",
+    "discover_eyebrow": "01 / DISCOVER",
+    "discover_title": "Find your next look",
+    "the_latest_eyebrow": "02 / THE LATEST",
+    "new_in": "NEW IN",
+    "trending_eyebrow": "03 / IN THE LOOP",
+    "trending_now": "TRENDING NOW",
+    "curated_look_eyebrow": "CURATED LOOK",
+    "pieces_in_look": "{} PIECES IN THIS LOOK",
+    "shop_this_look": "SHOP THIS LOOK",
+    "motion_eyebrow": "05 / LOOK LOOPS",
+    "see_it_in_motion": "SEE IT IN MOTION",
+    "explore": "EXPLORE",
+    "explore_loops": "EXPLORE LOOPS",
+    "views": "{} views",
+    "special_offers": "SPECIAL OFFERS",
+    "on_sale": "ON SALE",
+    "brands_eyebrow": "06 / BRANDS TO KNOW",
+    "selected_brands": "SELECTED BRANDS",
+    "currency": "EGP",
+    "default_announcement": "DISCOVER LOCAL & INTERNATIONAL BRANDS"
   }
 }

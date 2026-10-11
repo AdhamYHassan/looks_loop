@@ -15,6 +15,7 @@ import 'package:looks_loop/features/main/presentation/bloc/main_cubit.dart';
 import 'package:looks_loop/features/wishlist/presentation/bloc/wishlist_cubit.dart';
 import 'package:looks_loop/features/wishlist/presentation/bloc/wishlist_state.dart';
 import 'package:looks_loop/features/wishlist/presentation/widgets/wishlist_content.dart';
+import 'package:looks_loop/features/wishlist/presentation/widgets/wishlist_skeleton_loader.dart';
 
 class WishlistScreen extends StatelessWidget {
   final bool showBottomNavBar;
@@ -55,12 +56,9 @@ class WishlistScreen extends StatelessWidget {
                 child: BlocBuilder<WishlistCubit, WishlistState>(
                   builder: (context, state) {
                     return switch (state) {
-                      WishlistInitial() || WishlistLoading() => Center(
-                          child: CircularProgressIndicator(
-                            color: ColorManager.olive,
-                            strokeWidth: 2.w,
-                          ),
-                        ),
+                      WishlistInitial() ||
+                      WishlistLoading() =>
+                        const WishlistSkeletonLoader(),
                       WishlistError(:final message) => Center(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,

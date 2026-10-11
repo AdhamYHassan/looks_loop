@@ -16,31 +16,21 @@ class FakeHomeRepository implements HomeRepository {
 void main() {
   const dummyFeedData = HomeFeedData(
     heroSlides: [],
+    announcements: ['NEW DROPS'],
     categories: [],
     newInProducts: [],
-    trendingItems: [],
-    curatedLook: CuratedLookEntity(
-      id: '1',
-      eyebrow: 'curated',
-      title: 'Look',
-      piecesLabel: 'pieces',
-      imageUrl: '',
-      ctaText: 'Shop',
-    ),
-    motionReels: [],
+    trendingProducts: [],
+    featuredLoops: [],
     brands: [],
   );
 
   test('GetHomeFeedUseCase should return ApiSuccess when repository succeeds',
       () async {
-    // Arrange
     const repository = FakeHomeRepository(ApiSuccess(dummyFeedData));
     final useCase = GetHomeFeedUseCase(repository);
 
-    // Act
     final result = await useCase();
 
-    // Assert
     expect(result, isA<ApiSuccess<HomeFeedData>>());
     expect((result as ApiSuccess<HomeFeedData>).data, equals(dummyFeedData));
   });

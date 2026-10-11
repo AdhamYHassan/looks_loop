@@ -4,10 +4,14 @@ import 'package:looks_loop/core/theming/colors_manager.dart';
 import 'package:looks_loop/features/home/domain/entities/home_feed_entities.dart';
 import 'package:looks_loop/features/home/presentation/widgets/brand_strip_section.dart';
 import 'package:looks_loop/features/home/presentation/widgets/categories_section.dart';
+import 'package:looks_loop/features/home/presentation/widgets/editorial_section.dart';
 import 'package:looks_loop/features/home/presentation/widgets/hero_carousel_section.dart';
+import 'package:looks_loop/features/home/presentation/widgets/motion_reels_section.dart';
 import 'package:looks_loop/features/home/presentation/widgets/product_rail_section.dart';
 import 'package:looks_loop/features/home/presentation/widgets/shop_look_section.dart';
 import 'package:looks_loop/features/home/presentation/widgets/trending_grid_section.dart';
+
+import 'package:easy_localization/easy_localization.dart';
 
 class HomeFeedView extends StatelessWidget {
   final HomeFeedData feedData;
@@ -33,9 +37,13 @@ class HomeFeedView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            RepaintBoundary(child: HeroCarouselSection(slides: feedData.heroSlides)),
+            RepaintBoundary(
+              child: HeroCarouselSection(slides: feedData.heroSlides),
+            ),
             SizedBox(height: 24.h),
-            RepaintBoundary(child: CategoriesSection(categories: feedData.categories)),
+            RepaintBoundary(
+              child: CategoriesSection(categories: feedData.categories),
+            ),
             RepaintBoundary(
               child: ProductRailSection(
                 products: feedData.newInProducts,
@@ -43,9 +51,31 @@ class HomeFeedView extends StatelessWidget {
                 onWishlistToggle: onWishlistToggle,
               ),
             ),
-            RepaintBoundary(child: TrendingGridSection(items: feedData.trendingItems)),
-            RepaintBoundary(child: ShopLookSection(curatedLook: feedData.curatedLook)),
-            // RepaintBoundary(child: MotionReelsSection(reels: feedData.motionReels)),
+            RepaintBoundary(
+              child: TrendingGridSection(items: feedData.trendingProducts),
+            ),
+            if (feedData.featuredLook != null)
+              RepaintBoundary(
+                child: ShopLookSection(featuredLook: feedData.featuredLook!),
+              ),
+            if (feedData.featuredLoops.isNotEmpty)
+              RepaintBoundary(
+                child: MotionReelsSection(reels: feedData.featuredLoops),
+              ),
+            if (feedData.saleProducts.isNotEmpty)
+              RepaintBoundary(
+                child: ProductRailSection(
+                  eyebrow: 'home.special_offers'.tr(),
+                  title: 'home.on_sale'.tr(),
+                  products: feedData.saleProducts,
+                  wishlistedIds: wishlistedIds,
+                  onWishlistToggle: onWishlistToggle,
+                ),
+              ),
+            if (feedData.editorial != null)
+              RepaintBoundary(
+                child: EditorialSection(editorial: feedData.editorial!),
+              ),
             RepaintBoundary(child: BrandStripSection(brands: feedData.brands)),
             SizedBox(height: 100.h),
           ],

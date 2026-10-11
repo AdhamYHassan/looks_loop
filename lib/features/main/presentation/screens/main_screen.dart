@@ -8,21 +8,52 @@ import 'package:looks_loop/features/main/presentation/bloc/main_state.dart';
 import 'package:looks_loop/features/main/presentation/bloc/nav_bar_scroll_cubit.dart';
 import 'package:looks_loop/features/main/presentation/widgets/dynamic_floating_nav_bar.dart';
 import 'package:looks_loop/features/main/presentation/widgets/reels_placeholder_view.dart';
-import 'package:looks_loop/features/more/presentation/screens/more_screen.dart';
 import 'package:looks_loop/features/more/presentation/bloc/more_cubit.dart';
+import 'package:looks_loop/features/more/presentation/bloc/more_state.dart';
+import 'package:looks_loop/features/more/presentation/screens/more_screen.dart';
+import 'package:looks_loop/features/shop/presentation/bloc/shop_cubit.dart';
+import 'package:looks_loop/features/shop/presentation/bloc/shop_state.dart';
 import 'package:looks_loop/features/shop/presentation/screens/shop_screen.dart';
+import 'package:looks_loop/features/wishlist/presentation/bloc/wishlist_cubit.dart';
+import 'package:looks_loop/features/wishlist/presentation/bloc/wishlist_state.dart';
 import 'package:looks_loop/features/wishlist/presentation/screens/wishlist_screen.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
-  static const List<Widget> _tabs = [
-    HomeScreen(showBottomNavBar: false),
-    ReelsPlaceholderView(),
-    ShopScreen(showBottomNavBar: false),
-    WishlistScreen(showBottomNavBar: false),
-    MoreScreen(showBottomNavBar: false),
-  ];
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  final Set<int> _visitedIndices = {0};
+
+  void _onTabChanged(BuildContext context, MainTab tab, int index) {
+    if (!_visitedIndices.contains(index)) {
+      setState(() => _visitedIndices.add(index));
+    }
+
+    switch (tab) {
+      case MainTab.home:
+      case MainTab.reels:
+        break;
+      case MainTab.shop:
+        final cubit = context.read<ShopCubit>();
+        if (cubit.state is ShopInitial) {
+          cubit.fetchShopFeed();
+        }
+      case MainTab.wishlist:
+        final cubit = context.read<WishlistCubit>();
+        if (cubit.state is WishlistInitial) {
+          cubit.fetchWishlist();
+        }
+      case MainTab.more:
+        final cubit = context.read<MoreCubit>();
+        if (cubit.state is MoreInitial) {
+          cubit.loadUserProfile();
+        }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +65,7 @@ class MainScreen extends StatelessWidget {
             listenWhen: (prev, curr) => prev.currentTab != curr.currentTab,
             listener: (context, state) {
               context.read<NavBarScrollCubit>().reset();
-              if (state.currentTab == MainTab.more) {
-                context.read<MoreCubit>().loadUserProfile();
-              }
+              _onTabChanged(context, state.currentTab, state.selectedIndex);
             },
             child: Scaffold(
               extendBody: true,
@@ -55,7 +84,21 @@ class MainScreen extends StatelessWidget {
                   builder: (context, state) {
                     return IndexedStack(
                       index: state.selectedIndex,
-                      children: _tabs,
+                      children: [
+                        const HomeScreen(showBottomNavBar: false),
+                        _visitedIndices.contains(1)
+                            ? const ReelsPlaceholderView()
+                            : const SizedBox.shrink(),
+                        _visitedIndices.contains(2)
+                            ? const ShopScreen(showBottomNavBar: false)
+                            : const SizedBox.shrink(),
+                        _visitedIndices.contains(3)
+                            ? const WishlistScreen(showBottomNavBar: false)
+                            : const SizedBox.shrink(),
+                        _visitedIndices.contains(4)
+                            ? const MoreScreen(showBottomNavBar: false)
+                            : const SizedBox.shrink(),
+                      ],
                     );
                   },
                 ),

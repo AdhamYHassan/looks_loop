@@ -112,13 +112,13 @@ class ShopMockData {
   );
 
   static const List<BrandEntity> brands = [
-    BrandModel(id: 'b1', name: 'MANGO', logoAssetOrUrl: 'mango'),
-    BrandModel(id: 'b2', name: 'ZARA', logoAssetOrUrl: 'zara'),
-    BrandModel(id: 'b3', name: 'Studio Cairo', logoAssetOrUrl: 'studio-cairo'),
-    BrandModel(id: 'b4', name: 'Mara Studio', logoAssetOrUrl: 'mara'),
-    BrandModel(id: 'b5', name: 'Nile Objects', logoAssetOrUrl: 'nile'),
-    BrandModel(id: 'b6', name: 'House of Namaa', logoAssetOrUrl: 'namaa'),
-    BrandModel(id: 'b7', name: 'Common Ground', logoAssetOrUrl: 'common'),
-    BrandModel(id: 'b8', name: 'Form / Field', logoAssetOrUrl: 'form'),
+    BrandModel(id: 1, name: 'MANGO', logo: 'mango'),
+    BrandModel(id: 2, name: 'ZARA', logo: 'zara'),
+    BrandModel(id: 3, name: 'Studio Cairo', logo: 'studio-cairo'),
+    BrandModel(id: 4, name: 'Mara Studio', logo: 'mara'),
+    BrandModel(id: 5, name: 'Nile Objects', logo: 'nile'),
+    BrandModel(id: 6, name: 'House of Namaa', logo: 'namaa'),
+    BrandModel(id: 7, name: 'Common Ground', logo: 'common'),
+    BrandModel(id: 8, name: 'Form / Field', logo: 'form'),
   ];
 }

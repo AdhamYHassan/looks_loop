@@ -4,31 +4,34 @@ import 'package:looks_loop/features/home/data/models/home_feed_models.dart';
 const kDefaultHomeFeedModel = HomeFeedModel(
   heroSlides: [
     HeroSlideModel(
-      id: 'hero_1',
-      imageUrl:
+      id: 1,
+      image:
           'https://images.pexels.com/photos/8516840/pexels-photo-8516840.jpeg?auto=compress&cs=tinysrgb&w=1200',
       eyebrow: 'THE LOOK LOOPS EDIT',
       title: 'FASHION\nIN MOTION.',
       copy: 'Discover the looks, watch the style, shop what inspires you.',
-      ctaText: 'EXPLORE LOOPS',
+      primaryLabel: 'EXPLORE LOOPS',
+      secondaryLabel: 'SHOP NEW',
     ),
     HeroSlideModel(
-      id: 'hero_2',
-      imageUrl:
+      id: 2,
+      image:
           'https://images.pexels.com/photos/15978212/pexels-photo-15978212.jpeg?auto=compress&cs=tinysrgb&w=1200',
       eyebrow: 'THE LOOK LOOPS EDIT',
       title: 'MODERN\nELEGANCE.',
       copy: 'Contemporary silhouettes designed for the timeless wardrobe.',
-      ctaText: 'EXPLORE LOOPS',
+      primaryLabel: 'EXPLORE LOOPS',
+      secondaryLabel: 'SHOP NEW',
     ),
     HeroSlideModel(
-      id: 'hero_3',
-      imageUrl:
+      id: 3,
+      image:
           'https://images.pexels.com/photos/10679159/pexels-photo-10679159.jpeg?auto=compress&cs=tinysrgb&w=1200',
       eyebrow: 'THE LOOK LOOPS EDIT',
       title: 'SUMMER\nSTORIES.',
       copy: 'Effortless lightness and elevated essentials.',
-      ctaText: 'EXPLORE LOOPS',
+      primaryLabel: 'EXPLORE LOOPS',
+      secondaryLabel: 'SHOP NEW',
     ),
   ],
   categories: [
@@ -52,47 +55,43 @@ const kDefaultHomeFeedModel = HomeFeedModel(
     ),
   ],
   newInProducts: kMockProducts,
-  trendingItems: kMockTrendingItems,
-  curatedLook: CuratedLookModel(
-    id: 'curated_1',
-    eyebrow: '04 / CURATED FOR YOU',
+  trendingProducts: kMockTrendingItems,
+  featuredLook: FeaturedLookModel(
+    id: 1,
+    slug: 'city-essentials',
     title: 'SHOP THE LOOK',
-    piecesLabel: 'CITY ESSENTIALS · 4 PIECES',
+    description: 'CITY ESSENTIALS · 4 PIECES',
     imageUrl:
         'https://images.pexels.com/photos/5836324/pexels-photo-5836324.jpeg?auto=compress&cs=tinysrgb&w=1000',
-    ctaText: 'SHOP THIS LOOK',
   ),
-  motionReels: [
-    MotionReelModel(
-      id: 'reel_1',
+  featuredLoops: [
+    FeaturedLoopModel(
+      id: 1,
+      slug: 'studio-cairo-ss26',
       title: 'Studio Cairo / SS26',
-      views: '12.4K views',
-      thumbnailUrl:
+      creator: 'Studio Cairo',
+      views: 12400,
+      thumbnail:
           'https://images.pexels.com/photos/15759112/pexels-photo-15759112.jpeg?auto=compress&cs=tinysrgb&w=700',
     ),
-    MotionReelModel(
-      id: 'reel_2',
+    FeaturedLoopModel(
+      id: 2,
+      slug: 'mara-studio-crescent',
       title: 'Mara Studio / The Crescent',
-      views: '8.7K views',
-      thumbnailUrl:
+      creator: 'Mara Studio',
+      views: 8700,
+      thumbnail:
           'https://images.pexels.com/photos/8499032/pexels-photo-8499032.jpeg?auto=compress&cs=tinysrgb&w=700',
-    ),
-    MotionReelModel(
-      id: 'reel_3',
-      title: 'Nile Objects / In Motion',
-      views: '5.2K views',
-      thumbnailUrl:
-          'https://images.pexels.com/photos/9463000/pexels-photo-9463000.jpeg?auto=compress&cs=tinysrgb&w=700',
     ),
   ],
   brands: [
-    BrandModel(id: 'b1', name: 'MANGO', logoAssetOrUrl: 'MANGO'),
-    BrandModel(id: 'b2', name: 'ZARA', logoAssetOrUrl: 'ZARA'),
-    BrandModel(id: 'b3', name: 'Studio Cairo', logoAssetOrUrl: 'Studio Cairo'),
-    BrandModel(id: 'b4', name: 'Mara Studio', logoAssetOrUrl: 'Mara Studio'),
-    BrandModel(id: 'b5', name: 'Nile Objects', logoAssetOrUrl: 'Nile Objects'),
-    BrandModel(id: 'b6', name: 'House of Namaa', logoAssetOrUrl: 'House of Namaa'),
-    BrandModel(id: 'b7', name: 'Common Ground', logoAssetOrUrl: 'Common Ground'),
-    BrandModel(id: 'b8', name: 'Form / Field', logoAssetOrUrl: 'Form / Field'),
+    HomeBrandModel(id: 1, name: 'MANGO', logo: 'MANGO'),
+    HomeBrandModel(id: 2, name: 'ZARA', logo: 'ZARA'),
+    HomeBrandModel(id: 3, name: 'Studio Cairo', logo: 'Studio Cairo'),
+    HomeBrandModel(id: 4, name: 'Mara Studio', logo: 'Mara Studio'),
+    HomeBrandModel(id: 5, name: 'Nile Objects', logo: 'Nile Objects'),
+    HomeBrandModel(id: 6, name: 'House of Namaa', logo: 'House of Namaa'),
+    HomeBrandModel(id: 7, name: 'Common Ground', logo: 'Common Ground'),
+    HomeBrandModel(id: 8, name: 'Form / Field', logo: 'Form / Field'),
   ],
 );

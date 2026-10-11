@@ -5,6 +5,8 @@ import 'package:looks_loop/core/theming/styles.dart';
 import 'package:looks_loop/features/home/domain/entities/home_feed_entities.dart';
 import 'package:looks_loop/features/home/presentation/widgets/section_header.dart';
 
+import 'package:easy_localization/easy_localization.dart';
+
 class BrandStripSection extends StatelessWidget {
   final List<BrandEntity> brands;
   final ValueChanged<BrandEntity>? onBrandTap;
@@ -25,8 +27,8 @@ class BrandStripSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SectionHeader(
-          eyebrow: '06 / BRANDS TO KNOW',
-          title: 'SELECTED BRANDS',
+          eyebrow: 'home.brands_eyebrow'.tr(),
+          title: 'home.selected_brands'.tr(),
           onActionTap: onViewAllTap,
         ),
         SizedBox(height: 4.h),

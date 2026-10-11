@@ -6,9 +6,11 @@ import 'package:looks_loop/features/home/domain/entities/home_feed_entities.dart
 import 'package:looks_loop/features/home/presentation/widgets/section_header.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import 'package:easy_localization/easy_localization.dart';
+
 class MotionReelsSection extends StatelessWidget {
-  final List<MotionReelEntity> reels;
-  final ValueChanged<MotionReelEntity>? onReelTap;
+  final List<FeaturedLoopEntity> reels;
+  final ValueChanged<FeaturedLoopEntity>? onReelTap;
   final VoidCallback? onExploreTap;
 
   const MotionReelsSection({
@@ -27,9 +29,9 @@ class MotionReelsSection extends StatelessWidget {
       children: [
         SizedBox(height: 28.h),
         SectionHeader(
-          eyebrow: '05 / LOOK LOOPS',
-          title: 'SEE IT IN MOTION',
-          actionLabel: 'EXPLORE',
+          eyebrow: 'home.motion_eyebrow'.tr(),
+          title: 'home.see_it_in_motion'.tr(),
+          actionLabel: 'home.explore'.tr(),
           onActionTap: onExploreTap,
         ),
         SizedBox(height: 4.h),
@@ -53,7 +55,7 @@ class MotionReelsSection extends StatelessWidget {
 }
 
 class _ReelCard extends StatelessWidget {
-  final MotionReelEntity reel;
+  final FeaturedLoopEntity reel;
   final VoidCallback? onTap;
 
   const _ReelCard({required this.reel, this.onTap});
@@ -74,7 +76,7 @@ class _ReelCard extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             AppCachedImage(
-              imageUrl: reel.thumbnailUrl,
+              imageUrl: reel.thumbnail,
               fit: BoxFit.cover,
               memCacheWidth: 450,
               memCacheHeight: 700,
@@ -85,7 +87,10 @@ class _ReelCard extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Colors.transparent, Colors.black.withValues(alpha: 0.8)],
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withValues(alpha: 0.8),
+                  ],
                   stops: const [0.4, 1.0],
                 ),
               ),
@@ -120,7 +125,7 @@ class _ReelCard extends StatelessWidget {
                   ),
                   SizedBox(height: 2.h),
                   Text(
-                    reel.views,
+                    'home.views'.tr(args: [reel.views.toString()]),
                     style: TextStyles.font10WhiteMedium,
                   ),
                 ],

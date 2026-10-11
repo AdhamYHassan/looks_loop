@@ -3,32 +3,42 @@ import 'package:looks_loop/core/network/failure.dart';
 import 'package:looks_loop/core/network/network_result.dart';
 import 'package:looks_loop/features/home/domain/entities/product_entities.dart';
 import 'package:looks_loop/features/wishlist/domain/repositories/wishlist_repository.dart';
+import 'package:looks_loop/features/wishlist/domain/usecases/add_to_wishlist_usecase.dart';
 import 'package:looks_loop/features/wishlist/domain/usecases/get_wishlist_usecase.dart';
 import 'package:looks_loop/features/wishlist/domain/usecases/remove_from_wishlist_usecase.dart';
+import 'package:looks_loop/features/wishlist/domain/usecases/watch_wishlist_usecase.dart';
 import 'package:looks_loop/features/wishlist/presentation/bloc/wishlist_cubit.dart';
 import 'package:looks_loop/features/wishlist/presentation/bloc/wishlist_state.dart';
 
 class MockWishlistRepository implements WishlistRepository {
   ApiResult<List<ProductEntity>> getResult;
-  ApiResult<List<ProductEntity>> removeResult;
+  ApiResult<void> addResult;
+  ApiResult<void> removeResult;
 
   MockWishlistRepository({
     required this.getResult,
+    this.addResult = const ApiSuccess(null),
     required this.removeResult,
   });
+
+  @override
+  Stream<List<ProductEntity>> get wishlistStream => const Stream.empty();
 
   @override
   Future<ApiResult<List<ProductEntity>>> getWishlist() async => getResult;
 
   @override
-  Future<ApiResult<List<ProductEntity>>> removeFromWishlist(
-          String productId) async =>
+  Future<ApiResult<void>> addToWishlist(ProductEntity product) async =>
+      addResult;
+
+  @override
+  Future<ApiResult<void>> removeFromWishlist(String productId) async =>
       removeResult;
 }
 
 void main() {
   const dummyProduct = ProductEntity(
-    id: 'w1',
+    id: '1',
     brand: 'MANGO',
     name: 'Wide Leg Trousers',
     price: 1590,
@@ -40,11 +50,13 @@ void main() {
       () async {
     final repo = MockWishlistRepository(
       getResult: const ApiSuccess([dummyProduct]),
-      removeResult: const ApiSuccess([]),
+      removeResult: const ApiSuccess(null),
     );
     final cubit = WishlistCubit(
       GetWishlistUseCase(repo),
+      AddToWishlistUseCase(repo),
       RemoveFromWishlistUseCase(repo),
+      WatchWishlistUseCase(repo),
     );
 
     expectLater(
@@ -56,17 +68,20 @@ void main() {
     );
 
     await cubit.fetchWishlist();
+    cubit.close();
   });
 
   test('WishlistCubit emits [WishlistLoading, WishlistError] on failure',
       () async {
     final repo = MockWishlistRepository(
       getResult: const ApiFailure(ServerFailure('Connection failed')),
-      removeResult: const ApiSuccess([]),
+      removeResult: const ApiSuccess(null),
     );
     final cubit = WishlistCubit(
       GetWishlistUseCase(repo),
+      AddToWishlistUseCase(repo),
       RemoveFromWishlistUseCase(repo),
+      WatchWishlistUseCase(repo),
     );
 
     expectLater(
@@ -78,21 +93,28 @@ void main() {
     );
 
     await cubit.fetchWishlist();
+    cubit.close();
   });
 
-  test('WishlistCubit removes item and updates list correctly', () async {
+  test('WishlistCubit removes item correctly and emits updated WishlistLoaded',
+      () async {
     final repo = MockWishlistRepository(
       getResult: const ApiSuccess([dummyProduct]),
-      removeResult: const ApiSuccess([]),
+      removeResult: const ApiSuccess(null),
     );
     final cubit = WishlistCubit(
       GetWishlistUseCase(repo),
+      AddToWishlistUseCase(repo),
       RemoveFromWishlistUseCase(repo),
+      WatchWishlistUseCase(repo),
     );
 
     await cubit.fetchWishlist();
-    await cubit.removeItem('w1');
+    expect(cubit.state, const WishlistLoaded(items: [dummyProduct]));
 
+    await cubit.removeItem('1');
     expect(cubit.state, const WishlistLoaded(items: []));
+
+    cubit.close();
   });
 }

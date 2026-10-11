@@ -1,4 +1,4 @@
-import 'package:looks_loop/features/home/data/models/home_feed_models.dart';
+import 'package:looks_loop/features/home/data/models/product_models.dart';
 
 const kMockProducts = [
   ProductModel(
@@ -46,7 +46,7 @@ const kMockProducts = [
 ];
 
 const kMockTrendingItems = [
-  TrendingItemModel(
+  ProductModel(
     id: 'trend_1',
     brand: 'Form / Field',
     name: 'Boxy Cotton Overshirt',
@@ -54,7 +54,7 @@ const kMockTrendingItems = [
     imageUrl:
         'https://images.pexels.com/photos/8485650/pexels-photo-8485650.jpeg?auto=compress&cs=tinysrgb&w=700',
   ),
-  TrendingItemModel(
+  ProductModel(
     id: 'trend_2',
     brand: 'Mara Studio',
     name: 'The Crescent Bag',
@@ -62,7 +62,7 @@ const kMockTrendingItems = [
     imageUrl:
         'https://images.pexels.com/photos/22432991/pexels-photo-22432991.jpeg?auto=compress&cs=tinysrgb&w=700',
   ),
-  TrendingItemModel(
+  ProductModel(
     id: 'trend_3',
     brand: 'Nile Objects',
     name: 'Sculptural Mule',
@@ -70,7 +70,7 @@ const kMockTrendingItems = [
     imageUrl:
         'https://images.pexels.com/photos/26851193/pexels-photo-26851193.jpeg?auto=compress&cs=tinysrgb&w=700',
   ),
-  TrendingItemModel(
+  ProductModel(
     id: 'trend_4',
     brand: 'Studio Cairo',
     name: 'Fine Rib Tank',

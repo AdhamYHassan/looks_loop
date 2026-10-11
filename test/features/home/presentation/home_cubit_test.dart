@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:looks_loop/core/network/failure.dart';
 import 'package:looks_loop/core/network/network_result.dart';
@@ -6,6 +7,10 @@ import 'package:looks_loop/features/home/domain/repositories/home_repository.dar
 import 'package:looks_loop/features/home/domain/usecases/get_home_feed_usecase.dart';
 import 'package:looks_loop/features/home/presentation/bloc/home_cubit.dart';
 import 'package:looks_loop/features/home/presentation/bloc/home_state.dart';
+import 'package:looks_loop/features/wishlist/domain/repositories/wishlist_repository.dart';
+import 'package:looks_loop/features/wishlist/domain/usecases/add_to_wishlist_usecase.dart';
+import 'package:looks_loop/features/wishlist/domain/usecases/remove_from_wishlist_usecase.dart';
+import 'package:looks_loop/features/wishlist/domain/usecases/watch_wishlist_usecase.dart';
 
 class FakeSuccessHomeRepository implements HomeRepository {
   final HomeFeedData data;
@@ -23,21 +28,51 @@ class FakeFailureHomeRepository implements HomeRepository {
       const ApiFailure(ServerFailure('Failed to fetch feed'));
 }
 
+class FakeWishlistRepo implements WishlistRepository {
+  final ApiResult<void> addResult;
+  final ApiResult<void> removeResult;
+  final StreamController<List<ProductEntity>> _controller =
+      StreamController<List<ProductEntity>>.broadcast();
+
+  FakeWishlistRepo({
+    this.addResult = const ApiSuccess(null),
+    this.removeResult = const ApiSuccess(null),
+  });
+
+  @override
+  Stream<List<ProductEntity>> get wishlistStream => _controller.stream;
+
+  @override
+  Future<ApiResult<List<ProductEntity>>> getWishlist() async =>
+      const ApiSuccess([]);
+
+  @override
+  Future<ApiResult<void>> addToWishlist(ProductEntity product) async {
+    _controller.add([product]);
+    return addResult;
+  }
+
+  @override
+  Future<ApiResult<void>> removeFromWishlist(String productId) async {
+    _controller.add([]);
+    return removeResult;
+  }
+}
+
 void main() {
+  const dummyProduct = ProductEntity(
+    id: '101',
+    brand: 'MANGO',
+    name: 'Dress',
+    price: 100,
+    imageUrl: 'url',
+  );
+
   const dummyFeedData = HomeFeedData(
     heroSlides: [],
     categories: [],
-    newInProducts: [],
-    trendingItems: [],
-    curatedLook: CuratedLookEntity(
-      id: '1',
-      eyebrow: 'E',
-      title: 'T',
-      piecesLabel: 'P',
-      imageUrl: 'I',
-      ctaText: 'C',
-    ),
-    motionReels: [],
+    newInProducts: [dummyProduct],
+    trendingProducts: [],
     brands: [],
   );
 
@@ -46,7 +81,13 @@ void main() {
     final useCase = GetHomeFeedUseCase(
       const FakeSuccessHomeRepository(dummyFeedData),
     );
-    final cubit = HomeCubit(useCase);
+    final wishlistRepo = FakeWishlistRepo();
+    final cubit = HomeCubit(
+      useCase,
+      AddToWishlistUseCase(wishlistRepo),
+      RemoveFromWishlistUseCase(wishlistRepo),
+      WatchWishlistUseCase(wishlistRepo),
+    );
 
     final expectedStates = [
       const HomeLoading(),
@@ -61,7 +102,13 @@ void main() {
 
   test('HomeCubit emits [HomeLoading, HomeError] upon failure', () async {
     final useCase = GetHomeFeedUseCase(const FakeFailureHomeRepository());
-    final cubit = HomeCubit(useCase);
+    final wishlistRepo = FakeWishlistRepo();
+    final cubit = HomeCubit(
+      useCase,
+      AddToWishlistUseCase(wishlistRepo),
+      RemoveFromWishlistUseCase(wishlistRepo),
+      WatchWishlistUseCase(wishlistRepo),
+    );
 
     final expectedStates = [
       const HomeLoading(),
@@ -74,23 +121,31 @@ void main() {
     cubit.close();
   });
 
-  test('HomeCubit toggles wishlist productId correctly', () async {
+  test('HomeCubit toggles wishlist productId and syncs via stream', () async {
     final useCase = GetHomeFeedUseCase(
       const FakeSuccessHomeRepository(dummyFeedData),
     );
-    final cubit = HomeCubit(useCase);
+    final wishlistRepo = FakeWishlistRepo();
+    final cubit = HomeCubit(
+      useCase,
+      AddToWishlistUseCase(wishlistRepo),
+      RemoveFromWishlistUseCase(wishlistRepo),
+      WatchWishlistUseCase(wishlistRepo),
+    );
     await cubit.fetchHomeFeed();
 
-    cubit.toggleWishlist('prod_1');
+    await cubit.toggleWishlist('101');
+    await pumpEventQueue();
     expect(
       (cubit.state as HomeLoaded).wishlistedProductIds,
-      contains('prod_1'),
+      contains('101'),
     );
 
-    cubit.toggleWishlist('prod_1');
+    await cubit.toggleWishlist('101');
+    await pumpEventQueue();
     expect(
       (cubit.state as HomeLoaded).wishlistedProductIds,
-      isNot(contains('prod_1')),
+      isNot(contains('101')),
     );
 
     cubit.close();

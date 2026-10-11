@@ -1,96 +1,89 @@
+import 'package:looks_loop/features/home/data/models/home_sub_models.dart';
 import 'package:looks_loop/features/home/data/models/product_models.dart';
 import 'package:looks_loop/features/home/domain/entities/home_feed_entities.dart';
 
+export 'package:looks_loop/features/home/data/models/home_sub_models.dart';
 export 'package:looks_loop/features/home/data/models/product_models.dart';
 
 class HomeFeedModel extends HomeFeedData {
   const HomeFeedModel({
     required super.heroSlides,
+    super.announcements,
     required super.categories,
     required super.newInProducts,
-    required super.trendingItems,
-    required super.curatedLook,
-    required super.motionReels,
+    required super.trendingProducts,
+    super.featuredLoops,
+    super.featuredLook,
     required super.brands,
+    super.saleProducts,
+    super.editorial,
   });
 
   factory HomeFeedModel.fromJson(Map<String, dynamic> json) {
+    final root = json.containsKey('data') && json['data'] is Map<String, dynamic>
+        ? json['data'] as Map<String, dynamic>
+        : json;
+
+    final heroSlides = (root['hero_slides'] as List<dynamic>? ?? const [])
+        .whereType<Map<String, dynamic>>()
+        .map(HeroSlideModel.fromJson)
+        .toList();
+
+    final announcements = (root['announcements'] as List<dynamic>? ?? const [])
+        .map((e) => e.toString())
+        .toList();
+
+    final categories = (root['categories'] as List<dynamic>? ?? const [])
+        .whereType<Map<String, dynamic>>()
+        .map(CategoryModel.fromJson)
+        .toList();
+
+    final newIn = (root['new_in'] as List<dynamic>? ?? (root['new_in_products'] as List<dynamic>? ?? const []))
+        .whereType<Map<String, dynamic>>()
+        .map(ProductModel.fromJson)
+        .toList();
+
+    final trending = (root['trending'] as List<dynamic>? ?? (root['trending_items'] as List<dynamic>? ?? const []))
+        .whereType<Map<String, dynamic>>()
+        .map(ProductModel.fromJson)
+        .toList();
+
+    final loops = (root['featured_loops'] as List<dynamic>? ?? const [])
+        .whereType<Map<String, dynamic>>()
+        .map(FeaturedLoopModel.fromJson)
+        .toList();
+
+    final rawLook = root['featured_look'] ?? root['curated_look'];
+    final featuredLook = rawLook is Map<String, dynamic> && rawLook.isNotEmpty
+        ? FeaturedLookModel.fromJson(rawLook)
+        : null;
+
+    final brands = (root['brands_to_know'] as List<dynamic>? ?? (root['brands'] as List<dynamic>? ?? const []))
+        .whereType<Map<String, dynamic>>()
+        .map(HomeBrandModel.fromJson)
+        .toList();
+
+    final sale = (root['sale'] as List<dynamic>? ?? const [])
+        .whereType<Map<String, dynamic>>()
+        .map(ProductModel.fromJson)
+        .toList();
+
+    final rawEditorial = root['editorial'];
+    final editorial = rawEditorial is Map<String, dynamic> && rawEditorial.isNotEmpty
+        ? EditorialModel.fromJson(rawEditorial)
+        : null;
+
     return HomeFeedModel(
-      heroSlides: (json['hero_slides'] as List<dynamic>? ?? [])
-          .map((e) => HeroSlideModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      categories: (json['categories'] as List<dynamic>? ?? [])
-          .map((e) => CategoryModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      newInProducts: (json['new_in_products'] as List<dynamic>? ?? [])
-          .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      trendingItems: (json['trending_items'] as List<dynamic>? ?? [])
-          .map((e) => TrendingItemModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      curatedLook: CuratedLookModel.fromJson(
-        json['curated_look'] as Map<String, dynamic>? ?? {},
-      ),
-      motionReels: (json['motion_reels'] as List<dynamic>? ?? [])
-          .map((e) => MotionReelModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      brands: (json['brands'] as List<dynamic>? ?? [])
-          .map((e) => BrandModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
-  }
-}
-
-class HeroSlideModel extends HeroSlideEntity {
-  const HeroSlideModel({
-    required super.id,
-    required super.imageUrl,
-    required super.eyebrow,
-    required super.title,
-    required super.copy,
-    required super.ctaText,
-  });
-
-  factory HeroSlideModel.fromJson(Map<String, dynamic> json) {
-    return HeroSlideModel(
-      id: json['id'] as String? ?? '',
-      imageUrl: json['image_url'] as String? ?? '',
-      eyebrow: json['eyebrow'] as String? ?? '',
-      title: json['title'] as String? ?? '',
-      copy: json['copy'] as String? ?? '',
-      ctaText: json['cta_text'] as String? ?? '',
-    );
-  }
-}
-
-class CategoryModel extends CategoryEntity {
-  const CategoryModel({
-    required super.id,
-    required super.name,
-    required super.imageUrl,
-  });
-
-  factory CategoryModel.fromJson(Map<String, dynamic> json) {
-    return CategoryModel(
-      id: json['id'] as String? ?? '',
-      name: json['name'] as String? ?? '',
-      imageUrl: json['image_url'] as String? ?? '',
-    );
-  }
-}
-
-class BrandModel extends BrandEntity {
-  const BrandModel({
-    required super.id,
-    required super.name,
-    required super.logoAssetOrUrl,
-  });
-
-  factory BrandModel.fromJson(Map<String, dynamic> json) {
-    return BrandModel(
-      id: json['id'] as String? ?? '',
-      name: json['name'] as String? ?? '',
-      logoAssetOrUrl: json['logo_asset_or_url'] as String? ?? '',
+      heroSlides: heroSlides,
+      announcements: announcements,
+      categories: categories,
+      newInProducts: newIn,
+      trendingProducts: trending,
+      featuredLoops: loops,
+      featuredLook: featuredLook,
+      brands: brands,
+      saleProducts: sale,
+      editorial: editorial,
     );
   }
 }

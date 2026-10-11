@@ -10,6 +10,8 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:looks_loop/features/main/presentation/bloc/main_cubit.dart';
 
+import 'package:easy_localization/easy_localization.dart';
+
 class AppBottomNavBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int>? onTabSelected;
@@ -65,29 +67,29 @@ class AppBottomNavBar extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.h),
+              padding: EdgeInsets.symmetric(vertical: 4.h),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   NavBarItem(
                     icon: LucideIcons.house,
-                    label: 'HOME',
+                    label: 'nav.home'.tr().toUpperCase(),
                     isActive: currentIndex == 0,
                     activeColor: activeColor,
                     inactiveColor: inactiveColor,
                     onTap: () => _onItemTapped(context, 0),
                   ),
-                  // NavBarItem(
-                  //   icon: LucideIcons.play,
-                  //   label: 'REELS',
-                  //   isActive: currentIndex == 1,
-                  //   activeColor: activeColor,
-                  //   inactiveColor: inactiveColor,
-                  //   onTap: () => _onItemTapped(context, 1),
-                  // ),
+                  NavBarItem(
+                    icon: LucideIcons.play,
+                    label: 'nav.reels'.tr().toUpperCase(),
+                    isActive: currentIndex == 1,
+                    activeColor: activeColor,
+                    inactiveColor: inactiveColor,
+                    onTap: () => _onItemTapped(context, 1),
+                  ),
                   NavBarItem(
                     icon: LucideIcons.shoppingBag,
-                    label: 'SHOP',
+                    label: 'nav.shop'.tr().toUpperCase(),
                     isActive: currentIndex == 2,
                     activeColor: activeColor,
                     inactiveColor: inactiveColor,
@@ -95,7 +97,7 @@ class AppBottomNavBar extends StatelessWidget {
                   ),
                   NavBarItem(
                     icon: LucideIcons.heart,
-                    label: 'WISHLIST',
+                    label: 'nav.wishlist'.tr().toUpperCase(),
                     isActive: currentIndex == 3,
                     activeColor: activeColor,
                     inactiveColor: inactiveColor,
@@ -103,7 +105,7 @@ class AppBottomNavBar extends StatelessWidget {
                   ),
                   NavBarItem(
                     icon: LucideIcons.layoutGrid,
-                    label: 'MORE',
+                    label: 'nav.more'.tr().toUpperCase(),
                     isActive: currentIndex == 4,
                     activeColor: activeColor,
                     inactiveColor: inactiveColor,
@@ -112,16 +114,16 @@ class AppBottomNavBar extends StatelessWidget {
                 ],
               ),
             ),
-            Gap(4.h),
+            Gap(2.h),
             Container(
-              width: 120.w,
-              height: 4.h,
+              width: 100.w,
+              height: 3.h,
               decoration: BoxDecoration(
                 color: activeColor,
                 borderRadius: BorderRadius.circular(2.r),
               ),
             ),
-            Gap(6.h),
+            Gap(4.h),
           ],
         ),
       ),

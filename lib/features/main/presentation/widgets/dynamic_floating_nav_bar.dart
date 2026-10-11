@@ -17,7 +17,7 @@ class DynamicFloatingNavBar extends StatelessWidget {
     final isDark = ColorManager.isDark(context);
     final surfaceColor = ColorManager.getSurface(context);
     final bottomInset = MediaQuery.paddingOf(context).bottom;
-    final borderRadius = BorderRadius.circular(32.r);
+    final borderRadius = BorderRadius.circular(24.r);
 
     return BlocBuilder<NavBarScrollCubit, NavBarScrollState>(
       buildWhen: (prev, curr) => prev.isScrolled != curr.isScrolled,
@@ -32,20 +32,20 @@ class DynamicFloatingNavBar extends StatelessWidget {
             : (isDark ? 0.80 : 0.75);
         final targetBorderColor = isScrolled
             ? (isDark
-                ? Colors.white.withValues(alpha: 0.20)
-                : Colors.white.withValues(alpha: 0.70))
+                  ? Colors.white.withValues(alpha: 0.20)
+                  : Colors.white.withValues(alpha: 0.70))
             : (isDark
-                ? Colors.white.withValues(alpha: 0.10)
-                : Colors.white.withValues(alpha: 0.45));
+                  ? Colors.white.withValues(alpha: 0.10)
+                  : Colors.white.withValues(alpha: 0.45));
 
         return RepaintBoundary(
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOutCubic,
             margin: EdgeInsets.only(
-              left: 16.w,
-              right: 16.w,
-              bottom: bottomInset > 0 ? bottomInset + 2.h : 14.h,
+              left: 28.w,
+              right: 28.w,
+              bottom: bottomInset > 0 ? bottomInset : 8.h,
             ),
             decoration: BoxDecoration(
               borderRadius: borderRadius,
@@ -56,8 +56,8 @@ class DynamicFloatingNavBar extends StatelessWidget {
                         ? (isDark ? 0.35 : 0.10)
                         : (isDark ? 0.20 : 0.06),
                   ),
-                  blurRadius: isScrolled ? 24 : 14,
-                  offset: Offset(0, isScrolled ? 8 : 4),
+                  blurRadius: isScrolled ? 20 : 12,
+                  offset: Offset(0, isScrolled ? 6 : 3),
                 ),
               ],
             ),
@@ -80,15 +80,12 @@ class DynamicFloatingNavBar extends StatelessWidget {
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOutCubic,
                   padding: EdgeInsets.symmetric(
-                    vertical: isScrolled ? 6.h : 9.h,
+                    vertical: isScrolled ? 8.h : 7.h,
                   ),
                   decoration: BoxDecoration(
                     color: surfaceColor.withValues(alpha: targetAlpha),
                     borderRadius: borderRadius,
-                    border: Border.all(
-                      color: targetBorderColor,
-                      width: 1.2.w,
-                    ),
+                    border: Border.all(color: targetBorderColor, width: 1.2.w),
                   ),
                   child: BlocBuilder<MainCubit, MainState>(
                     buildWhen: (prev, curr) =>

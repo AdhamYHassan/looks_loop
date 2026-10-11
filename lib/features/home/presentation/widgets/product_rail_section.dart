@@ -4,7 +4,11 @@ import 'package:looks_loop/features/home/domain/entities/home_feed_entities.dart
 import 'package:looks_loop/features/home/presentation/widgets/product_card.dart';
 import 'package:looks_loop/features/home/presentation/widgets/section_header.dart';
 
+import 'package:easy_localization/easy_localization.dart';
+
 class ProductRailSection extends StatelessWidget {
+  final String? eyebrow;
+  final String? title;
   final List<ProductEntity> products;
   final Set<String> wishlistedIds;
   final ValueChanged<String>? onWishlistToggle;
@@ -13,6 +17,8 @@ class ProductRailSection extends StatelessWidget {
 
   const ProductRailSection({
     super.key,
+    this.eyebrow,
+    this.title,
     required this.products,
     this.wishlistedIds = const {},
     this.onWishlistToggle,
@@ -24,12 +30,15 @@ class ProductRailSection extends StatelessWidget {
   Widget build(BuildContext context) {
     if (products.isEmpty) return const SizedBox.shrink();
 
+    final effectiveEyebrow = eyebrow ?? 'home.the_latest_eyebrow'.tr();
+    final effectiveTitle = title ?? 'home.new_in'.tr();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SectionHeader(
-          eyebrow: '02 / THE LATEST',
-          title: 'NEW IN',
+          eyebrow: effectiveEyebrow,
+          title: effectiveTitle,
           onActionTap: onViewAllTap,
         ),
         SizedBox(height: 4.h),

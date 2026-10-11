@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
@@ -48,8 +49,12 @@ class ProductCard extends StatelessWidget {
                   ),
                 ),
                 Positioned(top: 8.h, right: 8.w, child: _buildWishlistButton()),
-                if (product.discountPercent != null)
-                  Positioned(bottom: 8.h, left: 8.w, child: _buildDiscountBadge()),
+                if (product.discountPercent > 0)
+                  Positioned(
+                    bottom: 8.h,
+                    left: 8.w,
+                    child: _buildDiscountBadge(),
+                  ),
               ],
             ),
             SizedBox(height: 8.h),
@@ -110,19 +115,20 @@ class ProductCard extends StatelessWidget {
   }
 
   Widget _buildPriceRow(BuildContext context) {
+    final currency = 'home.currency'.tr();
     return Row(
       children: [
         Text(
-          '${product.price.toInt()} EGP',
+          '${product.price.toInt()} $currency',
           style: TextStyles.font12Price(
             context,
-            isDiscounted: product.discountPercent != null,
+            isDiscounted: product.discountPercent > 0,
           ),
         ),
         if (product.originalPrice != null) ...[
           SizedBox(width: 6.w),
           Text(
-            '${product.originalPrice!.toInt()} EGP',
+            '${product.originalPrice!.toInt()} $currency',
             style: TextStyles.font11MutedLineThrough(context),
           ),
         ],

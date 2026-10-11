@@ -4,6 +4,8 @@ import 'package:looks_loop/features/home/domain/entities/home_feed_entities.dart
 import 'package:looks_loop/features/home/presentation/widgets/category_card.dart';
 import 'package:looks_loop/features/home/presentation/widgets/section_header.dart';
 
+import 'package:easy_localization/easy_localization.dart';
+
 class CategoriesSection extends StatelessWidget {
   final List<CategoryEntity> categories;
   final ValueChanged<CategoryEntity>? onCategoryTap;
@@ -24,8 +26,8 @@ class CategoriesSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SectionHeader(
-          eyebrow: '01 / DISCOVER',
-          title: 'Find your next look',
+          eyebrow: 'home.discover_eyebrow'.tr(),
+          title: 'home.discover_title'.tr(),
           onActionTap: onViewAllTap,
         ),
         SizedBox(height: 4.h),

@@ -4,23 +4,26 @@ import 'package:looks_loop/core/theming/colors_manager.dart';
 import 'package:looks_loop/core/theming/styles.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import 'package:easy_localization/easy_localization.dart';
+
 class SectionHeader extends StatelessWidget {
   final String eyebrow;
   final String title;
-  final String actionLabel;
+  final String? actionLabel;
   final VoidCallback? onActionTap;
 
   const SectionHeader({
     super.key,
     required this.eyebrow,
     required this.title,
-    this.actionLabel = 'VIEW ALL',
+    this.actionLabel,
     this.onActionTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final textColor = ColorManager.getText(context);
+    final label = actionLabel ?? 'home.view_all'.tr();
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 8.h),
@@ -44,7 +47,7 @@ class SectionHeader extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(actionLabel, style: TextStyles.font11Action(context)),
+                Text(label, style: TextStyles.font11Action(context)),
                 SizedBox(width: 4.w),
                 Icon(LucideIcons.chevronRight, size: 16.sp, color: textColor),
               ],

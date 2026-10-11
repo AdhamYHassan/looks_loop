@@ -11,11 +11,7 @@ class AddressCard extends StatelessWidget {
   final AddressEntity address;
   final VoidCallback? onTap;
 
-  const AddressCard({
-    super.key,
-    required this.address,
-    this.onTap,
-  });
+  const AddressCard({super.key, required this.address, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +28,11 @@ class AddressCard extends StatelessWidget {
           border: Border.all(
             color: canDeliver
                 ? (address.isDefault
-                    ? ColorManager.olive.withValues(alpha: 0.5)
-                    : ColorManager.getBorder(context))
+                      ? ColorManager.olive.withValues(alpha: 0.5)
+                      : ColorManager.getBorder(context))
                 : (isDark
-                    ? Colors.red.withValues(alpha: 0.3)
-                    : Colors.red.withValues(alpha: 0.2)),
+                      ? Colors.red.withValues(alpha: 0.3)
+                      : Colors.red.withValues(alpha: 0.2)),
             width: address.isDefault && canDeliver ? 1.5 : 1.0,
           ),
         ),
@@ -52,10 +48,9 @@ class AddressCard extends StatelessWidget {
                 const SizedBox(height: 10),
                 Text(
                   address.formattedAddress,
-                  style: TextStyles.font14Regular(context).copyWith(
-                    color: ColorManager.getText(context),
-                    height: 1.4,
-                  ),
+                  style: TextStyles.font14Regular(
+                    context,
+                  ).copyWith(color: ColorManager.getText(context), height: 1.4),
                 ),
                 if (address.landmark.isNotEmpty) ...[
                   const SizedBox(height: 6),
@@ -81,3 +76,4 @@ class AddressCard extends StatelessWidget {
     );
   }
 }
+//TODO we need to add on long press options to delete or edit the exisiting address

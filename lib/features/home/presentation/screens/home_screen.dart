@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,13 +8,14 @@ import 'package:looks_loop/core/routing/routes.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
 import 'package:looks_loop/core/theming/styles.dart';
 import 'package:looks_loop/core/widgets/app_bottom_nav_bar.dart';
-import 'package:looks_loop/core/widgets/loaders/loaders.dart';
 import 'package:looks_loop/features/home/presentation/bloc/home_cubit.dart';
 import 'package:looks_loop/features/home/presentation/bloc/home_state.dart';
 import 'package:looks_loop/features/home/presentation/widgets/announcement_bar.dart';
 import 'package:looks_loop/features/home/presentation/widgets/chasing_loop_preview_dialog.dart';
+import 'package:looks_loop/features/home/presentation/widgets/home_feed_skeleton_loader.dart';
 import 'package:looks_loop/features/home/presentation/widgets/home_feed_view.dart';
 import 'package:looks_loop/features/home/presentation/widgets/home_top_bar.dart';
+import 'package:looks_loop/features/main/presentation/bloc/nav_bar_scroll_cubit.dart';
 
 class HomeScreen extends StatefulWidget {
   final bool showBottomNavBar;
@@ -32,6 +34,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isScrolled = false;
+    try {
+      isScrolled = context.select<NavBarScrollCubit, bool>(
+        (cubit) => cubit.state.isScrolled,
+      );
+    } catch (_) {}
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -52,8 +61,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const AnnouncementBar(),
+                      AnimatedSize(
+                        duration: const Duration(milliseconds: 280),
+                        curve: Curves.easeInOutCubic,
+                        child: SizedBox(
+                          height: isScrolled ? 0 : null,
+                          child: AnimatedOpacity(
+                            duration: const Duration(milliseconds: 200),
+                            opacity: isScrolled ? 0.0 : 1.0,
+                            child: const AnnouncementBar(),
+                          ),
+                        ),
+                      ),
                       HomeTopBar(
+                        isScrolled: isScrolled,
                         onBagTap: () => context.push(Routes.cart),
                         onLoaderTap: () =>
                             ChasingLoopPreviewDialog.show(context),
@@ -66,12 +87,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: BlocBuilder<HomeCubit, HomeState>(
                   builder: (context, state) {
                     return switch (state) {
-                      HomeInitial() || HomeLoading() => Center(
-                          child: ChasingLoopLoader(
-                            size: 64.w,
-                            color: ColorManager.olive,
-                          ),
-                        ),
+                      HomeInitial() ||
+                      HomeLoading() =>
+                        const HomeFeedSkeletonLoader(),
                       HomeError(:final message) => Center(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
@@ -87,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ElevatedButton(
                                 onPressed: () =>
                                     context.read<HomeCubit>().fetchHomeFeed(),
-                                child: const Text('Retry'),
+                                child: Text('common.retry'.tr()),
                               ),
                             ],
                           ),

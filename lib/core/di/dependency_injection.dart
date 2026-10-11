@@ -53,8 +53,10 @@ import 'package:looks_loop/features/shop/presentation/bloc/shop_cubit.dart';
 import 'package:looks_loop/features/wishlist/data/datasources/wishlist_remote_data_source.dart';
 import 'package:looks_loop/features/wishlist/data/repositories/wishlist_repository_impl.dart';
 import 'package:looks_loop/features/wishlist/domain/repositories/wishlist_repository.dart';
+import 'package:looks_loop/features/wishlist/domain/usecases/add_to_wishlist_usecase.dart';
 import 'package:looks_loop/features/wishlist/domain/usecases/get_wishlist_usecase.dart';
 import 'package:looks_loop/features/wishlist/domain/usecases/remove_from_wishlist_usecase.dart';
+import 'package:looks_loop/features/wishlist/domain/usecases/watch_wishlist_usecase.dart';
 import 'package:looks_loop/features/wishlist/presentation/bloc/wishlist_cubit.dart';
 
 final getIt = GetIt.instance;
@@ -70,9 +72,9 @@ Future<void> initAppDependencies() async {
   getIt.registerLazySingleton<ThemeCubit>(() => ThemeCubit());
 
   // Data Sources
-  getIt.registerLazySingleton<HomeRemoteDataSource>(() => const HomeRemoteDataSourceImpl());
+  getIt.registerLazySingleton<HomeRemoteDataSource>(() => HomeRemoteDataSourceImpl(NetworkHelper(DioFactory.getDio())));
   getIt.registerLazySingleton<ShopRemoteDataSource>(() => const ShopRemoteDataSourceImpl());
-  getIt.registerLazySingleton<WishlistRemoteDataSource>(() => WishlistRemoteDataSourceImpl());
+  getIt.registerLazySingleton<WishlistRemoteDataSource>(() => WishlistRemoteDataSourceImpl(NetworkHelper(DioFactory.getDio())));
   getIt.registerLazySingleton<MoreLocalDataSource>(() => const MoreLocalDataSourceImpl());
   getIt.registerLazySingleton<CategoryDetailRemoteDataSource>(() => const CategoryDetailRemoteDataSourceImpl());
   getIt.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceImpl(NetworkHelper(DioFactory.getDio())));
@@ -94,7 +96,9 @@ Future<void> initAppDependencies() async {
   getIt.registerLazySingleton<GetHomeFeedUseCase>(() => GetHomeFeedUseCase(getIt<HomeRepository>()));
   getIt.registerLazySingleton<GetShopFeedUseCase>(() => GetShopFeedUseCase(getIt<ShopRepository>()));
   getIt.registerLazySingleton<GetWishlistUseCase>(() => GetWishlistUseCase(getIt<WishlistRepository>()));
+  getIt.registerLazySingleton<AddToWishlistUseCase>(() => AddToWishlistUseCase(getIt<WishlistRepository>()));
   getIt.registerLazySingleton<RemoveFromWishlistUseCase>(() => RemoveFromWishlistUseCase(getIt<WishlistRepository>()));
+  getIt.registerLazySingleton<WatchWishlistUseCase>(() => WatchWishlistUseCase(getIt<WishlistRepository>()));
   getIt.registerLazySingleton<GetUserProfileUseCase>(() => GetUserProfileUseCase(getIt<MoreRepository>()));
   getIt.registerLazySingleton<GetCategoryDetailUseCase>(() => GetCategoryDetailUseCase(getIt<CategoryDetailRepository>()));
   getIt.registerLazySingleton<LoginUseCase>(() => LoginUseCase(getIt<AuthRepository>()));
@@ -106,12 +110,24 @@ Future<void> initAppDependencies() async {
   getIt.registerLazySingleton<GetOrdersUseCase>(() => GetOrdersUseCase(getIt<OrdersRepository>()));
   getIt.registerLazySingleton<GetOrderDetailUseCase>(() => GetOrderDetailUseCase(getIt<OrdersRepository>()));
 
-  // Cubits (Factory)
+  // Cubits (Factory & Singletons)
   getIt.registerFactory<MainCubit>(() => MainCubit());
   getIt.registerFactory<NavBarScrollCubit>(() => NavBarScrollCubit());
-  getIt.registerFactory<HomeCubit>(() => HomeCubit(getIt<GetHomeFeedUseCase>()));
+  getIt.registerLazySingleton<HomeCubit>(
+    () => HomeCubit(
+      getIt<GetHomeFeedUseCase>(),
+      getIt<AddToWishlistUseCase>(),
+      getIt<RemoveFromWishlistUseCase>(),
+      getIt<WatchWishlistUseCase>(),
+    ),
+  );
   getIt.registerFactory<ShopCubit>(() => ShopCubit(getIt<GetShopFeedUseCase>()));
-  getIt.registerFactory<WishlistCubit>(() => WishlistCubit(getIt<GetWishlistUseCase>(), getIt<RemoveFromWishlistUseCase>()));
+  getIt.registerFactory<WishlistCubit>(() => WishlistCubit(
+    getIt<GetWishlistUseCase>(),
+    getIt<AddToWishlistUseCase>(),
+    getIt<RemoveFromWishlistUseCase>(),
+    getIt<WatchWishlistUseCase>(),
+  ));
   getIt.registerFactory<MoreCubit>(() => MoreCubit(getIt<GetUserProfileUseCase>(), getIt<LogoutUseCase>()));
   getIt.registerFactory<CategoryDetailCubit>(() => CategoryDetailCubit(getIt<GetCategoryDetailUseCase>()));
   getIt.registerFactory<LoginCubit>(() => LoginCubit(getIt<LoginUseCase>()));

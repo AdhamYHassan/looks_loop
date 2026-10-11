@@ -94,10 +94,10 @@ class AppRouter {
           child: MultiBlocProvider(
             providers: [
               BlocProvider(create: (_) => getIt<MainCubit>()),
-              BlocProvider(create: (_) => getIt<HomeCubit>()..fetchHomeFeed()),
-              BlocProvider(create: (_) => getIt<ShopCubit>()..fetchShopFeed()),
-              BlocProvider(create: (_) => getIt<WishlistCubit>()..fetchWishlist()),
-              BlocProvider(create: (_) => getIt<MoreCubit>()..loadUserProfile()),
+              BlocProvider.value(value: getIt<HomeCubit>()),
+              BlocProvider(create: (_) => getIt<ShopCubit>()),
+              BlocProvider(create: (_) => getIt<WishlistCubit>()),
+              BlocProvider(create: (_) => getIt<MoreCubit>()),
             ],
             child: const MainScreen(),
           ),

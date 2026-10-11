@@ -5,13 +5,15 @@ import 'package:looks_loop/core/widgets/app_cached_image.dart';
 import 'package:looks_loop/features/home/domain/entities/home_feed_entities.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import 'package:easy_localization/easy_localization.dart';
+
 class ShopLookSection extends StatelessWidget {
-  final CuratedLookEntity curatedLook;
+  final FeaturedLookEntity featuredLook;
   final VoidCallback? onShopTap;
 
   const ShopLookSection({
     super.key,
-    required this.curatedLook,
+    required this.featuredLook,
     this.onShopTap,
   });
 
@@ -31,7 +33,7 @@ class ShopLookSection extends StatelessWidget {
           fit: StackFit.expand,
           children: [
             AppCachedImage(
-              imageUrl: curatedLook.imageUrl,
+              imageUrl: featuredLook.imageUrl,
               fit: BoxFit.cover,
               memCacheWidth: 700,
               memCacheHeight: 600,
@@ -59,26 +61,30 @@ class ShopLookSection extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    curatedLook.eyebrow,
+                    'home.curated_look_eyebrow'.tr(),
                     style: TextStyles.font11WhiteEyebrow,
                   ),
                   SizedBox(height: 6.h),
                   Text(
-                    curatedLook.title,
+                    featuredLook.title,
                     style: TextStyles.font26CreamBlack.copyWith(
                       color: Colors.white,
                       letterSpacing: 0.5,
                     ),
                   ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    curatedLook.piecesLabel,
-                    style: TextStyles.font11WhiteEyebrow.copyWith(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 1.1,
+                  if (featuredLook.hotspots.isNotEmpty) ...[
+                    SizedBox(height: 4.h),
+                    Text(
+                      'home.pieces_in_look'.tr(
+                        args: [featuredLook.hotspots.length.toString()],
+                      ),
+                      style: TextStyles.font11WhiteEyebrow.copyWith(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 1.1,
+                      ),
                     ),
-                  ),
+                  ],
                   SizedBox(height: 16.h),
                   ElevatedButton.icon(
                     onPressed: onShopTap,
@@ -97,7 +103,7 @@ class ShopLookSection extends StatelessWidget {
                     iconAlignment: IconAlignment.end,
                     icon: Icon(LucideIcons.arrowUpRight, size: 16.sp),
                     label: Text(
-                      curatedLook.ctaText,
+                      'home.shop_this_look'.tr(),
                       style: TextStyles.font11BlackCta,
                     ),
                   ),

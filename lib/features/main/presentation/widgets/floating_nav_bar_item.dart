@@ -32,13 +32,10 @@ class FloatingNavBarItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: 10.w,
-              vertical: 4.h,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
             child: Icon(
               icon,
-              size: 22.sp,
+              size: 20.sp,
               color: isActive ? activeColor : inactiveColor,
             ),
           ),
@@ -53,15 +50,14 @@ class FloatingNavBarItem extends StatelessWidget {
                 curve: Curves.easeInOut,
                 opacity: isScrolled ? 0.0 : 1.0,
                 child: Padding(
-                  padding: EdgeInsets.only(top: 2.h),
+                  padding: EdgeInsets.only(top: 1.h),
                   child: Text(
                     label,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontSize: 10.sp,
-                      fontWeight:
-                          isActive ? FontWeight.w600 : FontWeight.w500,
+                      fontSize: 9.5.sp,
+                      fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
                       color: isActive ? activeColor : inactiveColor,
                     ),
                   ),

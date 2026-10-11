@@ -4,6 +4,8 @@ import 'package:looks_loop/features/main/domain/entities/main_tab.dart';
 import 'package:looks_loop/features/main/presentation/widgets/floating_nav_bar_item.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import 'package:easy_localization/easy_localization.dart';
+
 class NavBarItemsRow extends StatelessWidget {
   final int selectedIndex;
   final bool isScrolled;
@@ -24,11 +26,11 @@ class NavBarItemsRow extends StatelessWidget {
     final inactiveColor = ColorManager.getTextMuted(context);
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         FloatingNavBarItem(
           icon: LucideIcons.house,
-          label: 'HOME',
+          label: 'nav.home'.tr().toUpperCase(),
           isActive: selectedIndex == 0,
           isScrolled: isScrolled,
           activeColor: effectiveActiveColor,
@@ -36,8 +38,17 @@ class NavBarItemsRow extends StatelessWidget {
           onTap: () => onTabSelected(MainTab.home),
         ),
         FloatingNavBarItem(
+          icon: LucideIcons.play,
+          label: 'nav.reels'.tr().toUpperCase(),
+          isActive: selectedIndex == 1,
+          isScrolled: isScrolled,
+          activeColor: effectiveActiveColor,
+          inactiveColor: inactiveColor,
+          onTap: () => onTabSelected(MainTab.reels),
+        ),
+        FloatingNavBarItem(
           icon: LucideIcons.shoppingBag,
-          label: 'SHOP',
+          label: 'nav.shop'.tr().toUpperCase(),
           isActive: selectedIndex == 2,
           isScrolled: isScrolled,
           activeColor: effectiveActiveColor,
@@ -46,7 +57,7 @@ class NavBarItemsRow extends StatelessWidget {
         ),
         FloatingNavBarItem(
           icon: LucideIcons.heart,
-          label: 'WISHLIST',
+          label: 'nav.wishlist'.tr().toUpperCase(),
           isActive: selectedIndex == 3,
           isScrolled: isScrolled,
           activeColor: effectiveActiveColor,
@@ -55,7 +66,7 @@ class NavBarItemsRow extends StatelessWidget {
         ),
         FloatingNavBarItem(
           icon: LucideIcons.layoutGrid,
-          label: 'MORE',
+          label: 'nav.more'.tr().toUpperCase(),
           isActive: selectedIndex == 4,
           isScrolled: isScrolled,
           activeColor: effectiveActiveColor,

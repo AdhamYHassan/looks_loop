@@ -1,55 +1,40 @@
-import 'package:looks_loop/features/home/domain/entities/product_entities.dart';
+import 'package:looks_loop/core/network/api_endpoints.dart';
+import 'package:looks_loop/core/network/inetwork_helper.dart';
+import 'package:looks_loop/features/home/data/models/product_models.dart';
+import 'package:looks_loop/features/wishlist/data/models/wishlist_add_request_model.dart';
+import 'package:looks_loop/features/wishlist/data/models/wishlist_response_model.dart';
 
 abstract interface class WishlistRemoteDataSource {
-  Future<List<ProductEntity>> getWishlist();
-  Future<List<ProductEntity>> removeFromWishlist(String productId);
+  Future<List<ProductModel>> getWishlist();
+  Future<void> addToWishlist(int productId);
+  Future<void> removeFromWishlist(int productId);
 }
 
 class WishlistRemoteDataSourceImpl implements WishlistRemoteDataSource {
-  final List<ProductEntity> _items = [
-    const ProductEntity(
-      id: 'w1',
-      brand: 'MANGO',
-      name: 'Wide Leg Trousers',
-      price: 1590,
-      originalPrice: 1890,
-      discountPercent: 16,
-      imageUrl:
-          'https://images.pexels.com/photos/8558355/pexels-photo-8558355.jpeg?auto=compress&cs=tinysrgb&w=700',
-      isWishlisted: true,
-    ),
-    const ProductEntity(
-      id: 'w2',
-      brand: 'Mara Studio',
-      name: 'The Crescent Bag',
-      price: 2450,
-      imageUrl:
-          'https://images.pexels.com/photos/22432991/pexels-photo-22432991.jpeg?auto=compress&cs=tinysrgb&w=700',
-      isWishlisted: true,
-    ),
-    const ProductEntity(
-      id: 'w3',
-      brand: 'Nile Objects',
-      name: 'Sculptural Mule',
-      price: 2100,
-      originalPrice: 2500,
-      discountPercent: 16,
-      imageUrl:
-          'https://images.pexels.com/photos/26851193/pexels-photo-26851193.jpeg?auto=compress&cs=tinysrgb&w=700',
-      isWishlisted: true,
-    ),
-  ];
+  final InetworkHelper _networkHelper;
+
+  const WishlistRemoteDataSourceImpl(this._networkHelper);
 
   @override
-  Future<List<ProductEntity>> getWishlist() async {
-    await Future.delayed(const Duration(milliseconds: 150));
-    return List<ProductEntity>.from(_items);
+  Future<List<ProductModel>> getWishlist() async {
+    final response = await _networkHelper.get(ApiEndpoints.wishlist);
+    final responseModel = WishlistResponseModel.fromJson(
+      response.data as Map<String, dynamic>,
+    );
+    return responseModel.items;
   }
 
   @override
-  Future<List<ProductEntity>> removeFromWishlist(String productId) async {
-    await Future.delayed(const Duration(milliseconds: 100));
-    _items.removeWhere((item) => item.id == productId);
-    return List<ProductEntity>.from(_items);
+  Future<void> addToWishlist(int productId) async {
+    final request = WishlistAddRequestModel(productId: productId);
+    await _networkHelper.post(
+      ApiEndpoints.wishlist,
+      data: request.toJson(),
+    );
+  }
+
+  @override
+  Future<void> removeFromWishlist(int productId) async {
+    await _networkHelper.delete('${ApiEndpoints.wishlist}$productId/');
   }
 }

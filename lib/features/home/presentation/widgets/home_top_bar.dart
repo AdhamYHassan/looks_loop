@@ -6,6 +6,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class HomeTopBar extends StatelessWidget {
   final int bagCount;
+  final bool isScrolled;
   final VoidCallback? onSearchTap;
   final VoidCallback? onBagTap;
   final VoidCallback? onLoaderTap;
@@ -13,6 +14,7 @@ class HomeTopBar extends StatelessWidget {
   const HomeTopBar({
     super.key,
     this.bagCount = 3,
+    this.isScrolled = false,
     this.onSearchTap,
     this.onBagTap,
     this.onLoaderTap,
@@ -20,9 +22,32 @@ class HomeTopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 57.h,
-      color: ColorManager.ink,
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOutCubic,
+      height: isScrolled ? 50.h : 56.h,
+      decoration: BoxDecoration(
+        color: isScrolled
+            ? ColorManager.ink.withValues(alpha: 0.92)
+            : ColorManager.ink,
+        border: Border(
+          bottom: BorderSide(
+            color: isScrolled
+                ? ColorManager.cream.withValues(alpha: 0.12)
+                : Colors.transparent,
+            width: 0.8.h,
+          ),
+        ),
+        boxShadow: isScrolled
+            ? [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.25),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ]
+            : const [],
+      ),
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

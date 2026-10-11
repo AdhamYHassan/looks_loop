@@ -17,6 +17,13 @@
     "see_all": "عرض الكل",
     "close": "إغلاق"
   },
+  "nav": {
+    "home": "الرئيسية",
+    "reels": "ريلز",
+    "shop": "تسوق",
+    "wishlist": "المفضلة",
+    "more": "المزيد"
+  },
   "auth": {
     "login": "تسجيل الدخول",
     "register": "إنشاء حساب",
@@ -212,5 +219,29 @@
       "delivered": "تم التوصيل",
       "cancelled": "ملغي"
     }
+  },
+  "home": {
+    "title": "الرئيسية",
+    "view_all": "عرض الكل",
+    "discover_eyebrow": "01 / اكتشف",
+    "discover_title": "ابحث عن إطلالتك القادمة",
+    "the_latest_eyebrow": "02 / الأحدث",
+    "new_in": "وصل حديثاً",
+    "trending_eyebrow": "03 / في الواجهة",
+    "trending_now": "الأكثر رواجاً",
+    "curated_look_eyebrow": "إطلالة مختارة",
+    "pieces_in_look": "{} قطع في هذه الإطلالة",
+    "shop_this_look": "تسوق هذه الإطلالة",
+    "motion_eyebrow": "05 / لوك لوبس",
+    "see_it_in_motion": "شاهدها بالفيديو",
+    "explore": "استكشف",
+    "explore_loops": "استكشف اللوبات",
+    "views": "{} مشاهدة",
+    "special_offers": "عروض خاصة",
+    "on_sale": "تخفيضات",
+    "brands_eyebrow": "06 / علامات تجارية مميزة",
+    "selected_brands": "علامات تجارية مختارة",
+    "currency": "ج.م",
+    "default_announcement": "اكتشف علامات تجارية محلية وعالمية"
   }
 }

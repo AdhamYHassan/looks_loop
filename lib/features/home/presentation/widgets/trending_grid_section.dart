@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:looks_loop/core/helpers/spacing.dart';
 import 'package:looks_loop/core/theming/styles.dart';
 import 'package:looks_loop/core/widgets/app_cached_image.dart';
 import 'package:looks_loop/features/home/domain/entities/home_feed_entities.dart';
 import 'package:looks_loop/features/home/presentation/widgets/section_header.dart';
 
+import 'package:easy_localization/easy_localization.dart';
+
 class TrendingGridSection extends StatelessWidget {
-  final List<TrendingItemEntity> items;
-  final ValueChanged<TrendingItemEntity>? onItemTap;
+  final List<ProductEntity> items;
+  final ValueChanged<ProductEntity>? onItemTap;
   final VoidCallback? onViewAllTap;
 
   const TrendingGridSection({
@@ -25,14 +28,15 @@ class TrendingGridSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SectionHeader(
-          eyebrow: '03 / IN THE LOOP',
-          title: 'TRENDING NOW',
+          eyebrow: 'home.trending_eyebrow'.tr(),
+          title: 'home.trending_now'.tr(),
           onActionTap: onViewAllTap,
         ),
-        SizedBox(height: 4.h),
+        vGap(4),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 18.w),
           child: GridView.builder(
+            padding: EdgeInsets.zero,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: items.length,
@@ -58,7 +62,7 @@ class TrendingGridSection extends StatelessWidget {
 }
 
 class _TrendingCard extends StatelessWidget {
-  final TrendingItemEntity item;
+  final ProductEntity item;
   final VoidCallback? onTap;
 
   const _TrendingCard({required this.item, this.onTap});
@@ -118,8 +122,10 @@ class _TrendingCard extends StatelessWidget {
                   ),
                   SizedBox(height: 2.h),
                   Text(
-                    '${item.price.toInt()} EGP',
-                    style: TextStyles.font13WhiteBlack.copyWith(fontSize: 11.sp),
+                    '${item.price.toInt()} ${'home.currency'.tr()}',
+                    style: TextStyles.font13WhiteBlack.copyWith(
+                      fontSize: 11.sp,
+                    ),
                   ),
                 ],
               ),
@@ -130,3 +136,4 @@ class _TrendingCard extends StatelessWidget {
     );
   }
 }
+// TODO : ENHANCEMENTS SAVE CATEGORY AND SUB IN LOCAL DB
