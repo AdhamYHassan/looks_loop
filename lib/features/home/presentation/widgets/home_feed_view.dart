@@ -12,6 +12,10 @@ import 'package:looks_loop/features/home/presentation/widgets/shop_look_section.
 import 'package:looks_loop/features/home/presentation/widgets/trending_grid_section.dart';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:go_router/go_router.dart';
+import 'package:looks_loop/core/routing/routes.dart';
+import 'package:looks_loop/features/shop/domain/entities/category_detail_entity.dart';
+import 'package:looks_loop/features/shop/presentation/models/category_detail_args.dart';
 
 class HomeFeedView extends StatelessWidget {
   final HomeFeedData feedData;
@@ -42,7 +46,27 @@ class HomeFeedView extends StatelessWidget {
             ),
             SizedBox(height: 24.h),
             RepaintBoundary(
-              child: CategoriesSection(categories: feedData.categories),
+              child: CategoriesSection(
+                categories: feedData.categories,
+                onCategoryTap: (cat) {
+                  context.push(
+                    Routes.categoryDetail,
+                    extra: CategoryDetailArgs(
+                      id: cat.id,
+                      title: cat.name,
+                      subcategories: cat.subcategories
+                          .map((sub) => SubCategoryEntity(
+                                id: sub.id.toString(),
+                                name: sub.name,
+                                productCount: 0,
+                                imageUrl: sub.imageUrl,
+                              ))
+                          .toList(),
+                      railProducts: feedData.newInProducts,
+                    ),
+                  );
+                },
+              ),
             ),
             RepaintBoundary(
               child: ProductRailSection(

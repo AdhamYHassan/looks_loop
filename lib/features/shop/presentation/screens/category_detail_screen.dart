@@ -6,7 +6,6 @@ import 'package:gap/gap.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
 import 'package:looks_loop/core/theming/styles.dart';
 import 'package:looks_loop/features/home/presentation/widgets/announcement_bar.dart';
-import 'package:looks_loop/features/shop/domain/entities/shop_feed_entities.dart';
 import 'package:looks_loop/features/shop/presentation/bloc/category_detail_cubit.dart';
 import 'package:looks_loop/features/shop/presentation/bloc/category_detail_state.dart';
 import 'package:looks_loop/features/shop/presentation/widgets/category_detail_header.dart';
@@ -16,9 +15,14 @@ import 'package:looks_loop/features/shop/presentation/widgets/shop_editorial_car
 import 'package:looks_loop/features/shop/presentation/widgets/shop_product_rail.dart';
 
 class CategoryDetailScreen extends StatelessWidget {
-  final ShopAudienceEntity audience;
+  final String title;
+  final String id;
 
-  const CategoryDetailScreen({super.key, required this.audience});
+  const CategoryDetailScreen({
+    super.key,
+    required this.title,
+    required this.id,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +46,7 @@ class CategoryDetailScreen extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const AnnouncementBar(),
-                      CategorySubNavBar(title: audience.title),
+                      CategorySubNavBar(title: title),
                     ],
                   ),
                 ),
@@ -74,17 +78,20 @@ class CategoryDetailScreen extends StatelessWidget {
                               ElevatedButton(
                                 onPressed: () => context
                                     .read<CategoryDetailCubit>()
-                                    .loadCategoryDetail(audience.id),
+                                    .loadCategoryDetail(id),
                                 child: const Text('Retry'),
                               ),
                             ],
                           ),
                         ),
-                      CategoryDetailLoaded(:final data, :final wishlistedProductIds) =>
+                      CategoryDetailLoaded(
+                        :final data,
+                        :final wishlistedProductIds,
+                      ) =>
                         RefreshIndicator(
                           onRefresh: () => context
                               .read<CategoryDetailCubit>()
-                              .loadCategoryDetail(audience.id),
+                              .loadCategoryDetail(id),
                           child: SingleChildScrollView(
                             physics: const AlwaysScrollableScrollPhysics(),
                             child: Column(
@@ -99,15 +106,20 @@ class CategoryDetailScreen extends StatelessWidget {
                                 CategorySubcatList(
                                   subcategories: data.subcategories,
                                 ),
-                                Gap(20.h),
-                                ShopEditorialCard(editorial: data.editorial),
-                                ShopProductRail(
-                                  products: data.railProducts,
-                                  wishlistedIds: wishlistedProductIds,
-                                  onWishlistToggle: (id) => context
-                                      .read<CategoryDetailCubit>()
-                                      .toggleWishlist(id),
-                                ),
+                                if (data.editorial.imageUrl.isNotEmpty) ...[
+                                  Gap(20.h),
+                                  ShopEditorialCard(editorial: data.editorial),
+                                ],
+                                if (data.railProducts.isNotEmpty) ...[
+                                  Gap(20.h),
+                                  ShopProductRail(
+                                    products: data.railProducts,
+                                    wishlistedIds: wishlistedProductIds,
+                                    onWishlistToggle: (prodId) => context
+                                        .read<CategoryDetailCubit>()
+                                        .toggleWishlist(prodId),
+                                  ),
+                                ],
                                 Gap(20.h),
                               ],
                             ),

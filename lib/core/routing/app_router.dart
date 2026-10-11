@@ -18,6 +18,7 @@ import 'package:looks_loop/features/auth/presentation/screens/login_screen.dart'
 import 'package:looks_loop/features/auth/presentation/screens/register_screen.dart';
 import 'package:looks_loop/features/shop/domain/entities/shop_feed_entities.dart';
 import 'package:looks_loop/features/shop/presentation/bloc/category_detail_cubit.dart';
+import 'package:looks_loop/features/shop/presentation/models/category_detail_args.dart';
 import 'package:looks_loop/features/shop/presentation/screens/category_detail_screen.dart';
 import 'package:looks_loop/features/cart/presentation/screens/cart_screen.dart';
 import 'package:looks_loop/features/wishlist/presentation/bloc/wishlist_cubit.dart';
@@ -176,7 +177,29 @@ class AppRouter {
       GoRoute(
         path: Routes.categoryDetail,
         pageBuilder: (context, state) {
-          final audience = state.extra as ShopAudienceEntity? ??
+          final extra = state.extra;
+
+          if (extra is CategoryDetailArgs) {
+            return _buildPageWithTransition(
+              context: context,
+              state: state,
+              child: BlocProvider(
+                create: (_) => getIt<CategoryDetailCubit>()
+                  ..initializeWithPreloadedData(
+                    id: extra.id,
+                    title: extra.title,
+                    subcategories: extra.subcategories,
+                    railProducts: extra.railProducts,
+                  ),
+                child: CategoryDetailScreen(
+                  title: extra.title,
+                  id: extra.id,
+                ),
+              ),
+            );
+          }
+
+          final audience = extra as ShopAudienceEntity? ??
               const ShopAudienceEntity(
                 id: 'aud_women',
                 title: 'WOMEN',
@@ -188,7 +211,10 @@ class AppRouter {
             child: BlocProvider(
               create: (_) => getIt<CategoryDetailCubit>()
                 ..loadCategoryDetail(audience.id),
-              child: CategoryDetailScreen(audience: audience),
+              child: CategoryDetailScreen(
+                title: audience.title,
+                id: audience.id,
+              ),
             ),
           );
         },
