@@ -1,5 +1,7 @@
 import 'package:flutter/painting.dart';
 import 'package:get_it/get_it.dart';
+import 'package:looks_loop/core/di/cart_di.dart';
+import 'package:looks_loop/features/cart/domain/usecases/add_to_cart_usecase.dart';
 import 'package:looks_loop/features/orders/data/datasources/orders_remote_data_source.dart';
 import 'package:looks_loop/features/orders/data/repositories/orders_repository_impl.dart';
 import 'package:looks_loop/features/orders/domain/repositories/orders_repository.dart';
@@ -58,6 +60,11 @@ import 'package:looks_loop/features/wishlist/domain/usecases/get_wishlist_usecas
 import 'package:looks_loop/features/wishlist/domain/usecases/remove_from_wishlist_usecase.dart';
 import 'package:looks_loop/features/wishlist/domain/usecases/watch_wishlist_usecase.dart';
 import 'package:looks_loop/features/wishlist/presentation/bloc/wishlist_cubit.dart';
+import 'package:looks_loop/features/product_detail/data/datasources/product_detail_remote_data_source.dart';
+import 'package:looks_loop/features/product_detail/data/repositories/product_detail_repository_impl.dart';
+import 'package:looks_loop/features/product_detail/domain/repositories/product_detail_repository.dart';
+import 'package:looks_loop/features/product_detail/domain/usecases/get_product_detail_usecase.dart';
+import 'package:looks_loop/features/product_detail/presentation/bloc/product_detail_cubit.dart';
 
 final getIt = GetIt.instance;
 
@@ -81,6 +88,9 @@ Future<void> initAppDependencies() async {
   getIt.registerLazySingleton<AddressLocalDataSource>(() => AddressLocalDataSourceImpl(addressBox));
   getIt.registerLazySingleton<AddressRemoteDataSource>(() => AddressRemoteDataSourceImpl(NetworkHelper(DioFactory.getDio())));
   getIt.registerLazySingleton<OrdersRemoteDataSource>(() => OrdersRemoteDataSourceImpl(NetworkHelper(DioFactory.getDio())));
+  getIt.registerLazySingleton<ProductDetailRemoteDataSource>(
+    () => ProductDetailRemoteDataSourceImpl(NetworkHelper(DioFactory.getDio())),
+  );
 
   // Repositories
   getIt.registerLazySingleton<HomeRepository>(() => HomeRepositoryImpl(getIt<HomeRemoteDataSource>()));
@@ -91,6 +101,7 @@ Future<void> initAppDependencies() async {
   getIt.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(getIt<AuthRemoteDataSource>()));
   getIt.registerLazySingleton<AddressRepository>(() => AddressRepositoryImpl(getIt<AddressRemoteDataSource>(), getIt<AddressLocalDataSource>()));
   getIt.registerLazySingleton<OrdersRepository>(() => OrdersRepositoryImpl(getIt<OrdersRemoteDataSource>()));
+  getIt.registerLazySingleton<ProductDetailRepository>(() => ProductDetailRepositoryImpl(getIt<ProductDetailRemoteDataSource>()));
 
   // Use Cases
   getIt.registerLazySingleton<GetHomeFeedUseCase>(() => GetHomeFeedUseCase(getIt<HomeRepository>()));
@@ -109,6 +120,7 @@ Future<void> initAppDependencies() async {
   getIt.registerLazySingleton<GetProvincesUseCase>(() => GetProvincesUseCase(getIt<AddressRepository>()));
   getIt.registerLazySingleton<GetOrdersUseCase>(() => GetOrdersUseCase(getIt<OrdersRepository>()));
   getIt.registerLazySingleton<GetOrderDetailUseCase>(() => GetOrderDetailUseCase(getIt<OrdersRepository>()));
+  getIt.registerLazySingleton<GetProductDetailUseCase>(() => GetProductDetailUseCase(getIt<ProductDetailRepository>()));
 
   // Cubits (Factory & Singletons)
   getIt.registerFactory<MainCubit>(() => MainCubit());
@@ -122,12 +134,12 @@ Future<void> initAppDependencies() async {
     ),
   );
   getIt.registerFactory<ShopCubit>(() => ShopCubit(getIt<GetShopFeedUseCase>()));
-  getIt.registerFactory<WishlistCubit>(() => WishlistCubit(
+  getIt.registerLazySingleton<WishlistCubit>(() => WishlistCubit(
     getIt<GetWishlistUseCase>(),
     getIt<AddToWishlistUseCase>(),
     getIt<RemoveFromWishlistUseCase>(),
     getIt<WatchWishlistUseCase>(),
-  ));
+  )..fetchWishlist());
   getIt.registerFactory<MoreCubit>(() => MoreCubit(getIt<GetUserProfileUseCase>(), getIt<LogoutUseCase>()));
   getIt.registerFactory<CategoryDetailCubit>(() => CategoryDetailCubit(getIt<GetCategoryDetailUseCase>()));
   getIt.registerFactory<LoginCubit>(() => LoginCubit(getIt<LoginUseCase>()));
@@ -139,4 +151,11 @@ Future<void> initAppDependencies() async {
     getIt<AddAddressUseCase>(),
     getIt<GetProvincesUseCase>(),
   ));
+  getIt.registerFactory<ProductDetailCubit>(() => ProductDetailCubit(
+        getIt<GetProductDetailUseCase>(),
+        getIt<AddToCartUseCase>(),
+      ));
+
+  registerCartDependencies();
 }
+

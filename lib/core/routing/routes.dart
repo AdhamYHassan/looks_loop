@@ -12,4 +12,7 @@ class Routes {
   static const String orders = '/orders';
   static const String orderDetail = '/orders/:orderNumber';
   static String orderDetailPath(String orderNumber) => '/orders/$orderNumber';
+  static const String productDetail = '/product-detail';
+  static const String productDetailWithId = '/product-detail/:slug';
+  static String productDetailPath(String slug) => '/product-detail/$slug';
 }

@@ -117,4 +117,28 @@ void main() {
 
     cubit.close();
   });
+
+  test('WishlistCubit toggleItem removes if present and adds if absent', () async {
+    final repo = MockWishlistRepository(
+      getResult: const ApiSuccess([dummyProduct]),
+      removeResult: const ApiSuccess(null),
+    );
+    final cubit = WishlistCubit(
+      GetWishlistUseCase(repo),
+      AddToWishlistUseCase(repo),
+      RemoveFromWishlistUseCase(repo),
+      WatchWishlistUseCase(repo),
+    );
+
+    await cubit.fetchWishlist();
+    expect(cubit.isItemWishlisted('1'), isTrue);
+
+    await cubit.toggleItem(dummyProduct);
+    expect(cubit.isItemWishlisted('1'), isFalse);
+
+    await cubit.toggleItem(dummyProduct);
+    expect(cubit.isItemWishlisted('1'), isTrue);
+
+    cubit.close();
+  });
 }

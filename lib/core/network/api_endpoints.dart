@@ -8,4 +8,8 @@ class ApiEndpoints {
   static const String home = 'home/';
   static const String provincesNested = 'provinces/nested/?country=1';
   static const String wishlist = 'wishlist/';
+  static const String products = 'products/';
+  static const String cart = 'cart/';
+  static const String cartItems = 'cart/items/';
 }
+

@@ -76,6 +76,23 @@ class WishlistCubit extends Cubit<WishlistState> {
     }
   }
 
+  bool isItemWishlisted(String productId) {
+    final currentState = state;
+    if (currentState is WishlistLoaded) {
+      return currentState.items
+          .any((item) => item.id.trim() == productId.trim());
+    }
+    return false;
+  }
+
+  Future<void> toggleItem(ProductEntity product) async {
+    if (isItemWishlisted(product.id)) {
+      await removeItem(product.id);
+    } else {
+      await addItem(product);
+    }
+  }
+
   @override
   Future<void> close() {
     _subscription?.cancel();

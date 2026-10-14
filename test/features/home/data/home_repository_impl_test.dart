@@ -28,13 +28,10 @@ void main() {
           'primary_label': 'SHOP WOMEN',
           'primary_url': '/shop/women/',
           'secondary_label': 'SHOP MEN',
-          'secondary_url': '/shop/men/'
-        }
+          'secondary_url': '/shop/men/',
+        },
       ],
-      'announcements': [
-        'NEW DROPS EVERY FRIDAY — 8 PM',
-        'EASY RETURNS'
-      ],
+      'announcements': ['NEW DROPS EVERY FRIDAY — 8 PM', 'EASY RETURNS'],
       'categories': [
         {
           'id': 1,
@@ -43,9 +40,9 @@ void main() {
           'tagline': 'Discover the latest pieces.',
           'image': 'https://a.com/cat.jpg',
           'subcategories': [
-            {'id': 1, 'name': 'Clothing', 'slug': 'clothing', 'image': ''}
-          ]
-        }
+            {'id': 1, 'name': 'Clothing', 'slug': 'clothing', 'image': ''},
+          ],
+        },
       ],
       'new_in': [
         {
@@ -62,12 +59,12 @@ void main() {
           'is_new': true,
           'image': 'https://a.com/shirt.jpg',
           'colors': [
-            {'id': 16, 'name': 'Black', 'hex': '#1a1a1a'}
+            {'id': 16, 'name': 'Black', 'hex': '#1a1a1a'},
           ],
           'rating_average': '4.50',
           'rating_count': 10,
-          'is_wishlisted': false
-        }
+          'is_wishlisted': false,
+        },
       ],
       'trending': [],
       'featured_loops': [
@@ -82,13 +79,13 @@ void main() {
           'likes_count': 2400,
           'liked': false,
           'brands': ['MANGO'],
-          'products': []
-        }
+          'products': [],
+        },
       ],
       'featured_look': {
         'id': 2,
         'slug': 'soft-tailoring',
-        'title': 'Soft Tailoring',
+        'title': 'Soft ad',
         'description': 'Soft tailoring description.',
         'image': 'https://a.com/look.jpg',
         'is_featured': true,
@@ -101,10 +98,10 @@ void main() {
               'name': 'White Shirt Dress',
               'brand': {'name': 'Studio Cairo'},
               'price': '2200.00',
-              'image': 'https://a.com/dress.jpg'
-            }
-          }
-        ]
+              'image': 'https://a.com/dress.jpg',
+            },
+          },
+        ],
       },
       'brands_to_know': [
         {
@@ -115,8 +112,8 @@ void main() {
           'logo': 'https://a.com/logo.webp',
           'cover_image': '',
           'is_featured': true,
-          'product_count': 15
-        }
+          'product_count': 15,
+        },
       ],
       'sale': [],
       'editorial': {
@@ -127,9 +124,9 @@ void main() {
         'copy': 'Stone, sand and olive.',
         'cta_label': 'SHOP THE EDIT',
         'cta_url': '/new-in/',
-        'image': 'https://a.com/editorial.jpg'
-      }
-    }
+        'image': 'https://a.com/editorial.jpg',
+      },
+    },
   };
 
   test('HomeRepositoryImpl parses and maps full payload correctly', () async {
@@ -159,13 +156,18 @@ void main() {
     expect(data.editorial!.title, 'THE NEW');
   });
 
-  test('HomeRepositoryImpl catches exceptions and returns ApiFailure', () async {
-    final repo = HomeRepositoryImpl(
-      FakeHomeRemoteDataSource(() async => throw Exception('Server unreachable')),
-    );
+  test(
+    'HomeRepositoryImpl catches exceptions and returns ApiFailure',
+    () async {
+      final repo = HomeRepositoryImpl(
+        FakeHomeRemoteDataSource(
+          () async => throw Exception('Server unreachable'),
+        ),
+      );
 
-    final result = await repo.getHomeFeed();
+      final result = await repo.getHomeFeed();
 
-    expect(result, isA<ApiFailure<HomeFeedData>>());
-  });
+      expect(result, isA<ApiFailure<HomeFeedData>>());
+    },
+  );
 }

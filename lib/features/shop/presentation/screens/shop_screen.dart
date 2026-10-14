@@ -104,6 +104,14 @@ class ShopScreen extends StatelessWidget {
                           onWishlistToggle: (id) => context
                               .read<ShopCubit>()
                               .toggleWishlist(id),
+                          onProductTap: (product) {
+                            final slug = product.slug.isNotEmpty
+                                ? product.slug
+                                : product.id;
+                            if (slug.isNotEmpty) {
+                              context.push(Routes.productDetailPath(slug));
+                            }
+                          },
                           onRefresh: () =>
                               context.read<ShopCubit>().fetchShopFeed(),
                         ),

@@ -36,6 +36,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await SecureStorageHelper.savePhoneNumber(responseModel.user.phone);
       await SecureStorageHelper.saveUserName(responseModel.user.name);
       await SecureStorageHelper.saveUserEmail(responseModel.user.email);
+      await SecureStorageHelper.clearCartToken();
 
       return ApiSuccess(responseModel.toEntity());
     } on DioException catch (e) {
@@ -69,6 +70,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await SecureStorageHelper.savePhoneNumber(responseModel.user.phone);
       await SecureStorageHelper.saveUserName(responseModel.user.name);
       await SecureStorageHelper.saveUserEmail(responseModel.user.email);
+      await SecureStorageHelper.clearCartToken();
 
       return ApiSuccess(responseModel.toEntity());
     } on DioException catch (e) {

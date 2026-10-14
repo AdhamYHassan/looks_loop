@@ -27,6 +27,8 @@ import 'package:looks_loop/features/orders/presentation/bloc/order_detail_cubit.
 import 'package:looks_loop/features/orders/presentation/bloc/orders_cubit.dart';
 import 'package:looks_loop/features/orders/presentation/screens/order_detail_screen.dart';
 import 'package:looks_loop/features/orders/presentation/screens/orders_screen.dart';
+import 'package:looks_loop/features/product_detail/presentation/bloc/product_detail_cubit.dart';
+import 'package:looks_loop/features/product_detail/presentation/screens/product_detail_screen.dart';
 
 final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
 
@@ -97,7 +99,7 @@ class AppRouter {
               BlocProvider(create: (_) => getIt<MainCubit>()),
               BlocProvider.value(value: getIt<HomeCubit>()),
               BlocProvider(create: (_) => getIt<ShopCubit>()),
-              BlocProvider(create: (_) => getIt<WishlistCubit>()),
+              BlocProvider.value(value: getIt<WishlistCubit>()),
               BlocProvider(create: (_) => getIt<MoreCubit>()),
             ],
             child: const MainScreen(),
@@ -157,8 +159,8 @@ class AppRouter {
         pageBuilder: (context, state) => _buildPageWithTransition(
           context: context,
           state: state,
-          child: BlocProvider(
-            create: (_) => getIt<WishlistCubit>()..fetchWishlist(),
+          child: BlocProvider.value(
+            value: getIt<WishlistCubit>(),
             child: const WishlistScreen(),
           ),
         ),
@@ -226,6 +228,52 @@ class AppRouter {
           state: state,
           child: const CartScreen(),
         ),
+      ),
+      GoRoute(
+        path: Routes.productDetail,
+        pageBuilder: (context, state) {
+          final slug = (state.extra as String?) ?? 'mango-white-cotton-shirt';
+          return _buildPageWithTransition(
+            context: context,
+            state: state,
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (_) =>
+                      getIt<ProductDetailCubit>()..loadProductDetail(slug),
+                ),
+                BlocProvider.value(
+                  value: getIt<WishlistCubit>(),
+                ),
+              ],
+              child: ProductDetailScreen(productId: slug),
+            ),
+          );
+        },
+      ),
+      GoRoute(
+        path: Routes.productDetailWithId,
+        pageBuilder: (context, state) {
+          final slug = state.pathParameters['slug'] ??
+              state.pathParameters['id'] ??
+              'mango-white-cotton-shirt';
+          return _buildPageWithTransition(
+            context: context,
+            state: state,
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (_) =>
+                      getIt<ProductDetailCubit>()..loadProductDetail(slug),
+                ),
+                BlocProvider.value(
+                  value: getIt<WishlistCubit>(),
+                ),
+              ],
+              child: ProductDetailScreen(productId: slug),
+            ),
+          );
+        },
       ),
     ],
   );

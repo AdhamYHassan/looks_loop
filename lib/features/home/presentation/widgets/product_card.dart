@@ -92,7 +92,7 @@ class ProductCard extends StatelessWidget {
           shape: BoxShape.circle,
         ),
         child: Icon(
-          LucideIcons.heart,
+          isWishlisted ? Icons.favorite : LucideIcons.heart,
           size: 16.sp,
           color: isWishlisted ? const Color(0xFFE53935) : Colors.black87,
         ),

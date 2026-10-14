@@ -73,14 +73,35 @@ class HomeFeedView extends StatelessWidget {
                 products: feedData.newInProducts,
                 wishlistedIds: wishlistedIds,
                 onWishlistToggle: onWishlistToggle,
+                onProductTap: (p) => _openProduct(context, p),
               ),
             ),
             RepaintBoundary(
-              child: TrendingGridSection(items: feedData.trendingProducts),
+              child: TrendingGridSection(
+                items: feedData.trendingProducts,
+                onItemTap: (p) => _openProduct(context, p),
+              ),
             ),
             if (feedData.featuredLook != null)
               RepaintBoundary(
-                child: ShopLookSection(featuredLook: feedData.featuredLook!),
+                child: ShopLookSection(
+                  featuredLook: feedData.featuredLook!,
+                  onShopTap: () {
+                    final look = feedData.featuredLook!;
+                    final slug = look.hotspots.isNotEmpty
+                        ? (look.hotspots.first.product.slug.isNotEmpty
+                            ? look.hotspots.first.product.slug
+                            : look.hotspots.first.product.id)
+                        : (feedData.newInProducts.isNotEmpty
+                            ? (feedData.newInProducts.first.slug.isNotEmpty
+                                ? feedData.newInProducts.first.slug
+                                : feedData.newInProducts.first.id)
+                            : '');
+                    if (slug.isNotEmpty) {
+                      context.push(Routes.productDetailPath(slug));
+                    }
+                  },
+                ),
               ),
             if (feedData.featuredLoops.isNotEmpty)
               RepaintBoundary(
@@ -94,6 +115,7 @@ class HomeFeedView extends StatelessWidget {
                   products: feedData.saleProducts,
                   wishlistedIds: wishlistedIds,
                   onWishlistToggle: onWishlistToggle,
+                  onProductTap: (p) => _openProduct(context, p),
                 ),
               ),
             if (feedData.editorial != null)
@@ -106,5 +128,12 @@ class HomeFeedView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _openProduct(BuildContext context, ProductEntity product) {
+    final slug = product.slug.isNotEmpty ? product.slug : product.id;
+    if (slug.isNotEmpty) {
+      context.push(Routes.productDetailPath(slug));
+    }
   }
 }
