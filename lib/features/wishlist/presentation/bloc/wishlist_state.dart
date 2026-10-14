@@ -25,6 +25,17 @@ final class WishlistLoaded extends WishlistState {
   List<Object?> get props => [items];
 }
 
+final class WishlistUnauthenticated extends WishlistState {
+  final String message;
+
+  const WishlistUnauthenticated({
+    this.message = 'Authentication credentials were not provided.',
+  });
+
+  @override
+  List<Object?> get props => [message];
+}
+
 final class WishlistError extends WishlistState {
   final String message;
 

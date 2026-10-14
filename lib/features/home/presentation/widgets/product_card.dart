@@ -49,11 +49,11 @@ class ProductCard extends StatelessWidget {
                   ),
                 ),
                 Positioned(top: 8.h, right: 8.w, child: _buildWishlistButton()),
-                if (product.discountPercent > 0)
+                if (product.discountPercent > 0 || product.isNew)
                   Positioned(
                     bottom: 8.h,
                     left: 8.w,
-                    child: _buildDiscountBadge(),
+                    child: _buildBadge(),
                   ),
               ],
             ),
@@ -100,15 +100,16 @@ class ProductCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDiscountBadge() {
+  Widget _buildBadge() {
+    final isDiscount = product.discountPercent > 0;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 3.h),
       decoration: BoxDecoration(
-        color: ColorManager.ink,
+        color: isDiscount ? ColorManager.ink : ColorManager.olive,
         borderRadius: BorderRadius.circular(2.r),
       ),
       child: Text(
-        '-${product.discountPercent}%',
+        isDiscount ? '-${product.discountPercent}%' : 'NEW',
         style: TextStyles.font10DiscountBadge,
       ),
     );

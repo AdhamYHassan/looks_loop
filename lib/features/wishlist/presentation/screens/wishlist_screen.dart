@@ -15,6 +15,7 @@ import 'package:looks_loop/features/main/presentation/bloc/main_cubit.dart';
 import 'package:looks_loop/features/wishlist/presentation/bloc/wishlist_cubit.dart';
 import 'package:looks_loop/features/wishlist/presentation/bloc/wishlist_state.dart';
 import 'package:looks_loop/features/wishlist/presentation/widgets/wishlist_content.dart';
+import 'package:looks_loop/features/wishlist/presentation/widgets/wishlist_signed_out_view.dart';
 import 'package:looks_loop/features/wishlist/presentation/widgets/wishlist_skeleton_loader.dart';
 
 class WishlistScreen extends StatelessWidget {
@@ -59,6 +60,12 @@ class WishlistScreen extends StatelessWidget {
                       WishlistInitial() ||
                       WishlistLoading() =>
                         const WishlistSkeletonLoader(),
+                      WishlistUnauthenticated(:final message) =>
+                        WishlistSignedOutView(
+                          message: message,
+                          onRetry: () =>
+                              context.read<WishlistCubit>().fetchWishlist(),
+                        ),
                       WishlistError(:final message) => Center(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,

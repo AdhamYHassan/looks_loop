@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:looks_loop/core/network/failure.dart';
 import 'package:looks_loop/core/network/network_result.dart';
 import 'package:looks_loop/features/home/domain/entities/product_entities.dart';
 import 'package:looks_loop/features/wishlist/domain/usecases/add_to_wishlist_usecase.dart';
@@ -37,7 +38,15 @@ class WishlistCubit extends Cubit<WishlistState> {
       case ApiSuccess(:final data):
         emit(WishlistLoaded(items: List<ProductEntity>.from(data)));
       case ApiFailure(:final failure):
-        emit(WishlistError(failure.message));
+        final isAuth = (failure is ServerFailure && failure.statusCode == 401) ||
+            failure.message.toLowerCase().contains('credential') ||
+            failure.message.toLowerCase().contains('unauthor') ||
+            failure.message.toLowerCase().contains('not authenticated');
+        if (isAuth) {
+          emit(WishlistUnauthenticated(message: failure.message));
+        } else {
+          emit(WishlistError(failure.message));
+        }
     }
   }
 

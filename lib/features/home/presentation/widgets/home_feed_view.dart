@@ -54,10 +54,12 @@ class HomeFeedView extends StatelessWidget {
                     extra: CategoryDetailArgs(
                       id: cat.id,
                       title: cat.name,
+                      slug: cat.slug,
                       subcategories: cat.subcategories
                           .map((sub) => SubCategoryEntity(
                                 id: sub.id.toString(),
                                 name: sub.name,
+                                slug: sub.slug,
                                 productCount: 0,
                                 imageUrl: sub.imageUrl,
                               ))

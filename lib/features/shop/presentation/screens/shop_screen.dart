@@ -2,29 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:looks_loop/core/routing/routes.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
-import 'package:looks_loop/core/theming/styles.dart';
 import 'package:looks_loop/core/widgets/app_bottom_nav_bar.dart';
 import 'package:looks_loop/core/widgets/loaders/loaders.dart';
-import 'package:looks_loop/features/home/presentation/widgets/announcement_bar.dart';
-import 'package:looks_loop/features/home/presentation/widgets/home_top_bar.dart';
+import 'package:looks_loop/features/home/presentation/bloc/home_cubit.dart';
+import 'package:looks_loop/features/home/presentation/bloc/home_state.dart';
 import 'package:looks_loop/features/shop/presentation/bloc/shop_cubit.dart';
 import 'package:looks_loop/features/shop/presentation/bloc/shop_state.dart';
+import 'package:looks_loop/features/shop/presentation/models/shop_feed_resolvers.dart';
+import 'package:looks_loop/features/shop/presentation/widgets/shop_error_view.dart';
 import 'package:looks_loop/features/shop/presentation/widgets/shop_feed_content.dart';
+import 'package:looks_loop/features/shop/presentation/widgets/shop_top_bar.dart';
 
 class ShopScreen extends StatelessWidget {
   final bool showBottomNavBar;
 
-  const ShopScreen({
-    super.key,
-    this.showBottomNavBar = true,
-  });
+  const ShopScreen({super.key, this.showBottomNavBar = true});
 
   @override
   Widget build(BuildContext context) {
+    final homeState = context.watch<HomeCubit>().state;
+    final homeData = homeState is HomeLoaded ? homeState.feedData : null;
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -38,21 +39,7 @@ class ShopScreen extends StatelessWidget {
           bottom: false,
           child: Column(
             children: [
-              Container(
-                color: ColorManager.olive,
-                child: SafeArea(
-                  bottom: false,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const AnnouncementBar(),
-                      HomeTopBar(
-                        onBagTap: () => context.push(Routes.cart),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              const ShopTopBar(),
               Expanded(
                 child: BlocBuilder<ShopCubit, ShopState>(
                   builder: (context, state) {
@@ -63,26 +50,11 @@ class ShopScreen extends StatelessWidget {
                             color: ColorManager.olive,
                           ),
                         ),
-                      ShopError(:final message) => Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                message,
-                                style: TextStyles.font13TextBold(context).copyWith(
-                                  color: Colors.red,
-                                  fontSize: 14.sp,
-                                ),
-                              ),
-                              Gap(12.h),
-                              ElevatedButton(
-                                onPressed: () =>
-                                    context.read<ShopCubit>().fetchShopFeed(),
-                                child: const Text('Retry'),
-                              ),
-                            ],
+                      ShopError(:final message) => ShopErrorView(
+                            message: message,
+                            onRetry: () =>
+                                context.read<ShopCubit>().fetchShopFeed(),
                           ),
-                        ),
                       ShopLoaded(
                         :final feedData,
                         :final selectedAudienceId,
@@ -91,19 +63,37 @@ class ShopScreen extends StatelessWidget {
                       ) =>
                         ShopFeedContent(
                           feedData: feedData,
+                          homeFeedData: homeData,
                           selectedAudienceId: selectedAudienceId,
                           selectedQuickLink: selectedQuickLink,
                           wishlistedIds: wishlistedProductIds,
                           onSelectAudience: (aud) {
                             context.read<ShopCubit>().selectAudience(aud.id);
-                            context.push(Routes.categoryDetail, extra: aud);
+                            ShopFeedResolvers.navigateToAudience(
+                              context,
+                              homeData: homeData,
+                              audience: aud,
+                              fallbackRail: feedData.newInProducts,
+                            );
                           },
-                          onSelectQuickLink: (link) => context
-                              .read<ShopCubit>()
-                              .selectQuickLink(link),
-                          onWishlistToggle: (id) => context
-                              .read<ShopCubit>()
-                              .toggleWishlist(id),
+                          onCategoryTap: (subcat) =>
+                              ShopFeedResolvers.navigateToSubcategory(
+                            context,
+                            homeData: homeData,
+                            selectedAudienceId: selectedAudienceId,
+                            subcat: subcat,
+                          ),
+                          onViewAllCategories: () =>
+                              ShopFeedResolvers.navigateToViewAll(
+                            context,
+                            homeData: homeData,
+                            selectedAudienceId: selectedAudienceId,
+                            fallbackRail: feedData.newInProducts,
+                          ),
+                          onSelectQuickLink: (link) =>
+                              context.read<ShopCubit>().selectQuickLink(link),
+                          onWishlistToggle: (id) =>
+                              context.read<ShopCubit>().toggleWishlist(id),
                           onProductTap: (product) {
                             final slug = product.slug.isNotEmpty
                                 ? product.slug
@@ -112,8 +102,12 @@ class ShopScreen extends StatelessWidget {
                               context.push(Routes.productDetailPath(slug));
                             }
                           },
-                          onRefresh: () =>
+                          onRefresh: () async {
+                            await Future.wait([
                               context.read<ShopCubit>().fetchShopFeed(),
+                              context.read<HomeCubit>().fetchHomeFeed(),
+                            ]);
+                          },
                         ),
                     };
                   },

@@ -6,22 +6,30 @@ class SubCategoryModel extends SubCategoryEntity {
   const SubCategoryModel({
     required super.id,
     required super.name,
+    super.slug = '',
     required super.productCount,
     required super.imageUrl,
   });
 
   factory SubCategoryModel.fromJson(Map<String, dynamic> json) {
+    final rawName = json['name'] as String? ?? '';
+    final rawSlug = json['slug'] as String? ?? '';
+    final resolvedSlug = rawSlug.isNotEmpty
+        ? rawSlug
+        : rawName.toLowerCase().trim().replaceAll(' ', '-');
     return SubCategoryModel(
-      id: json['id'] as String? ?? '',
-      name: json['name'] as String? ?? '',
+      id: (json['id'] ?? '').toString(),
+      name: rawName,
+      slug: resolvedSlug,
       productCount: (json['product_count'] as num?)?.toInt() ?? 0,
-      imageUrl: json['image_url'] as String? ?? '',
+      imageUrl: json['image_url'] as String? ?? (json['image'] as String? ?? ''),
     );
   }
 
   Map<String, dynamic> toJson() => {
         'id': id,
         'name': name,
+        'slug': slug,
         'product_count': productCount,
         'image_url': imageUrl,
       };
@@ -31,6 +39,7 @@ class CategoryDetailModel extends CategoryDetailEntity {
   const CategoryDetailModel({
     required super.audienceId,
     required super.audienceTitle,
+    super.slug = '',
     required super.totalProductCount,
     required super.subcategories,
     required super.editorial,
@@ -40,10 +49,13 @@ class CategoryDetailModel extends CategoryDetailEntity {
   factory CategoryDetailModel.fromJson(Map<String, dynamic> json) {
     final subcatsJson = json['subcategories'] as List<dynamic>? ?? [];
     final railJson = json['rail_products'] as List<dynamic>? ?? [];
+    final title = json['audience_title'] as String? ?? '';
+    final slug = json['slug'] as String? ?? title.toLowerCase().trim();
 
     return CategoryDetailModel(
       audienceId: json['audience_id'] as String? ?? '',
-      audienceTitle: json['audience_title'] as String? ?? '',
+      audienceTitle: title,
+      slug: slug,
       totalProductCount: (json['total_product_count'] as num?)?.toInt() ?? 0,
       subcategories: subcatsJson
           .map((e) => SubCategoryModel.fromJson(e as Map<String, dynamic>))

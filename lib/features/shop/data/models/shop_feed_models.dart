@@ -5,14 +5,18 @@ class ShopAudienceModel extends ShopAudienceEntity {
   const ShopAudienceModel({
     required super.id,
     required super.title,
+    super.slug = '',
     required super.imageUrl,
     super.isLarge = false,
   });
 
   factory ShopAudienceModel.fromJson(Map<String, dynamic> json) {
+    final title = json['title'] as String? ?? '';
+    final slug = json['slug'] as String? ?? title.toLowerCase().trim();
     return ShopAudienceModel(
       id: json['id'] as String? ?? '',
-      title: json['title'] as String? ?? '',
+      title: title,
+      slug: slug,
       imageUrl: json['image_url'] as String? ?? '',
       isLarge: json['is_large'] as bool? ?? false,
     );
@@ -21,6 +25,7 @@ class ShopAudienceModel extends ShopAudienceEntity {
   Map<String, dynamic> toJson() => {
         'id': id,
         'title': title,
+        'slug': slug,
         'image_url': imageUrl,
         'is_large': isLarge,
       };
@@ -30,14 +35,19 @@ class ShopCategoryModel extends ShopCategoryEntity {
   const ShopCategoryModel({
     required super.id,
     required super.name,
+    super.slug = '',
     required super.productCount,
     required super.imageUrl,
   });
 
   factory ShopCategoryModel.fromJson(Map<String, dynamic> json) {
+    final name = json['name'] as String? ?? '';
+    final slug = json['slug'] as String? ??
+        name.toLowerCase().trim().replaceAll(' ', '-');
     return ShopCategoryModel(
       id: json['id'] as String? ?? '',
-      name: json['name'] as String? ?? '',
+      name: name,
+      slug: slug,
       productCount: (json['product_count'] as num?)?.toInt() ?? 0,
       imageUrl: json['image_url'] as String? ?? '',
     );
@@ -46,6 +56,7 @@ class ShopCategoryModel extends ShopCategoryEntity {
   Map<String, dynamic> toJson() => {
         'id': id,
         'name': name,
+        'slug': slug,
         'product_count': productCount,
         'image_url': imageUrl,
       };

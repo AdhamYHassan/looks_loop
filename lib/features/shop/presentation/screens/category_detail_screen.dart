@@ -4,24 +4,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
-import 'package:looks_loop/core/theming/styles.dart';
 import 'package:looks_loop/features/home/presentation/widgets/announcement_bar.dart';
 import 'package:looks_loop/features/shop/presentation/bloc/category_detail_cubit.dart';
 import 'package:looks_loop/features/shop/presentation/bloc/category_detail_state.dart';
-import 'package:looks_loop/features/shop/presentation/widgets/category_detail_header.dart';
+import 'package:looks_loop/features/shop/presentation/widgets/category_detail_body.dart';
 import 'package:looks_loop/features/shop/presentation/widgets/category_sub_nav_bar.dart';
-import 'package:looks_loop/features/shop/presentation/widgets/category_subcat_list.dart';
-import 'package:looks_loop/features/shop/presentation/widgets/shop_editorial_card.dart';
-import 'package:looks_loop/features/shop/presentation/widgets/shop_product_rail.dart';
 
 class CategoryDetailScreen extends StatelessWidget {
   final String title;
   final String id;
+  final String slug;
 
   const CategoryDetailScreen({
     super.key,
     required this.title,
     required this.id,
+    this.slug = '',
   });
 
   @override
@@ -68,10 +66,9 @@ class CategoryDetailScreen extends StatelessWidget {
                             children: [
                               Text(
                                 message,
-                                style: TextStyles.font13TextBold(context)
-                                    .copyWith(
+                                style: TextStyle(
                                   color: Colors.red,
-                                  fontSize: 14.sp,
+                                  fontSize: 13.sp,
                                 ),
                               ),
                               Gap(12.h),
@@ -88,42 +85,12 @@ class CategoryDetailScreen extends StatelessWidget {
                         :final data,
                         :final wishlistedProductIds,
                       ) =>
-                        RefreshIndicator(
-                          onRefresh: () => context
-                              .read<CategoryDetailCubit>()
-                              .loadCategoryDetail(id),
-                          child: SingleChildScrollView(
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CategoryDetailHeader(
-                                  title: data.audienceTitle,
-                                  totalCount: data.totalProductCount,
-                                  onShopBreadcrumbTap: () =>
-                                      Navigator.of(context).maybePop(),
-                                ),
-                                CategorySubcatList(
-                                  subcategories: data.subcategories,
-                                ),
-                                if (data.editorial.imageUrl.isNotEmpty) ...[
-                                  Gap(20.h),
-                                  ShopEditorialCard(editorial: data.editorial),
-                                ],
-                                if (data.railProducts.isNotEmpty) ...[
-                                  Gap(20.h),
-                                  ShopProductRail(
-                                    products: data.railProducts,
-                                    wishlistedIds: wishlistedProductIds,
-                                    onWishlistToggle: (prodId) => context
-                                        .read<CategoryDetailCubit>()
-                                        .toggleWishlist(prodId),
-                                  ),
-                                ],
-                                Gap(20.h),
-                              ],
-                            ),
-                          ),
+                        CategoryDetailBody(
+                          data: data,
+                          wishlistedProductIds: wishlistedProductIds,
+                          title: title,
+                          id: id,
+                          slug: slug,
                         ),
                     };
                   },

@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
             builder: (context, themeMode) {
               return MaterialApp.router(
                 debugShowCheckedModeBanner: false,
-                title: 'LOOK LOOPS',
+                title: 'Look Loops',
                 localizationsDelegates: context.localizationDelegates,
                 supportedLocales: context.supportedLocales,
                 locale: context.locale,

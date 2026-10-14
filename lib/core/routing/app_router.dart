@@ -29,6 +29,9 @@ import 'package:looks_loop/features/orders/presentation/screens/order_detail_scr
 import 'package:looks_loop/features/orders/presentation/screens/orders_screen.dart';
 import 'package:looks_loop/features/product_detail/presentation/bloc/product_detail_cubit.dart';
 import 'package:looks_loop/features/product_detail/presentation/screens/product_detail_screen.dart';
+import 'package:looks_loop/features/product_list/domain/entities/product_list_args.dart';
+import 'package:looks_loop/features/product_list/presentation/bloc/product_list_cubit.dart';
+import 'package:looks_loop/features/product_list/presentation/screens/product_list_screen.dart';
 
 final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
 
@@ -148,8 +151,13 @@ class AppRouter {
         pageBuilder: (context, state) => _buildPageWithTransition(
           context: context,
           state: state,
-          child: BlocProvider(
-            create: (_) => getIt<ShopCubit>()..fetchShopFeed(),
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: getIt<HomeCubit>()),
+              BlocProvider(
+                create: (_) => getIt<ShopCubit>()..fetchShopFeed(),
+              ),
+            ],
             child: const ShopScreen(),
           ),
         ),
@@ -196,6 +204,7 @@ class AppRouter {
                 child: CategoryDetailScreen(
                   title: extra.title,
                   id: extra.id,
+                  slug: extra.slug,
                 ),
               ),
             );
@@ -216,7 +225,41 @@ class AppRouter {
               child: CategoryDetailScreen(
                 title: audience.title,
                 id: audience.id,
+                slug: audience.slug.isNotEmpty
+                    ? audience.slug
+                    : audience.title.toLowerCase().trim(),
               ),
+            ),
+          );
+        },
+      ),
+      GoRoute(
+        path: Routes.productList,
+        pageBuilder: (context, state) {
+          final args = (state.extra as ProductListArgs?) ??
+              const ProductListArgs(
+                category: 'men',
+                subcategory: 'clothing',
+                categoryTitle: 'MEN',
+                subcategoryTitle: 'CLOTHING',
+              );
+          return _buildPageWithTransition(
+            context: context,
+            state: state,
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (_) => getIt<ProductListCubit>()
+                    ..loadProducts(
+                      category: args.categorySlug,
+                      subcategory: args.subcategorySlug,
+                    ),
+                ),
+                BlocProvider.value(
+                  value: getIt<WishlistCubit>(),
+                ),
+              ],
+              child: ProductListScreen(args: args),
             ),
           );
         },

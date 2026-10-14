@@ -72,7 +72,10 @@ class ProductDetailEntity extends Equatable {
     return false;
   }
 
-  ProductVariantEntity? getVariant({required int sizeId, required int colorId}) {
+  ProductVariantEntity? getVariant({
+    required int sizeId,
+    required int colorId,
+  }) {
     for (final variant in variants) {
       if (variant.colorId == colorId && variant.sizeId == sizeId) {
         return variant;
@@ -90,12 +93,9 @@ class ProductDetailEntity extends Equatable {
   }
 
   ProductEntity toProductEntity() {
-    final primaryImg = images.firstWhere(
-      (img) => img.isPrimary,
-      orElse: () => images.isNotEmpty
-          ? images.first
-          : const ProductImageEntity(id: 0, url: '', isPrimary: false),
-    );
+    final primaryImg =
+        images.where((img) => img.isPrimary).firstOrNull ?? images.firstOrNull;
+
     return ProductEntity(
       id: id.toString(),
       slug: slug,
@@ -108,7 +108,7 @@ class ProductDetailEntity extends Equatable {
       discountPercent: discountPercentage,
       isOnSale: isOnSale,
       isNew: isNew,
-      imageUrl: primaryImg.url,
+      imageUrl: primaryImg?.url ?? '',
       colors: colors,
       ratingAverage: ratingAverage,
       ratingCount: ratingCount,
@@ -118,31 +118,31 @@ class ProductDetailEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        slug,
-        name,
-        brand,
-        category,
-        subcategory,
-        price,
-        originalPrice,
-        discountPercentage,
-        isOnSale,
-        isNew,
-        sku,
-        description,
-        materialCare,
-        sizeFit,
-        inStock,
-        ratingAverage,
-        ratingCount,
-        isWishlisted,
-        colors,
-        sizes,
-        variants,
-        images,
-        ratingDistribution,
-        reviews,
-        related,
-      ];
+    id,
+    slug,
+    name,
+    brand,
+    category,
+    subcategory,
+    price,
+    originalPrice,
+    discountPercentage,
+    isOnSale,
+    isNew,
+    sku,
+    description,
+    materialCare,
+    sizeFit,
+    inStock,
+    ratingAverage,
+    ratingCount,
+    isWishlisted,
+    colors,
+    sizes,
+    variants,
+    images,
+    ratingDistribution,
+    reviews,
+    related,
+  ];
 }

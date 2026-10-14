@@ -4,35 +4,39 @@ import 'package:looks_loop/features/home/domain/entities/home_feed_entities.dart
 class ShopAudienceEntity extends Equatable {
   final String id;
   final String title;
+  final String slug;
   final String imageUrl;
   final bool isLarge;
 
   const ShopAudienceEntity({
     required this.id,
     required this.title,
+    this.slug = '',
     required this.imageUrl,
     this.isLarge = false,
   });
 
   @override
-  List<Object?> get props => [id, title, imageUrl, isLarge];
+  List<Object?> get props => [id, title, slug, imageUrl, isLarge];
 }
 
 class ShopCategoryEntity extends Equatable {
   final String id;
   final String name;
+  final String slug;
   final int productCount;
   final String imageUrl;
 
   const ShopCategoryEntity({
     required this.id,
     required this.name,
+    this.slug = '',
     required this.productCount,
     required this.imageUrl,
   });
 
   @override
-  List<Object?> get props => [id, name, productCount, imageUrl];
+  List<Object?> get props => [id, name, slug, productCount, imageUrl];
 }
 
 class ShopEditorialEntity extends Equatable {

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
-import 'package:looks_loop/features/home/domain/entities/product_entities.dart';
+import 'package:looks_loop/features/home/domain/entities/home_feed_entities.dart';
 import 'package:looks_loop/features/shop/domain/entities/shop_feed_entities.dart';
+import 'package:looks_loop/features/shop/presentation/models/shop_feed_resolvers.dart';
 import 'package:looks_loop/features/shop/presentation/widgets/shop_brand_strip.dart';
 import 'package:looks_loop/features/shop/presentation/widgets/shop_cat_selector.dart';
 import 'package:looks_loop/features/shop/presentation/widgets/shop_category_grid.dart';
@@ -14,10 +15,13 @@ import 'package:looks_loop/features/shop/presentation/widgets/shop_sale_card.dar
 
 class ShopFeedContent extends StatelessWidget {
   final ShopFeedData feedData;
+  final HomeFeedData? homeFeedData;
   final String selectedAudienceId;
   final String selectedQuickLink;
   final Set<String> wishlistedIds;
   final ValueChanged<ShopAudienceEntity>? onSelectAudience;
+  final ValueChanged<ShopCategoryEntity>? onCategoryTap;
+  final VoidCallback? onViewAllCategories;
   final ValueChanged<String>? onSelectQuickLink;
   final ValueChanged<String>? onWishlistToggle;
   final ValueChanged<ProductEntity>? onProductTap;
@@ -26,10 +30,13 @@ class ShopFeedContent extends StatelessWidget {
   const ShopFeedContent({
     super.key,
     required this.feedData,
+    this.homeFeedData,
     required this.selectedAudienceId,
     required this.selectedQuickLink,
     this.wishlistedIds = const {},
     this.onSelectAudience,
+    this.onCategoryTap,
+    this.onViewAllCategories,
     this.onSelectQuickLink,
     this.onWishlistToggle,
     this.onProductTap,
@@ -38,6 +45,25 @@ class ShopFeedContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final audiences = ShopFeedResolvers.resolveAudiences(
+      homeFeedData: homeFeedData,
+      fallback: feedData.audiences,
+    );
+    final selectedCat = ShopFeedResolvers.resolveSelectedCategory(
+      homeFeedData: homeFeedData,
+      selectedAudienceId: selectedAudienceId,
+    );
+    final subcategories = ShopFeedResolvers.resolveSubcategories(
+      selectedCat: selectedCat,
+      fallback: feedData.categories,
+    );
+    final audienceTitle =
+        selectedCat?.name.toUpperCase() ?? _resolveAudienceTitle();
+    final newIn =
+        (homeFeedData != null && homeFeedData!.newInProducts.isNotEmpty)
+            ? homeFeedData!.newInProducts
+            : feedData.newInProducts;
+
     return RefreshIndicator(
       onRefresh: onRefresh ?? () async {},
       child: SingleChildScrollView(
@@ -48,7 +74,7 @@ class ShopFeedContent extends StatelessWidget {
             const RepaintBoundary(child: ShopHubHeader()),
             RepaintBoundary(
               child: ShopCatSelector(
-                audiences: feedData.audiences,
+                audiences: audiences,
                 onSelectAudience: onSelectAudience,
               ),
             ),
@@ -61,14 +87,18 @@ class ShopFeedContent extends StatelessWidget {
             ),
             RepaintBoundary(
               child: ShopCategoryGrid(
-                categories: feedData.categories,
-                audienceTitle: _resolveAudienceTitle(),
+                categories: subcategories,
+                audienceTitle: audienceTitle,
+                onCategoryTap: onCategoryTap,
+                onViewAllTap: onViewAllCategories,
               ),
             ),
-            RepaintBoundary(child: ShopEditorialCard(editorial: feedData.editorial)),
+            RepaintBoundary(
+              child: ShopEditorialCard(editorial: feedData.editorial),
+            ),
             RepaintBoundary(
               child: ShopProductRail(
-                products: feedData.newInProducts,
+                products: newIn,
                 wishlistedIds: wishlistedIds,
                 onWishlistToggle: onWishlistToggle,
                 onProductTap: onProductTap,
@@ -85,10 +115,10 @@ class ShopFeedContent extends StatelessWidget {
 
   String _resolveAudienceTitle() {
     for (final audience in feedData.audiences) {
-      if (audience.id == selectedAudienceId) {
-        return audience.title;
-      }
+      if (audience.id == selectedAudienceId) return audience.title;
     }
-    return feedData.audiences.isNotEmpty ? feedData.audiences.first.title : 'Women';
+    return feedData.audiences.isNotEmpty
+        ? feedData.audiences.first.title
+        : 'Women';
   }
 }

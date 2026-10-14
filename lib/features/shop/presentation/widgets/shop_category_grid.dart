@@ -111,11 +111,13 @@ class _CategoryGridTile extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(category.name, style: TextStyles.font13WhiteBlack),
-                  Gap(2.h),
-                  Text(
-                    '${category.productCount} products',
-                    style: TextStyles.font10WhiteMedium,
-                  ),
+                  if (category.productCount > 0) ...[
+                    Gap(2.h),
+                    Text(
+                      '${category.productCount} products',
+                      style: TextStyles.font10WhiteMedium,
+                    ),
+                  ],
                 ],
               ),
             ),

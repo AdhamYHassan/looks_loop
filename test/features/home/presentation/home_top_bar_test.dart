@@ -17,31 +17,15 @@ void main() {
   }
 
   group('HomeTopBar and ChasingLoopPreviewDialog Tests', () {
-    testWidgets('renders dummy loader icon when onLoaderTap is provided', (tester) async {
-      var tapped = false;
-      await tester.pumpWidget(
-        buildTestableWidget(
-          HomeTopBar(
-            onLoaderTap: () => tapped = true,
-          ),
-        ),
-      );
-
-      final sparklesFinder = find.byIcon(LucideIcons.sparkles);
-      expect(sparklesFinder, findsOneWidget);
-
-      await tester.tap(sparklesFinder);
-      expect(tapped, isTrue);
-    });
-
-    testWidgets('does not render dummy loader icon when onLoaderTap is null', (tester) async {
+    testWidgets('renders search and bag icons in HomeTopBar', (tester) async {
       await tester.pumpWidget(
         buildTestableWidget(
           const HomeTopBar(),
         ),
       );
 
-      expect(find.byIcon(LucideIcons.sparkles), findsNothing);
+      expect(find.byIcon(LucideIcons.search), findsOneWidget);
+      expect(find.byIcon(LucideIcons.shoppingBag), findsOneWidget);
     });
 
     testWidgets('ChasingLoopPreviewDialog shows ChasingLoopLoader and closes on X', (tester) async {

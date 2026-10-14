@@ -55,19 +55,6 @@ class HomeTopBar extends StatelessWidget {
           _buildLogo(),
           Row(
             children: [
-              if (onLoaderTap != null) ...[
-                IconButton(
-                  icon: Icon(
-                    LucideIcons.sparkles,
-                    color: ColorManager.cream,
-                    size: 20.sp,
-                  ),
-                  padding: EdgeInsets.zero,
-                  constraints: BoxConstraints(minWidth: 36.w, minHeight: 36.h),
-                  onPressed: onLoaderTap,
-                ),
-                SizedBox(width: 8.w),
-              ],
               IconButton(
                 icon: Icon(
                   LucideIcons.search,
@@ -111,7 +98,10 @@ class HomeTopBar extends StatelessWidget {
                         ),
                         child: Text(
                           '$bagCount',
-                          style: TextStyles.font10DiscountBadge.copyWith(fontSize: 9.sp, height: 1),
+                          style: TextStyles.font10DiscountBadge.copyWith(
+                            fontSize: 9.sp,
+                            height: 1,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                       ),
