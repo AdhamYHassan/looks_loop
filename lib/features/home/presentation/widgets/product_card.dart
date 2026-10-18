@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:looks_loop/core/helpers/secure_storage_helper.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
 import 'package:looks_loop/core/theming/styles.dart';
 import 'package:looks_loop/core/widgets/app_cached_image.dart';
@@ -83,20 +84,29 @@ class ProductCard extends StatelessWidget {
   }
 
   Widget _buildWishlistButton() {
-    return GestureDetector(
-      onTap: onWishlistTap,
-      child: Container(
-        padding: EdgeInsets.all(6.r),
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.9),
-          shape: BoxShape.circle,
-        ),
-        child: Icon(
-          isWishlisted ? Icons.favorite : LucideIcons.heart,
-          size: 16.sp,
-          color: isWishlisted ? const Color(0xFFE53935) : Colors.black87,
-        ),
-      ),
+    return FutureBuilder<String?>(
+      future: SecureStorageHelper.getAccessToken(),
+      builder: (context, snapshot) {
+        final token = snapshot.data;
+        if (token == null || token.trim().isEmpty) {
+          return const SizedBox.shrink();
+        }
+        return GestureDetector(
+          onTap: onWishlistTap,
+          child: Container(
+            padding: EdgeInsets.all(6.r),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.9),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              isWishlisted ? Icons.favorite : LucideIcons.heart,
+              size: 16.sp,
+              color: isWishlisted ? const Color(0xFFE53935) : Colors.black87,
+            ),
+          ),
+        );
+      },
     );
   }
 

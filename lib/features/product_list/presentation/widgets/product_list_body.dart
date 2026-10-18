@@ -61,6 +61,7 @@ class ProductListBody extends StatelessWidget {
                 facets: state.data.facets,
                 currentFilters: state.currentFilters,
                 onApply: cubit.applyFilters,
+                isBrandFilterLocked: args.isBrandFilterLocked,
               ),
               onSortTap: () => ProductSortBottomSheet.show(
                 context,

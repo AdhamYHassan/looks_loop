@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
 import 'package:looks_loop/features/product_list/domain/entities/product_list_entities.dart';
 import 'package:looks_loop/features/product_list/presentation/widgets/product_filter_apply_button.dart';
+import 'package:looks_loop/features/product_list/presentation/widgets/product_filter_brands_section.dart';
 import 'package:looks_loop/features/product_list/presentation/widgets/product_filter_chips_group.dart';
 import 'package:looks_loop/features/product_list/presentation/widgets/product_filter_sheet_header.dart';
 import 'package:looks_loop/features/product_list/presentation/widgets/product_filter_special_offers.dart';
@@ -11,12 +12,14 @@ class ProductFilterBottomSheet extends StatefulWidget {
   final ProductListFacetsEntity facets;
   final SelectedFiltersEntity currentFilters;
   final ValueChanged<SelectedFiltersEntity> onApply;
+  final bool isBrandFilterLocked;
 
   const ProductFilterBottomSheet({
     super.key,
     required this.facets,
     required this.currentFilters,
     required this.onApply,
+    this.isBrandFilterLocked = false,
   });
 
   static Future<void> show(
@@ -24,6 +27,7 @@ class ProductFilterBottomSheet extends StatefulWidget {
     required ProductListFacetsEntity facets,
     required SelectedFiltersEntity currentFilters,
     required ValueChanged<SelectedFiltersEntity> onApply,
+    bool isBrandFilterLocked = false,
   }) {
     return showModalBottomSheet(
       context: context,
@@ -36,6 +40,7 @@ class ProductFilterBottomSheet extends StatefulWidget {
         facets: facets,
         currentFilters: currentFilters,
         onApply: onApply,
+        isBrandFilterLocked: isBrandFilterLocked,
       ),
     );
   }
@@ -78,16 +83,14 @@ class _ProductFilterBottomSheetState extends State<ProductFilterBottomSheet> {
                 controller: scrollController,
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
                 children: [
-                  ProductFilterChipsGroup(
-                    title: 'BRANDS',
-                    items: widget.facets.brands.map((b) => b.slug).toList(),
-                    selectedItems: _selectedBrands,
-                    labelBuilder: (slug) {
-                      final b = widget.facets.brands.firstWhere((x) => x.slug == slug);
-                      return '${b.name} (${b.count})';
-                    },
+                  ProductFilterBrandsSection(
+                    facets: widget.facets,
+                    selectedBrands: _selectedBrands,
+                    isLocked: widget.isBrandFilterLocked,
                     onToggle: (slug) => setState(() {
-                      if (!_selectedBrands.remove(slug)) _selectedBrands.add(slug);
+                      if (!_selectedBrands.remove(slug)) {
+                        _selectedBrands.add(slug);
+                      }
                     }),
                   ),
                   ProductFilterChipsGroup(
@@ -135,7 +138,9 @@ class _ProductFilterBottomSheetState extends State<ProductFilterBottomSheet> {
 
   void _resetFilters() {
     setState(() {
-      _selectedBrands.clear();
+      _selectedBrands = widget.isBrandFilterLocked
+          ? List.from(widget.currentFilters.brands)
+          : [];
       _selectedSizes.clear();
       _selectedColors.clear();
       _sale = false;

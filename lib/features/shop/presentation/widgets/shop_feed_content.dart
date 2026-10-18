@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import 'package:looks_loop/core/routing/routes.dart';
 import 'package:looks_loop/features/home/domain/entities/home_feed_entities.dart';
+import 'package:looks_loop/features/product_list/domain/entities/product_list_args.dart';
 import 'package:looks_loop/features/shop/domain/entities/shop_feed_entities.dart';
 import 'package:looks_loop/features/shop/presentation/models/shop_feed_resolvers.dart';
 import 'package:looks_loop/features/shop/presentation/widgets/shop_brand_strip.dart';
@@ -105,7 +108,28 @@ class ShopFeedContent extends StatelessWidget {
               ),
             ),
             RepaintBoundary(child: ShopSaleCard(banner: feedData.saleBanner)),
-            RepaintBoundary(child: ShopBrandStrip(brands: feedData.brands)),
+            RepaintBoundary(
+              child: ShopBrandStrip(
+                brands: feedData.brands,
+                onViewAllTap: () => context.push(Routes.brands),
+                onBrandTap: (brand) {
+                  final slug = brand.slug.isNotEmpty
+                      ? brand.slug
+                      : brand.name.toLowerCase().trim().replaceAll(' ', '-');
+                  context.push(
+                    Routes.productList,
+                    extra: ProductListArgs(
+                      category: '',
+                      subcategory: '',
+                      categoryTitle: 'BRANDS',
+                      subcategoryTitle: brand.name,
+                      initialBrands: [slug],
+                      isBrandFilterLocked: true,
+                    ),
+                  );
+                },
+              ),
+            ),
             Gap(20.h),
           ],
         ),

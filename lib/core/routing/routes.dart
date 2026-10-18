@@ -8,6 +8,7 @@ class Routes {
   static const String wishlist = '/wishlist';
   static const String more = '/more';
   static const String categoryDetail = '/category-detail';
+  static const String brands = '/brands';
   static const String productList = '/product-list';
   static const String cart = '/cart';
   static const String orders = '/orders';

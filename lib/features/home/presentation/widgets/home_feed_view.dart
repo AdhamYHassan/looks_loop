@@ -14,6 +14,7 @@ import 'package:looks_loop/features/home/presentation/widgets/trending_grid_sect
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 import 'package:looks_loop/core/routing/routes.dart';
+import 'package:looks_loop/features/product_list/domain/entities/product_list_args.dart';
 import 'package:looks_loop/features/shop/domain/entities/category_detail_entity.dart';
 import 'package:looks_loop/features/shop/presentation/models/category_detail_args.dart';
 
@@ -124,7 +125,28 @@ class HomeFeedView extends StatelessWidget {
               RepaintBoundary(
                 child: EditorialSection(editorial: feedData.editorial!),
               ),
-            RepaintBoundary(child: BrandStripSection(brands: feedData.brands)),
+            RepaintBoundary(
+              child: BrandStripSection(
+                brands: feedData.brands,
+                onViewAllTap: () => context.push(Routes.brands),
+                onBrandTap: (brand) {
+                  final slug = brand.slug.isNotEmpty
+                      ? brand.slug
+                      : brand.name.toLowerCase().trim().replaceAll(' ', '-');
+                  context.push(
+                    Routes.productList,
+                    extra: ProductListArgs(
+                      category: '',
+                      subcategory: '',
+                      categoryTitle: 'BRANDS',
+                      subcategoryTitle: brand.name,
+                      initialBrands: [slug],
+                      isBrandFilterLocked: true,
+                    ),
+                  );
+                },
+              ),
+            ),
             SizedBox(height: 100.h),
           ],
         ),

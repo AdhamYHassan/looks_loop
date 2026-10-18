@@ -5,12 +5,16 @@ class ProductListArgs extends Equatable {
   final String subcategory;
   final String categoryTitle;
   final String subcategoryTitle;
+  final List<String> initialBrands;
+  final bool isBrandFilterLocked;
 
   const ProductListArgs({
     required this.category,
     required this.subcategory,
     this.categoryTitle = '',
     this.subcategoryTitle = '',
+    this.initialBrands = const [],
+    this.isBrandFilterLocked = false,
   });
 
   static String resolveSlug(String value, [String fallback = '']) {
@@ -30,8 +34,15 @@ class ProductListArgs extends Equatable {
     return v.isNotEmpty ? v : 'all';
   }
 
-  String get categorySlug => resolveSlug(category, categoryTitle);
-  String get subcategorySlug => resolveSlug(subcategory, subcategoryTitle);
+  String get categorySlug {
+    if (isBrandFilterLocked || category.isEmpty) return '';
+    return resolveSlug(category, categoryTitle);
+  }
+
+  String get subcategorySlug {
+    if (isBrandFilterLocked || subcategory.isEmpty) return '';
+    return resolveSlug(subcategory, subcategoryTitle);
+  }
 
   @override
   List<Object?> get props => [
@@ -39,5 +50,7 @@ class ProductListArgs extends Equatable {
         subcategory,
         categoryTitle,
         subcategoryTitle,
+        initialBrands,
+        isBrandFilterLocked,
       ];
 }

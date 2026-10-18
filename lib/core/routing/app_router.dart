@@ -29,7 +29,10 @@ import 'package:looks_loop/features/orders/presentation/screens/order_detail_scr
 import 'package:looks_loop/features/orders/presentation/screens/orders_screen.dart';
 import 'package:looks_loop/features/product_detail/presentation/bloc/product_detail_cubit.dart';
 import 'package:looks_loop/features/product_detail/presentation/screens/product_detail_screen.dart';
+import 'package:looks_loop/features/brands/presentation/bloc/brands_cubit.dart';
+import 'package:looks_loop/features/brands/presentation/screens/brands_screen.dart';
 import 'package:looks_loop/features/product_list/domain/entities/product_list_args.dart';
+import 'package:looks_loop/features/product_list/domain/entities/product_list_entities.dart';
 import 'package:looks_loop/features/product_list/presentation/bloc/product_list_cubit.dart';
 import 'package:looks_loop/features/product_list/presentation/screens/product_list_screen.dart';
 
@@ -234,6 +237,17 @@ class AppRouter {
         },
       ),
       GoRoute(
+        path: Routes.brands,
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: BlocProvider(
+            create: (_) => getIt<BrandsCubit>()..loadBrands(),
+            child: const BrandsScreen(),
+          ),
+        ),
+      ),
+      GoRoute(
         path: Routes.productList,
         pageBuilder: (context, state) {
           final args = (state.extra as ProductListArgs?) ??
@@ -253,6 +267,9 @@ class AppRouter {
                     ..loadProducts(
                       category: args.categorySlug,
                       subcategory: args.subcategorySlug,
+                      filters: args.initialBrands.isNotEmpty
+                          ? SelectedFiltersEntity(brands: args.initialBrands)
+                          : null,
                     ),
                 ),
                 BlocProvider.value(

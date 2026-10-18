@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
-import 'package:looks_loop/core/theming/styles.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class HomeTopBar extends StatelessWidget {
-  final int bagCount;
   final bool isScrolled;
   final VoidCallback? onSearchTap;
   final VoidCallback? onBagTap;
@@ -13,7 +11,6 @@ class HomeTopBar extends StatelessWidget {
 
   const HomeTopBar({
     super.key,
-    this.bagCount = 3,
     this.isScrolled = false,
     this.onSearchTap,
     this.onBagTap,
@@ -66,47 +63,18 @@ class HomeTopBar extends StatelessWidget {
                 onPressed: onSearchTap,
               ),
               SizedBox(width: 8.w),
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      LucideIcons.shoppingBag,
-                      color: ColorManager.cream,
-                      size: 20.sp,
-                    ),
-                    padding: EdgeInsets.zero,
-                    constraints: BoxConstraints(
-                      minWidth: 36.w,
-                      minHeight: 36.h,
-                    ),
-                    onPressed: onBagTap,
-                  ),
-                  if (bagCount > 0)
-                    Positioned(
-                      top: 4.h,
-                      right: 4.w,
-                      child: Container(
-                        padding: EdgeInsets.all(3.r),
-                        decoration: const BoxDecoration(
-                          color: ColorManager.orange,
-                          shape: BoxShape.circle,
-                        ),
-                        constraints: BoxConstraints(
-                          minWidth: 15.w,
-                          minHeight: 15.h,
-                        ),
-                        child: Text(
-                          '$bagCount',
-                          style: TextStyles.font10DiscountBadge.copyWith(
-                            fontSize: 9.sp,
-                            height: 1,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                ],
+              IconButton(
+                icon: Icon(
+                  LucideIcons.shoppingBag,
+                  color: ColorManager.cream,
+                  size: 20.sp,
+                ),
+                padding: EdgeInsets.zero,
+                constraints: BoxConstraints(
+                  minWidth: 36.w,
+                  minHeight: 36.h,
+                ),
+                onPressed: onBagTap,
               ),
             ],
           ),
@@ -124,3 +92,4 @@ class HomeTopBar extends StatelessWidget {
     );
   }
 }
+//TODO we neeed to prevernt the wishlist if not logged in to prevernt the req to server 

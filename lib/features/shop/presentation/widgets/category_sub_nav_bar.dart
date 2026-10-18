@@ -14,7 +14,7 @@ class CategorySubNavBar extends StatelessWidget {
   const CategorySubNavBar({
     super.key,
     required this.title,
-    this.bagCount = 3,
+    this.bagCount = 0,
     this.onBackTap,
     this.onSearchTap,
     this.onBagTap,

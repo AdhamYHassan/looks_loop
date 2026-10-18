@@ -31,11 +31,15 @@ class GetProductsParams extends Equatable {
 
   Map<String, dynamic> toQueryParameters() {
     final query = <String, dynamic>{
-      'category': category,
-      'subcategory': subcategory,
       'page': page,
       'page_size': pageSize,
     };
+    if (category.isNotEmpty && category != 'all') {
+      query['category'] = category;
+    }
+    if (subcategory.isNotEmpty && subcategory != 'all') {
+      query['subcategory'] = subcategory;
+    }
     if (sort != null && sort!.isNotEmpty) query['sort'] = sort;
     if (q != null && q!.trim().isNotEmpty) query['q'] = q!.trim();
     if (brands.isNotEmpty) query['brand'] = brands;

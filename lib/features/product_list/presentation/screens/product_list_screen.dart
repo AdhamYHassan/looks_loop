@@ -66,8 +66,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
                         text: 'DISCOVER LOCAL & INTERNATIONAL BRANDS',
                       ),
                       ProductListSubNavBar(
-                        title:
-                            '${widget.args.categoryTitle} / ${widget.args.subcategoryTitle}',
+                        title: widget.args.isBrandFilterLocked
+                            ? widget.args.subcategoryTitle
+                            : '${widget.args.categoryTitle} / ${widget.args.subcategoryTitle}',
                         onSearchSubmitted: (q) =>
                             context.read<ProductListCubit>().search(q),
                         onSearchCleared: () =>
