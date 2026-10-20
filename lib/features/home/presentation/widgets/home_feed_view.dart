@@ -1,22 +1,19 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:looks_loop/core/routing/routes.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
 import 'package:looks_loop/features/home/domain/entities/home_feed_entities.dart';
 import 'package:looks_loop/features/home/presentation/widgets/brand_strip_section.dart';
 import 'package:looks_loop/features/home/presentation/widgets/categories_section.dart';
 import 'package:looks_loop/features/home/presentation/widgets/editorial_section.dart';
 import 'package:looks_loop/features/home/presentation/widgets/hero_carousel_section.dart';
+import 'package:looks_loop/features/home/presentation/widgets/home_feed_navigation.dart';
 import 'package:looks_loop/features/home/presentation/widgets/motion_reels_section.dart';
 import 'package:looks_loop/features/home/presentation/widgets/product_rail_section.dart';
 import 'package:looks_loop/features/home/presentation/widgets/shop_look_section.dart';
 import 'package:looks_loop/features/home/presentation/widgets/trending_grid_section.dart';
-
-import 'package:easy_localization/easy_localization.dart';
-import 'package:go_router/go_router.dart';
-import 'package:looks_loop/core/routing/routes.dart';
-import 'package:looks_loop/features/product_list/domain/entities/product_list_args.dart';
-import 'package:looks_loop/features/shop/domain/entities/category_detail_entity.dart';
-import 'package:looks_loop/features/shop/presentation/models/category_detail_args.dart';
 
 class HomeFeedView extends StatelessWidget {
   final HomeFeedData feedData;
@@ -49,26 +46,11 @@ class HomeFeedView extends StatelessWidget {
             RepaintBoundary(
               child: CategoriesSection(
                 categories: feedData.categories,
-                onCategoryTap: (cat) {
-                  context.push(
-                    Routes.categoryDetail,
-                    extra: CategoryDetailArgs(
-                      id: cat.id,
-                      title: cat.name,
-                      slug: cat.slug,
-                      subcategories: cat.subcategories
-                          .map((sub) => SubCategoryEntity(
-                                id: sub.id.toString(),
-                                name: sub.name,
-                                slug: sub.slug,
-                                productCount: 0,
-                                imageUrl: sub.imageUrl,
-                              ))
-                          .toList(),
-                      railProducts: feedData.newInProducts,
-                    ),
-                  );
-                },
+                onCategoryTap: (cat) => HomeFeedNavigation.openCategory(
+                  context,
+                  cat,
+                  feedData.newInProducts,
+                ),
               ),
             ),
             RepaintBoundary(
@@ -76,34 +58,25 @@ class HomeFeedView extends StatelessWidget {
                 products: feedData.newInProducts,
                 wishlistedIds: wishlistedIds,
                 onWishlistToggle: onWishlistToggle,
-                onProductTap: (p) => _openProduct(context, p),
+                onProductTap: (p) => HomeFeedNavigation.openProduct(context, p),
               ),
             ),
             RepaintBoundary(
               child: TrendingGridSection(
                 items: feedData.trendingProducts,
-                onItemTap: (p) => _openProduct(context, p),
+                onItemTap: (p) => HomeFeedNavigation.openProduct(context, p),
+                onViewAllTap: () => HomeFeedNavigation.openTrendingViewAll(context),
               ),
             ),
             if (feedData.featuredLook != null)
               RepaintBoundary(
                 child: ShopLookSection(
                   featuredLook: feedData.featuredLook!,
-                  onShopTap: () {
-                    final look = feedData.featuredLook!;
-                    final slug = look.hotspots.isNotEmpty
-                        ? (look.hotspots.first.product.slug.isNotEmpty
-                            ? look.hotspots.first.product.slug
-                            : look.hotspots.first.product.id)
-                        : (feedData.newInProducts.isNotEmpty
-                            ? (feedData.newInProducts.first.slug.isNotEmpty
-                                ? feedData.newInProducts.first.slug
-                                : feedData.newInProducts.first.id)
-                            : '');
-                    if (slug.isNotEmpty) {
-                      context.push(Routes.productDetailPath(slug));
-                    }
-                  },
+                  onShopTap: () => HomeFeedNavigation.openShopTheLook(
+                    context,
+                    feedData.featuredLook!,
+                  ),
+                  onExploreTap: () => HomeFeedNavigation.openExploreLooks(context),
                 ),
               ),
             if (feedData.featuredLoops.isNotEmpty)
@@ -118,7 +91,7 @@ class HomeFeedView extends StatelessWidget {
                   products: feedData.saleProducts,
                   wishlistedIds: wishlistedIds,
                   onWishlistToggle: onWishlistToggle,
-                  onProductTap: (p) => _openProduct(context, p),
+                  onProductTap: (p) => HomeFeedNavigation.openProduct(context, p),
                 ),
               ),
             if (feedData.editorial != null)
@@ -129,22 +102,7 @@ class HomeFeedView extends StatelessWidget {
               child: BrandStripSection(
                 brands: feedData.brands,
                 onViewAllTap: () => context.push(Routes.brands),
-                onBrandTap: (brand) {
-                  final slug = brand.slug.isNotEmpty
-                      ? brand.slug
-                      : brand.name.toLowerCase().trim().replaceAll(' ', '-');
-                  context.push(
-                    Routes.productList,
-                    extra: ProductListArgs(
-                      category: '',
-                      subcategory: '',
-                      categoryTitle: 'BRANDS',
-                      subcategoryTitle: brand.name,
-                      initialBrands: [slug],
-                      isBrandFilterLocked: true,
-                    ),
-                  );
-                },
+                onBrandTap: (b) => HomeFeedNavigation.openBrand(context, b),
               ),
             ),
             SizedBox(height: 100.h),
@@ -152,12 +110,5 @@ class HomeFeedView extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void _openProduct(BuildContext context, ProductEntity product) {
-    final slug = product.slug.isNotEmpty ? product.slug : product.id;
-    if (slug.isNotEmpty) {
-      context.push(Routes.productDetailPath(slug));
-    }
   }
 }

@@ -5,6 +5,8 @@ import 'package:looks_loop/features/home/data/models/home_feed_models.dart';
 import 'package:looks_loop/features/home/data/repositories/home_repository_impl.dart';
 import 'package:looks_loop/features/home/domain/entities/home_feed_entities.dart';
 
+import 'package:looks_loop/features/home/data/datasources/home_local_data_source.dart';
+
 class FakeHomeRemoteDataSource implements HomeRemoteDataSource {
   final Future<HomeFeedModel> Function() onGet;
 
@@ -12,6 +14,25 @@ class FakeHomeRemoteDataSource implements HomeRemoteDataSource {
 
   @override
   Future<HomeFeedModel> getHomeFeed() => onGet();
+}
+
+class FakeHomeLocalDataSource implements HomeLocalDataSource {
+  List<String>? cached;
+
+  FakeHomeLocalDataSource({this.cached});
+
+  @override
+  Future<void> cacheAnnouncements(List<String> announcements) async {
+    cached = announcements;
+  }
+
+  @override
+  Future<void> clearCache() async {
+    cached = null;
+  }
+
+  @override
+  Future<List<String>?> getCachedAnnouncements() async => cached;
 }
 
 void main() {
@@ -129,9 +150,11 @@ void main() {
     },
   };
 
-  test('HomeRepositoryImpl parses and maps full payload correctly', () async {
+  test('HomeRepositoryImpl parses and maps full payload correctly and caches announcements', () async {
+    final localDs = FakeHomeLocalDataSource();
     final repo = HomeRepositoryImpl(
       FakeHomeRemoteDataSource(() async => HomeFeedModel.fromJson(sampleJson)),
+      localDs,
     );
 
     final result = await repo.getHomeFeed();
@@ -141,6 +164,7 @@ void main() {
     expect(data.heroSlides.length, 1);
     expect(data.heroSlides.first.titleLines.length, 2);
     expect(data.announcements.length, 2);
+    expect(localDs.cached, ['NEW DROPS EVERY FRIDAY — 8 PM', 'EASY RETURNS']);
     expect(data.categories.length, 1);
     expect(data.categories.first.subcategories.length, 1);
     expect(data.newInProducts.length, 1);
@@ -156,6 +180,17 @@ void main() {
     expect(data.editorial!.title, 'THE NEW');
   });
 
+  test('HomeRepositoryImpl returns cached announcements without network call', () async {
+    final localDs = FakeHomeLocalDataSource(cached: ['CACHED 1', 'CACHED 2']);
+    final repo = HomeRepositoryImpl(
+      FakeHomeRemoteDataSource(() async => throw UnimplementedError()),
+      localDs,
+    );
+
+    final cached = await repo.getCachedAnnouncements();
+    expect(cached, ['CACHED 1', 'CACHED 2']);
+  });
+
   test(
     'HomeRepositoryImpl catches exceptions and returns ApiFailure',
     () async {
@@ -163,6 +198,7 @@ void main() {
         FakeHomeRemoteDataSource(
           () async => throw Exception('Server unreachable'),
         ),
+        FakeHomeLocalDataSource(),
       );
 
       final result = await repo.getHomeFeed();

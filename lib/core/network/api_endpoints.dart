@@ -11,5 +11,7 @@ class ApiEndpoints {
   static const String products = 'products/';
   static const String cart = 'cart/';
   static const String cartItems = 'cart/items/';
+  static const String looks = 'looks/';
+  static String lookDetail(String slug) => 'looks/$slug/';
 }
 

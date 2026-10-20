@@ -45,7 +45,7 @@ void main() {
     facets: ProductListFacetsEntity(
       brands: [BrandFacetEntity(slug: 'zara', name: 'ZARA', count: 1)],
       sizes: ['M'],
-      colors: ['#000000'],
+      colors: [ColorFacetEntity(name: 'Black', hex: '#000000')],
     ),
     results: [dummyProduct],
   );
@@ -106,5 +106,24 @@ void main() {
 
     expect(capturedParams?.brands, contains('zara'));
     expect(capturedParams?.sale, isTrue);
+  });
+
+  test('loadProducts passes trending: true to GetProductsParams and stores isTrending in state', () async {
+    GetProductsParams? capturedParams;
+    final repo = MockProductListRepository((params) {
+      capturedParams = params;
+      return const ApiSuccess(dummyData);
+    });
+
+    final cubit = ProductListCubit(GetProductsUseCase(repo));
+    await cubit.loadProducts(
+      category: '',
+      subcategory: '',
+      trending: true,
+    );
+
+    expect(capturedParams?.trending, isTrue);
+    expect(capturedParams?.toQueryParameters()['trending'], isTrue);
+    expect((cubit.state as ProductListLoaded).isTrending, isTrue);
   });
 }

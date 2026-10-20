@@ -26,10 +26,23 @@ class BrandFacetEntity extends Equatable {
   List<Object?> get props => [slug, name, count];
 }
 
+class ColorFacetEntity extends Equatable {
+  final String name;
+  final String hex;
+
+  const ColorFacetEntity({
+    required this.name,
+    required this.hex,
+  });
+
+  @override
+  List<Object?> get props => [name, hex];
+}
+
 class ProductListFacetsEntity extends Equatable {
   final List<BrandFacetEntity> brands;
   final List<String> sizes;
-  final List<String> colors;
+  final List<ColorFacetEntity> colors;
 
   const ProductListFacetsEntity({
     this.brands = const [],

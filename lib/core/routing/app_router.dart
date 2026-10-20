@@ -35,6 +35,11 @@ import 'package:looks_loop/features/product_list/domain/entities/product_list_ar
 import 'package:looks_loop/features/product_list/domain/entities/product_list_entities.dart';
 import 'package:looks_loop/features/product_list/presentation/bloc/product_list_cubit.dart';
 import 'package:looks_loop/features/product_list/presentation/screens/product_list_screen.dart';
+import 'package:looks_loop/features/home/domain/entities/featured_look_entity.dart';
+import 'package:looks_loop/features/looks/presentation/bloc/look_detail_cubit.dart';
+import 'package:looks_loop/features/looks/presentation/bloc/looks_cubit.dart';
+import 'package:looks_loop/features/looks/presentation/screens/look_products_screen.dart';
+import 'package:looks_loop/features/looks/presentation/screens/looks_screen.dart';
 
 final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
 
@@ -267,6 +272,7 @@ class AppRouter {
                     ..loadProducts(
                       category: args.categorySlug,
                       subcategory: args.subcategorySlug,
+                      trending: args.isTrending,
                       filters: args.initialBrands.isNotEmpty
                           ? SelectedFiltersEntity(brands: args.initialBrands)
                           : null,
@@ -331,6 +337,38 @@ class AppRouter {
                 ),
               ],
               child: ProductDetailScreen(productId: slug),
+            ),
+          );
+        },
+      ),
+      GoRoute(
+        path: Routes.looks,
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: BlocProvider(
+            create: (_) => getIt<LooksCubit>(),
+            child: const LooksScreen(),
+          ),
+        ),
+      ),
+      GoRoute(
+        path: Routes.lookProducts,
+        pageBuilder: (context, state) {
+          final extra = state.extra;
+          final FeaturedLookEntity? initialLook =
+              extra is FeaturedLookEntity ? extra : null;
+          final String slug = extra is String ? extra : '';
+
+          return _buildPageWithTransition(
+            context: context,
+            state: state,
+            child: BlocProvider(
+              create: (_) => getIt<LookDetailCubit>(),
+              child: LookProductsScreen(
+                initialLook: initialLook,
+                slug: slug,
+              ),
             ),
           );
         },

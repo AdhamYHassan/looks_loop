@@ -11,29 +11,50 @@ class ProductListCubit extends Cubit<ProductListState> {
   ProductListCubit(this._getProductsUseCase)
       : super(const ProductListInitial());
 
+  GetProductsParams _buildParams({
+    required String category,
+    required String subcategory,
+    required int page,
+    required String sort,
+    required SelectedFiltersEntity filters,
+    String? q,
+    bool trending = false,
+  }) {
+    return GetProductsParams(
+      category: category,
+      subcategory: subcategory,
+      page: page,
+      sort: sort,
+      q: q,
+      brands: filters.brands,
+      sizes: filters.sizes,
+      colors: filters.colors,
+      sale: filters.sale,
+      newIn: filters.newIn,
+      trending: trending ? true : null,
+    );
+  }
+
   Future<void> loadProducts({
     required String category,
     required String subcategory,
     String? sort,
     String? q,
     SelectedFiltersEntity? filters,
+    bool trending = false,
   }) async {
     emit(const ProductListLoading());
 
     final selected = filters ?? const SelectedFiltersEntity();
     final effectiveSort = sort ?? 'recommended';
-
-    final params = GetProductsParams(
+    final params = _buildParams(
       category: category,
       subcategory: subcategory,
       page: 1,
       sort: effectiveSort,
       q: q,
-      brands: selected.brands,
-      sizes: selected.sizes,
-      colors: selected.colors,
-      sale: selected.sale,
-      newIn: selected.newIn,
+      filters: selected,
+      trending: trending,
     );
 
     final result = await _getProductsUseCase(params);
@@ -47,6 +68,7 @@ class ProductListCubit extends Cubit<ProductListState> {
           searchQuery: q,
           currentSort: effectiveSort,
           currentFilters: selected,
+          isTrending: trending,
           hasReachedMax: data.page >= data.numPages,
         ));
       case ApiFailure(:final failure):
@@ -63,17 +85,14 @@ class ProductListCubit extends Cubit<ProductListState> {
     emit(curr.copyWith(isLoadingMore: true));
 
     final nextPage = curr.data.page + 1;
-    final params = GetProductsParams(
+    final params = _buildParams(
       category: curr.category,
       subcategory: curr.subcategory,
       page: nextPage,
       sort: curr.currentSort,
       q: curr.searchQuery,
-      brands: curr.currentFilters.brands,
-      sizes: curr.currentFilters.sizes,
-      colors: curr.currentFilters.colors,
-      sale: curr.currentFilters.sale,
-      newIn: curr.currentFilters.newIn,
+      filters: curr.currentFilters,
+      trending: curr.isTrending,
     );
 
     final result = await _getProductsUseCase(params);
@@ -113,6 +132,7 @@ class ProductListCubit extends Cubit<ProductListState> {
       sort: newSort,
       q: curr.searchQuery,
       filters: curr.currentFilters,
+      trending: curr.isTrending,
     );
   }
 
@@ -125,6 +145,7 @@ class ProductListCubit extends Cubit<ProductListState> {
       sort: curr.currentSort,
       q: curr.searchQuery,
       filters: newFilters,
+      trending: curr.isTrending,
     );
   }
 
@@ -137,6 +158,7 @@ class ProductListCubit extends Cubit<ProductListState> {
       sort: curr.currentSort,
       q: query,
       filters: curr.currentFilters,
+      trending: curr.isTrending,
     );
   }
 

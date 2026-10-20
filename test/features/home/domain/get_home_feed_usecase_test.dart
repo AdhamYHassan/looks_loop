@@ -11,6 +11,9 @@ class FakeHomeRepository implements HomeRepository {
 
   @override
   Future<ApiResult<HomeFeedData>> getHomeFeed() async => result;
+
+  @override
+  Future<List<String>> getCachedAnnouncements() async => const [];
 }
 
 void main() {

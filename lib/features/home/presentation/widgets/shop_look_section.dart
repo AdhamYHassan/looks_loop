@@ -10,11 +10,13 @@ import 'package:easy_localization/easy_localization.dart';
 class ShopLookSection extends StatelessWidget {
   final FeaturedLookEntity featuredLook;
   final VoidCallback? onShopTap;
+  final VoidCallback? onExploreTap;
 
   const ShopLookSection({
     super.key,
     required this.featuredLook,
     this.onShopTap,
+    this.onExploreTap,
   });
 
   @override
@@ -86,26 +88,54 @@ class ShopLookSection extends StatelessWidget {
                     ),
                   ],
                   SizedBox(height: 16.h),
-                  ElevatedButton.icon(
-                    onPressed: onShopTap,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                      elevation: 0,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 18.w,
-                        vertical: 12.h,
+                  Wrap(
+                    spacing: 10.w,
+                    runSpacing: 8.h,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: onShopTap,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black,
+                          elevation: 0,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 12.h,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4.r),
+                          ),
+                        ),
+                        iconAlignment: IconAlignment.end,
+                        icon: Icon(LucideIcons.arrowUpRight, size: 16.sp),
+                        label: Text(
+                          'home.shop_this_look'.tr(),
+                          style: TextStyles.font11BlackCta,
+                        ),
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4.r),
+                      OutlinedButton.icon(
+                        onPressed: onExploreTap,
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          side: const BorderSide(color: Colors.white70),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 12.h,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4.r),
+                          ),
+                        ),
+                        icon: Icon(LucideIcons.compass, size: 16.sp),
+                        label: Text(
+                          'EXPLORE',
+                          style: TextStyles.font11WhiteEyebrow.copyWith(
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 1.1,
+                          ),
+                        ),
                       ),
-                    ),
-                    iconAlignment: IconAlignment.end,
-                    icon: Icon(LucideIcons.arrowUpRight, size: 16.sp),
-                    label: Text(
-                      'home.shop_this_look'.tr(),
-                      style: TextStyles.font11BlackCta,
-                    ),
+                    ],
                   ),
                 ],
               ),

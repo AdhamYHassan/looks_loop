@@ -56,4 +56,30 @@ class ColorManager {
 
   static Color getAccent(BuildContext context) =>
       isDark(context) ? sage : olive;
+
+  static final Map<String, Color> _hexCache = <String, Color>{};
+
+  static Color parseHex(String hex, [Color fallback = const Color(0xFF1A1A1A)]) {
+    if (hex.isEmpty) return fallback;
+    final cached = _hexCache[hex];
+    if (cached != null) return cached;
+
+    try {
+      final clean = hex.replaceAll('#', '').trim();
+      Color? result;
+      if (clean.length == 6) {
+        result = Color(int.parse('0xFF$clean'));
+      } else if (clean.startsWith('0x') || clean.startsWith('0X')) {
+        result = Color(int.parse(clean));
+      } else if (clean.length == 8) {
+        result = Color(int.parse('0x$clean'));
+      }
+      if (result != null) {
+        _hexCache[hex] = result;
+        return result;
+      }
+    } catch (_) {}
+    return fallback;
+  }
 }
+

@@ -24,7 +24,10 @@ void main() {
         {'slug': 'mango', 'name': 'MANGO', 'count': 2},
       ],
       'sizes': ['XS', 'S', 'M', 'L'],
-      'colors': ['#1a1a1a', '#e8e8e8'],
+      'colors': [
+        {'hex': '#1a1a1a', 'name': 'Black'},
+        {'hex': '#e8e8e8', 'name': 'White'},
+      ],
     },
     'results': [
       {
@@ -50,7 +53,7 @@ void main() {
     ],
   };
 
-  test('ProductListModel correctly parses sample JSON', () {
+  test('ProductListModel correctly parses sample JSON with color facet objects', () {
     final model = ProductListModel.fromJson(sampleJson);
 
     expect(model.count, 3);
@@ -62,7 +65,9 @@ void main() {
     expect(model.sortOptions.first.value, 'recommended');
     expect(model.facets.brands.length, 2);
     expect(model.facets.sizes, contains('XS'));
-    expect(model.facets.colors, contains('#1a1a1a'));
+    expect(model.facets.colors.length, 2);
+    expect(model.facets.colors.first.name, 'Black');
+    expect(model.facets.colors.first.hex, '#1a1a1a');
     expect(model.results.length, 1);
     expect(model.results.first.slug, 'zara-layered-casual-set');
     expect(model.results.first.brand, 'ZARA');

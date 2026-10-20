@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:looks_loop/core/network/network_result.dart';
 import 'package:looks_loop/features/home/domain/entities/product_entities.dart';
+import 'package:looks_loop/features/home/domain/usecases/get_cached_announcements_usecase.dart';
 import 'package:looks_loop/features/home/domain/usecases/get_home_feed_usecase.dart';
 import 'package:looks_loop/features/home/presentation/bloc/home_state.dart';
 import 'package:looks_loop/features/wishlist/domain/usecases/add_to_wishlist_usecase.dart';
@@ -10,6 +11,7 @@ import 'package:looks_loop/features/wishlist/domain/usecases/watch_wishlist_usec
 
 class HomeCubit extends Cubit<HomeState> {
   final GetHomeFeedUseCase _getHomeFeedUseCase;
+  final GetCachedAnnouncementsUseCase _getCachedAnnouncementsUseCase;
   final AddToWishlistUseCase _addToWishlistUseCase;
   final RemoveFromWishlistUseCase _removeFromWishlistUseCase;
   final WatchWishlistUseCase _watchWishlistUseCase;
@@ -18,10 +20,12 @@ class HomeCubit extends Cubit<HomeState> {
 
   HomeCubit(
     this._getHomeFeedUseCase,
+    this._getCachedAnnouncementsUseCase,
     this._addToWishlistUseCase,
     this._removeFromWishlistUseCase,
     this._watchWishlistUseCase,
   ) : super(const HomeInitial()) {
+    _initCachedAnnouncements();
     _wishlistSubscription = _watchWishlistUseCase().listen((wishlistItems) {
       final currentState = state;
       if (currentState is HomeLoaded) {
@@ -31,8 +35,19 @@ class HomeCubit extends Cubit<HomeState> {
     });
   }
 
+  Future<void> _initCachedAnnouncements() async {
+    final cached = await _getCachedAnnouncementsUseCase();
+    if (cached.isNotEmpty && state is HomeInitial) {
+      emit(HomeInitial(cachedAnnouncements: cached));
+    }
+  }
+
   Future<void> fetchHomeFeed() async {
-    emit(const HomeLoading());
+    List<String> currentAnnouncements = state.announcements;
+    if (currentAnnouncements.isEmpty) {
+      currentAnnouncements = await _getCachedAnnouncementsUseCase();
+    }
+    emit(HomeLoading(cachedAnnouncements: currentAnnouncements));
 
     final result = await _getHomeFeedUseCase();
 
@@ -46,9 +61,15 @@ class HomeCubit extends Cubit<HomeState> {
         emit(HomeLoaded(
           feedData: data,
           wishlistedProductIds: initialWishlist,
+          cachedAnnouncements: data.announcements.isNotEmpty
+              ? data.announcements
+              : currentAnnouncements,
         ));
       case ApiFailure(:final failure):
-        emit(HomeError(failure.message));
+        emit(HomeError(
+          failure.message,
+          cachedAnnouncements: currentAnnouncements,
+        ));
     }
   }
 

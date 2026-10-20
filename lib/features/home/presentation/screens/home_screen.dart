@@ -1,17 +1,15 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:looks_loop/core/routing/routes.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
-import 'package:looks_loop/core/theming/styles.dart';
 import 'package:looks_loop/core/widgets/app_bottom_nav_bar.dart';
 import 'package:looks_loop/features/home/presentation/bloc/home_cubit.dart';
 import 'package:looks_loop/features/home/presentation/bloc/home_state.dart';
 import 'package:looks_loop/features/home/presentation/widgets/announcement_bar.dart';
 import 'package:looks_loop/features/home/presentation/widgets/chasing_loop_preview_dialog.dart';
+import 'package:looks_loop/features/home/presentation/widgets/home_error_view.dart';
 import 'package:looks_loop/features/home/presentation/widgets/home_feed_skeleton_loader.dart';
 import 'package:looks_loop/features/home/presentation/widgets/home_feed_view.dart';
 import 'package:looks_loop/features/home/presentation/widgets/home_top_bar.dart';
@@ -69,7 +67,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: AnimatedOpacity(
                             duration: const Duration(milliseconds: 200),
                             opacity: isScrolled ? 0.0 : 1.0,
-                            child: const AnnouncementBar(),
+                            child: BlocSelector<HomeCubit, HomeState, List<String>>(
+                              selector: (state) => state.announcements,
+                              builder: (context, announcements) =>
+                                  AnnouncementBar(announcements: announcements),
+                            ),
                           ),
                         ),
                       ),
@@ -90,25 +92,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       HomeInitial() ||
                       HomeLoading() =>
                         const HomeFeedSkeletonLoader(),
-                      HomeError(:final message) => Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                message,
-                                style: TextStyles.font13TextBold(context).copyWith(
-                                  color: Colors.red,
-                                  fontSize: 14.sp,
-                                ),
-                              ),
-                              SizedBox(height: 12.h),
-                              ElevatedButton(
-                                onPressed: () =>
-                                    context.read<HomeCubit>().fetchHomeFeed(),
-                                child: Text('common.retry'.tr()),
-                              ),
-                            ],
-                          ),
+                      HomeError(:final message) => HomeErrorView(
+                          message: message,
+                          onRetry: () =>
+                              context.read<HomeCubit>().fetchHomeFeed(),
                         ),
                       HomeLoaded(
                         :final feedData,
@@ -146,3 +133,4 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+

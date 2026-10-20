@@ -5,6 +5,7 @@ import 'package:looks_loop/features/product_list/domain/entities/product_list_en
 import 'package:looks_loop/features/product_list/presentation/widgets/product_filter_apply_button.dart';
 import 'package:looks_loop/features/product_list/presentation/widgets/product_filter_brands_section.dart';
 import 'package:looks_loop/features/product_list/presentation/widgets/product_filter_chips_group.dart';
+import 'package:looks_loop/features/product_list/presentation/widgets/product_filter_color_chips_group.dart';
 import 'package:looks_loop/features/product_list/presentation/widgets/product_filter_sheet_header.dart';
 import 'package:looks_loop/features/product_list/presentation/widgets/product_filter_special_offers.dart';
 
@@ -88,9 +89,7 @@ class _ProductFilterBottomSheetState extends State<ProductFilterBottomSheet> {
                     selectedBrands: _selectedBrands,
                     isLocked: widget.isBrandFilterLocked,
                     onToggle: (slug) => setState(() {
-                      if (!_selectedBrands.remove(slug)) {
-                        _selectedBrands.add(slug);
-                      }
+                      if (!_selectedBrands.remove(slug)) _selectedBrands.add(slug);
                     }),
                   ),
                   ProductFilterChipsGroup(
@@ -101,10 +100,9 @@ class _ProductFilterBottomSheetState extends State<ProductFilterBottomSheet> {
                       if (!_selectedSizes.remove(s)) _selectedSizes.add(s);
                     }),
                   ),
-                  ProductFilterChipsGroup(
-                    title: 'COLORS',
-                    items: widget.facets.colors,
-                    selectedItems: _selectedColors,
+                  ProductFilterColorChipsGroup(
+                    colors: widget.facets.colors,
+                    selectedColors: _selectedColors,
                     onToggle: (c) => setState(() {
                       if (!_selectedColors.remove(c)) _selectedColors.add(c);
                     }),

@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:looks_loop/core/di/cart_di.dart';
 import 'package:looks_loop/core/di/brands_di.dart';
 import 'package:looks_loop/core/di/product_list_di.dart';
+import 'package:looks_loop/core/di/looks_di.dart';
 import 'package:looks_loop/features/cart/domain/usecases/add_to_cart_usecase.dart';
 import 'package:looks_loop/features/orders/data/datasources/orders_remote_data_source.dart';
 import 'package:looks_loop/features/orders/data/repositories/orders_repository_impl.dart';
@@ -30,9 +31,11 @@ import 'package:looks_loop/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:looks_loop/features/auth/domain/usecases/register_usecase.dart';
 import 'package:looks_loop/features/auth/presentation/bloc/login_cubit.dart';
 import 'package:looks_loop/features/auth/presentation/bloc/register_cubit.dart';
+import 'package:looks_loop/features/home/data/datasources/home_local_data_source.dart';
 import 'package:looks_loop/features/home/data/datasources/home_remote_data_source.dart';
 import 'package:looks_loop/features/home/data/repositories/home_repository_impl.dart';
 import 'package:looks_loop/features/home/domain/repositories/home_repository.dart';
+import 'package:looks_loop/features/home/domain/usecases/get_cached_announcements_usecase.dart';
 import 'package:looks_loop/features/home/domain/usecases/get_home_feed_usecase.dart';
 import 'package:looks_loop/features/home/presentation/bloc/home_cubit.dart';
 import 'package:looks_loop/features/main/presentation/bloc/main_cubit.dart';
@@ -74,6 +77,7 @@ Future<void> initAppDependencies() async {
   await SharedPrefsHelper.init();
   await Hive.initFlutter();
   final addressBox = await Hive.openBox<dynamic>(AddressLocalDataSourceImpl.boxName);
+  final homeBox = await Hive.openBox<dynamic>(HomeLocalDataSourceImpl.boxName);
 
   PaintingBinding.instance.imageCache.maximumSize = 250;
   PaintingBinding.instance.imageCache.maximumSizeBytes = 120 * 1024 * 1024;
@@ -82,6 +86,7 @@ Future<void> initAppDependencies() async {
 
   // Data Sources
   getIt.registerLazySingleton<HomeRemoteDataSource>(() => HomeRemoteDataSourceImpl(NetworkHelper(DioFactory.getDio())));
+  getIt.registerLazySingleton<HomeLocalDataSource>(() => HomeLocalDataSourceImpl(homeBox));
   getIt.registerLazySingleton<ShopRemoteDataSource>(() => const ShopRemoteDataSourceImpl());
   getIt.registerLazySingleton<WishlistRemoteDataSource>(() => WishlistRemoteDataSourceImpl(NetworkHelper(DioFactory.getDio())));
   getIt.registerLazySingleton<MoreLocalDataSource>(() => const MoreLocalDataSourceImpl());
@@ -95,7 +100,9 @@ Future<void> initAppDependencies() async {
   );
 
   // Repositories
-  getIt.registerLazySingleton<HomeRepository>(() => HomeRepositoryImpl(getIt<HomeRemoteDataSource>()));
+  getIt.registerLazySingleton<HomeRepository>(
+    () => HomeRepositoryImpl(getIt<HomeRemoteDataSource>(), getIt<HomeLocalDataSource>()),
+  );
   getIt.registerLazySingleton<ShopRepository>(() => ShopRepositoryImpl(getIt<ShopRemoteDataSource>()));
   getIt.registerLazySingleton<WishlistRepository>(() => WishlistRepositoryImpl(getIt<WishlistRemoteDataSource>()));
   getIt.registerLazySingleton<MoreRepository>(() => MoreRepositoryImpl(getIt<MoreLocalDataSource>()));
@@ -107,6 +114,9 @@ Future<void> initAppDependencies() async {
 
   // Use Cases
   getIt.registerLazySingleton<GetHomeFeedUseCase>(() => GetHomeFeedUseCase(getIt<HomeRepository>()));
+  getIt.registerLazySingleton<GetCachedAnnouncementsUseCase>(
+    () => GetCachedAnnouncementsUseCase(getIt<HomeRepository>()),
+  );
   getIt.registerLazySingleton<GetShopFeedUseCase>(() => GetShopFeedUseCase(getIt<ShopRepository>()));
   getIt.registerLazySingleton<GetWishlistUseCase>(() => GetWishlistUseCase(getIt<WishlistRepository>()));
   getIt.registerLazySingleton<AddToWishlistUseCase>(() => AddToWishlistUseCase(getIt<WishlistRepository>()));
@@ -130,6 +140,7 @@ Future<void> initAppDependencies() async {
   getIt.registerLazySingleton<HomeCubit>(
     () => HomeCubit(
       getIt<GetHomeFeedUseCase>(),
+      getIt<GetCachedAnnouncementsUseCase>(),
       getIt<AddToWishlistUseCase>(),
       getIt<RemoveFromWishlistUseCase>(),
       getIt<WatchWishlistUseCase>(),
@@ -161,5 +172,6 @@ Future<void> initAppDependencies() async {
   registerCartDependencies();
   registerProductListDependencies();
   registerBrandsDependencies();
+  registerLooksDependencies();
 }
 

@@ -14,6 +14,7 @@ class GetProductsParams extends Equatable {
   final List<String> colors;
   final bool? sale;
   final bool? newIn;
+  final bool? trending;
 
   const GetProductsParams({
     required this.category,
@@ -27,6 +28,7 @@ class GetProductsParams extends Equatable {
     this.colors = const [],
     this.sale,
     this.newIn,
+    this.trending,
   });
 
   Map<String, dynamic> toQueryParameters() {
@@ -47,6 +49,7 @@ class GetProductsParams extends Equatable {
     if (colors.isNotEmpty) query['color'] = colors;
     if (sale == true) query['sale'] = 1;
     if (newIn == true) query['new'] = 1;
+    if (trending == true) query['trending'] = true;
     return query;
   }
 
@@ -63,6 +66,7 @@ class GetProductsParams extends Equatable {
         colors,
         sale,
         newIn,
+        trending,
       ];
 }
 

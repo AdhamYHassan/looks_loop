@@ -66,9 +66,11 @@ class _ProductListScreenState extends State<ProductListScreen> {
                         text: 'DISCOVER LOCAL & INTERNATIONAL BRANDS',
                       ),
                       ProductListSubNavBar(
-                        title: widget.args.isBrandFilterLocked
-                            ? widget.args.subcategoryTitle
-                            : '${widget.args.categoryTitle} / ${widget.args.subcategoryTitle}',
+                        title: widget.args.isTrending
+                            ? 'TRENDING NOW'
+                            : (widget.args.isBrandFilterLocked
+                                ? widget.args.subcategoryTitle
+                                : '${widget.args.categoryTitle} / ${widget.args.subcategoryTitle}'),
                         onSearchSubmitted: (q) =>
                             context.read<ProductListCubit>().search(q),
                         onSearchCleared: () =>
@@ -117,6 +119,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
             onPressed: () => context.read<ProductListCubit>().loadProducts(
                   category: widget.args.categorySlug,
                   subcategory: widget.args.subcategorySlug,
+                  trending: widget.args.isTrending,
                 ),
             child: const Text('Retry'),
           ),

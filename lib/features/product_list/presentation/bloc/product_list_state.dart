@@ -26,6 +26,7 @@ class ProductListLoaded extends ProductListState {
   final SelectedFiltersEntity currentFilters;
   final bool isLoadingMore;
   final bool hasReachedMax;
+  final bool isTrending;
   final String? errorMessage;
 
   const ProductListLoaded({
@@ -37,6 +38,7 @@ class ProductListLoaded extends ProductListState {
     required this.currentFilters,
     this.isLoadingMore = false,
     this.hasReachedMax = false,
+    this.isTrending = false,
     this.errorMessage,
   });
 
@@ -49,6 +51,7 @@ class ProductListLoaded extends ProductListState {
     SelectedFiltersEntity? currentFilters,
     bool? isLoadingMore,
     bool? hasReachedMax,
+    bool? isTrending,
     ValueGetter<String?>? errorMessage,
   }) {
     return ProductListLoaded(
@@ -60,6 +63,7 @@ class ProductListLoaded extends ProductListState {
       currentFilters: currentFilters ?? this.currentFilters,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      isTrending: isTrending ?? this.isTrending,
       errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
     );
   }
@@ -74,6 +78,7 @@ class ProductListLoaded extends ProductListState {
         currentFilters,
         isLoadingMore,
         hasReachedMax,
+        isTrending,
         errorMessage,
       ];
 }

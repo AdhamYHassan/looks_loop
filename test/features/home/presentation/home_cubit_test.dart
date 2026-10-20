@@ -4,6 +4,7 @@ import 'package:looks_loop/core/network/failure.dart';
 import 'package:looks_loop/core/network/network_result.dart';
 import 'package:looks_loop/features/home/domain/entities/home_feed_entities.dart';
 import 'package:looks_loop/features/home/domain/repositories/home_repository.dart';
+import 'package:looks_loop/features/home/domain/usecases/get_cached_announcements_usecase.dart';
 import 'package:looks_loop/features/home/domain/usecases/get_home_feed_usecase.dart';
 import 'package:looks_loop/features/home/presentation/bloc/home_cubit.dart';
 import 'package:looks_loop/features/home/presentation/bloc/home_state.dart';
@@ -14,18 +15,31 @@ import 'package:looks_loop/features/wishlist/domain/usecases/watch_wishlist_usec
 
 class FakeSuccessHomeRepository implements HomeRepository {
   final HomeFeedData data;
-  const FakeSuccessHomeRepository(this.data);
+  final List<String> cachedAnnouncements;
+
+  const FakeSuccessHomeRepository(
+    this.data, {
+    this.cachedAnnouncements = const [],
+  });
 
   @override
   Future<ApiResult<HomeFeedData>> getHomeFeed() async => ApiSuccess(data);
+
+  @override
+  Future<List<String>> getCachedAnnouncements() async => cachedAnnouncements;
 }
 
 class FakeFailureHomeRepository implements HomeRepository {
-  const FakeFailureHomeRepository();
+  final List<String> cachedAnnouncements;
+
+  const FakeFailureHomeRepository({this.cachedAnnouncements = const []});
 
   @override
   Future<ApiResult<HomeFeedData>> getHomeFeed() async =>
       const ApiFailure(ServerFailure('Failed to fetch feed'));
+
+  @override
+  Future<List<String>> getCachedAnnouncements() async => cachedAnnouncements;
 }
 
 class FakeWishlistRepo implements WishlistRepository {
@@ -70,6 +84,7 @@ void main() {
 
   const dummyFeedData = HomeFeedData(
     heroSlides: [],
+    announcements: ['NEW DROPS EVERY FRIDAY — 8 PM'],
     categories: [],
     newInProducts: [dummyProduct],
     trendingProducts: [],
@@ -78,12 +93,13 @@ void main() {
 
   test('HomeCubit emits [HomeLoading, HomeLoaded] upon successful fetch',
       () async {
-    final useCase = GetHomeFeedUseCase(
-      const FakeSuccessHomeRepository(dummyFeedData),
-    );
+    final repo = const FakeSuccessHomeRepository(dummyFeedData);
+    final useCase = GetHomeFeedUseCase(repo);
+    final cacheUseCase = GetCachedAnnouncementsUseCase(repo);
     final wishlistRepo = FakeWishlistRepo();
     final cubit = HomeCubit(
       useCase,
+      cacheUseCase,
       AddToWishlistUseCase(wishlistRepo),
       RemoveFromWishlistUseCase(wishlistRepo),
       WatchWishlistUseCase(wishlistRepo),
@@ -91,7 +107,10 @@ void main() {
 
     final expectedStates = [
       const HomeLoading(),
-      const HomeLoaded(feedData: dummyFeedData),
+      const HomeLoaded(
+        feedData: dummyFeedData,
+        cachedAnnouncements: ['NEW DROPS EVERY FRIDAY — 8 PM'],
+      ),
     ];
 
     expectLater(cubit.stream, emitsInOrder(expectedStates));
@@ -101,10 +120,13 @@ void main() {
   });
 
   test('HomeCubit emits [HomeLoading, HomeError] upon failure', () async {
-    final useCase = GetHomeFeedUseCase(const FakeFailureHomeRepository());
+    final repo = const FakeFailureHomeRepository();
+    final useCase = GetHomeFeedUseCase(repo);
+    final cacheUseCase = GetCachedAnnouncementsUseCase(repo);
     final wishlistRepo = FakeWishlistRepo();
     final cubit = HomeCubit(
       useCase,
+      cacheUseCase,
       AddToWishlistUseCase(wishlistRepo),
       RemoveFromWishlistUseCase(wishlistRepo),
       WatchWishlistUseCase(wishlistRepo),
@@ -121,13 +143,37 @@ void main() {
     cubit.close();
   });
 
-  test('HomeCubit toggles wishlist productId and syncs via stream', () async {
-    final useCase = GetHomeFeedUseCase(
-      const FakeSuccessHomeRepository(dummyFeedData),
+  test('HomeCubit exposes cached announcements immediately without waiting for fetch', () async {
+    final repo = const FakeSuccessHomeRepository(
+      dummyFeedData,
+      cachedAnnouncements: ['CACHED ANNOUNCEMENT 1'],
     );
+    final useCase = GetHomeFeedUseCase(repo);
+    final cacheUseCase = GetCachedAnnouncementsUseCase(repo);
     final wishlistRepo = FakeWishlistRepo();
     final cubit = HomeCubit(
       useCase,
+      cacheUseCase,
+      AddToWishlistUseCase(wishlistRepo),
+      RemoveFromWishlistUseCase(wishlistRepo),
+      WatchWishlistUseCase(wishlistRepo),
+    );
+
+    // Initial check after loading cached
+    await pumpEventQueue();
+    expect(cubit.state.announcements, ['CACHED ANNOUNCEMENT 1']);
+
+    cubit.close();
+  });
+
+  test('HomeCubit toggles wishlist productId and syncs via stream', () async {
+    final repo = const FakeSuccessHomeRepository(dummyFeedData);
+    final useCase = GetHomeFeedUseCase(repo);
+    final cacheUseCase = GetCachedAnnouncementsUseCase(repo);
+    final wishlistRepo = FakeWishlistRepo();
+    final cubit = HomeCubit(
+      useCase,
+      cacheUseCase,
       AddToWishlistUseCase(wishlistRepo),
       RemoveFromWishlistUseCase(wishlistRepo),
       WatchWishlistUseCase(wishlistRepo),
@@ -151,3 +197,4 @@ void main() {
     cubit.close();
   });
 }
+

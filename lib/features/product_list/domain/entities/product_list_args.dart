@@ -7,6 +7,7 @@ class ProductListArgs extends Equatable {
   final String subcategoryTitle;
   final List<String> initialBrands;
   final bool isBrandFilterLocked;
+  final bool isTrending;
 
   const ProductListArgs({
     required this.category,
@@ -15,6 +16,7 @@ class ProductListArgs extends Equatable {
     this.subcategoryTitle = '',
     this.initialBrands = const [],
     this.isBrandFilterLocked = false,
+    this.isTrending = false,
   });
 
   static String resolveSlug(String value, [String fallback = '']) {
@@ -35,12 +37,12 @@ class ProductListArgs extends Equatable {
   }
 
   String get categorySlug {
-    if (isBrandFilterLocked || category.isEmpty) return '';
+    if (isTrending || isBrandFilterLocked || category.isEmpty) return '';
     return resolveSlug(category, categoryTitle);
   }
 
   String get subcategorySlug {
-    if (isBrandFilterLocked || subcategory.isEmpty) return '';
+    if (isTrending || isBrandFilterLocked || subcategory.isEmpty) return '';
     return resolveSlug(subcategory, subcategoryTitle);
   }
 
@@ -52,5 +54,6 @@ class ProductListArgs extends Equatable {
         subcategoryTitle,
         initialBrands,
         isBrandFilterLocked,
+        isTrending,
       ];
 }
