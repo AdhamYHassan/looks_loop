@@ -8,20 +8,41 @@ import 'package:looks_loop/features/home/domain/entities/product_entities.dart';
 import 'package:looks_loop/features/looks/presentation/widgets/look_product_actions.dart';
 import 'package:looks_loop/features/looks/presentation/widgets/look_product_variants.dart';
 
-class LookProductItemCard extends StatelessWidget {
+class LookProductItemCard extends StatefulWidget {
   final ProductEntity product;
   final VoidCallback onViewProduct;
-  final VoidCallback onAddToBag;
+  final void Function({int? colorId, String? size}) onAddToBag;
+
+  final bool isAddingToBag;
 
   const LookProductItemCard({
     super.key,
     required this.product,
     required this.onViewProduct,
     required this.onAddToBag,
+    this.isAddingToBag = false,
   });
 
   @override
+  State<LookProductItemCard> createState() => _LookProductItemCardState();
+}
+
+class _LookProductItemCardState extends State<LookProductItemCard> {
+  int? _selectedColorId;
+  String? _selectedSize;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedColorId = widget.product.colors.firstOrNull?.id;
+    final isShoe = widget.product.subcategory.toLowerCase().contains('shoe') ||
+        widget.product.category.toLowerCase().contains('shoe');
+    _selectedSize = isShoe ? '38' : 'M';
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final product = widget.product;
     return Column(
       children: [
         Row(
@@ -67,17 +88,29 @@ class LookProductItemCard extends StatelessWidget {
                   LookProductPriceRow(product: product),
                   if (product.colors.isNotEmpty) ...[
                     Gap(8.h),
-                    LookProductColorSwatches(colors: product.colors),
+                    LookProductColorSwatches(
+                      colors: product.colors,
+                      selectedColorId: _selectedColorId,
+                      onColorSelected: (id) =>
+                          setState(() => _selectedColorId = id),
+                    ),
                   ],
                   Gap(8.h),
                   LookProductSizesRow(
                     category: product.category,
                     subcategory: product.subcategory,
+                    selectedSize: _selectedSize,
+                    onSizeSelected: (size) =>
+                        setState(() => _selectedSize = size),
                   ),
                   Gap(12.h),
                   LookProductActionButtons(
-                    onAddToBag: onAddToBag,
-                    onViewProduct: onViewProduct,
+                    onAddToBag: () => widget.onAddToBag(
+                      colorId: _selectedColorId,
+                      size: _selectedSize,
+                    ),
+                    onViewProduct: widget.onViewProduct,
+                    isAddingToBag: widget.isAddingToBag,
                   ),
                 ],
               ),

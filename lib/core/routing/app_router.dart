@@ -273,8 +273,11 @@ class AppRouter {
                       category: args.categorySlug,
                       subcategory: args.subcategorySlug,
                       trending: args.isTrending,
-                      filters: args.initialBrands.isNotEmpty
-                          ? SelectedFiltersEntity(brands: args.initialBrands)
+                      filters: (args.initialBrands.isNotEmpty || args.isSale)
+                          ? SelectedFiltersEntity(
+                              brands: args.initialBrands,
+                              sale: args.isSale,
+                            )
                           : null,
                     ),
                 ),

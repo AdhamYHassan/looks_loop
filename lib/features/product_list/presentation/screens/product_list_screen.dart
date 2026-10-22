@@ -6,6 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
 import 'package:looks_loop/features/home/presentation/widgets/announcement_bar.dart';
 import 'package:looks_loop/features/product_list/domain/entities/product_list_args.dart';
+import 'package:looks_loop/features/product_list/domain/entities/product_list_entities.dart';
 import 'package:looks_loop/features/product_list/presentation/bloc/product_list_cubit.dart';
 import 'package:looks_loop/features/product_list/presentation/bloc/product_list_state.dart';
 import 'package:looks_loop/features/product_list/presentation/widgets/product_list_body.dart';
@@ -68,9 +69,11 @@ class _ProductListScreenState extends State<ProductListScreen> {
                       ProductListSubNavBar(
                         title: widget.args.isTrending
                             ? 'TRENDING NOW'
-                            : (widget.args.isBrandFilterLocked
-                                ? widget.args.subcategoryTitle
-                                : '${widget.args.categoryTitle} / ${widget.args.subcategoryTitle}'),
+                            : (widget.args.isSale
+                                ? 'ON SALE'
+                                : (widget.args.isBrandFilterLocked
+                                    ? widget.args.subcategoryTitle
+                                    : '${widget.args.categoryTitle} / ${widget.args.subcategoryTitle}')),
                         onSearchSubmitted: (q) =>
                             context.read<ProductListCubit>().search(q),
                         onSearchCleared: () =>
@@ -120,6 +123,13 @@ class _ProductListScreenState extends State<ProductListScreen> {
                   category: widget.args.categorySlug,
                   subcategory: widget.args.subcategorySlug,
                   trending: widget.args.isTrending,
+                  filters: (widget.args.initialBrands.isNotEmpty ||
+                          widget.args.isSale)
+                      ? SelectedFiltersEntity(
+                          brands: widget.args.initialBrands,
+                          sale: widget.args.isSale,
+                        )
+                      : null,
                 ),
             child: const Text('Retry'),
           ),

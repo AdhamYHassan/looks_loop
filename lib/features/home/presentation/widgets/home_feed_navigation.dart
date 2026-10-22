@@ -66,6 +66,19 @@ abstract final class HomeFeedNavigation {
     );
   }
 
+  static void openSaleViewAll(BuildContext context) {
+    context.push(
+      Routes.productList,
+      extra: const ProductListArgs(
+        category: '',
+        subcategory: '',
+        categoryTitle: 'SPECIAL OFFERS',
+        subcategoryTitle: 'ON SALE',
+        isSale: true,
+      ),
+    );
+  }
+
   static void openProduct(BuildContext context, ProductEntity product) {
     final slug = product.slug.isNotEmpty ? product.slug : product.id;
     if (slug.isNotEmpty) {

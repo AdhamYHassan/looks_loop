@@ -19,4 +19,5 @@ class Routes {
   static String productDetailPath(String slug) => '/product-detail/$slug';
   static const String looks = '/looks';
   static const String lookProducts = '/look-products';
+  static const String checkout = '/checkout';
 }

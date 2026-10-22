@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:looks_loop/core/network/network_result.dart';
-import 'package:looks_loop/features/home/data/models/featured_look_model.dart';
 import 'package:looks_loop/features/looks/data/datasources/looks_remote_data_source.dart';
 import 'package:looks_loop/features/looks/data/models/look_model.dart';
 import 'package:looks_loop/features/looks/data/repositories/looks_repository_impl.dart';

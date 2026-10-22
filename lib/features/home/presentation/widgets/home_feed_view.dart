@@ -92,6 +92,7 @@ class HomeFeedView extends StatelessWidget {
                   wishlistedIds: wishlistedIds,
                   onWishlistToggle: onWishlistToggle,
                   onProductTap: (p) => HomeFeedNavigation.openProduct(context, p),
+                  onViewAllTap: () => HomeFeedNavigation.openSaleViewAll(context),
                 ),
               ),
             if (feedData.editorial != null)

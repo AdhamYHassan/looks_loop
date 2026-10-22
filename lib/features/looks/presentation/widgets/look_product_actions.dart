@@ -53,11 +53,13 @@ class LookProductPriceRow extends StatelessWidget {
 class LookProductActionButtons extends StatelessWidget {
   final VoidCallback onAddToBag;
   final VoidCallback onViewProduct;
+  final bool isAddingToBag;
 
   const LookProductActionButtons({
     super.key,
     required this.onAddToBag,
     required this.onViewProduct,
+    this.isAddingToBag = false,
   });
 
   @override
@@ -67,19 +69,31 @@ class LookProductActionButtons extends StatelessWidget {
         Expanded(
           flex: 6,
           child: ElevatedButton.icon(
-            onPressed: onAddToBag,
+            onPressed: isAddingToBag ? null : onAddToBag,
             style: ElevatedButton.styleFrom(
               backgroundColor: ColorManager.olive,
               foregroundColor: Colors.white,
+              disabledBackgroundColor:
+                  ColorManager.olive.withValues(alpha: 0.7),
+              disabledForegroundColor: Colors.white,
               elevation: 0,
               padding: EdgeInsets.symmetric(vertical: 8.h),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(3.r),
               ),
             ),
-            icon: Icon(LucideIcons.shoppingBag, size: 13.sp),
+            icon: isAddingToBag
+                ? SizedBox(
+                    width: 12.sp,
+                    height: 12.sp,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 1.5.w,
+                      color: Colors.white,
+                    ),
+                  )
+                : Icon(LucideIcons.shoppingBag, size: 13.sp),
             label: Text(
-              'ADD TO BAG',
+              isAddingToBag ? 'ADDING...' : 'ADD TO BAG',
               style: TextStyles.font11WhiteEyebrow.copyWith(
                 fontSize: 10.sp,
                 fontWeight: FontWeight.w700,

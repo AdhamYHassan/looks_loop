@@ -50,7 +50,24 @@ class _LookProductsScreenState extends State<LookProductsScreen> {
         appBar: LookProductsAppBar(
           initialCount: widget.initialLook?.hotspots.length ?? 0,
         ),
-        body: BlocBuilder<LookDetailCubit, LookDetailState>(
+        body: BlocConsumer<LookDetailCubit, LookDetailState>(
+          listener: (context, state) {
+            if (state is LookDetailLoaded && state.bagActionMessage != null) {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    state.bagActionMessage!,
+                    style: TextStyle(fontSize: 12.sp, color: Colors.white),
+                  ),
+                  backgroundColor: ColorManager.ink,
+                  duration: const Duration(seconds: 2),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+              context.read<LookDetailCubit>().clearBagActionMessage();
+            }
+          },
           builder: (context, state) {
             return switch (state) {
               LookDetailInitial() || LookDetailLoading() => Center(
@@ -77,16 +94,26 @@ class _LookProductsScreenState extends State<LookProductsScreen> {
                     ],
                   ),
                 ),
-              LookDetailLoaded(:final look) => ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+              LookDetailLoaded(:final look, :final addingProductId) =>
+                ListView.builder(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
                   itemCount: look.hotspots.length,
                   itemBuilder: (context, index) {
                     final item = look.hotspots[index].product;
                     return LookProductItemCard(
                       key: ValueKey(item.id),
                       product: item,
-                      onViewProduct: () => _openProduct(context, item.slug, item.id),
-                      onAddToBag: () => _openProduct(context, item.slug, item.id),
+                      isAddingToBag: addingProductId == item.id,
+                      onViewProduct: () =>
+                          _openProduct(context, item.slug, item.id),
+                      onAddToBag: ({colorId, size}) {
+                        context.read<LookDetailCubit>().addProductToBag(
+                              product: item,
+                              colorId: colorId,
+                              size: size,
+                            );
+                      },
                     );
                   },
                 ),

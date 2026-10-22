@@ -5,6 +5,7 @@ import 'package:looks_loop/core/di/brands_di.dart';
 import 'package:looks_loop/core/di/product_list_di.dart';
 import 'package:looks_loop/core/di/looks_di.dart';
 import 'package:looks_loop/features/cart/domain/usecases/add_to_cart_usecase.dart';
+import 'package:looks_loop/features/checkout/presentation/bloc/checkout_cubit.dart';
 import 'package:looks_loop/features/orders/data/datasources/orders_remote_data_source.dart';
 import 'package:looks_loop/features/orders/data/repositories/orders_repository_impl.dart';
 import 'package:looks_loop/features/orders/domain/repositories/orders_repository.dart';
@@ -168,6 +169,7 @@ Future<void> initAppDependencies() async {
         getIt<GetProductDetailUseCase>(),
         getIt<AddToCartUseCase>(),
       ));
+  getIt.registerFactory<CheckoutCubit>(() => CheckoutCubit());
 
   registerCartDependencies();
   registerProductListDependencies();
