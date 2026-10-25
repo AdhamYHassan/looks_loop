@@ -127,11 +127,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 currentIndex: _currentTabIndex,
                 onTabSelected: (index) {
                   setState(() => _currentTabIndex = index);
-                  if (index == 2) {
-                    context.push(Routes.shop);
-                  } else if (index == 3) {
-                    context.push(Routes.wishlist);
-                  }
+                  if (index == 2) context.push(Routes.shop);
+                  if (index == 3) context.push(Routes.wishlist);
                 },
               )
             : null,

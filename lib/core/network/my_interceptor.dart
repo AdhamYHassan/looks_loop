@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:looks_loop/core/helpers/digit_converter.dart';
 import 'package:looks_loop/core/helpers/secure_storage_helper.dart';
+import 'package:looks_loop/core/network/api_endpoints.dart';
 import 'package:looks_loop/core/network/dio_factory.dart';
 import 'package:looks_loop/core/network/token_refresh_manager.dart';
 
@@ -86,7 +87,8 @@ class MyInterceptor extends Interceptor {
     _log('ERROR[${err.response?.statusCode}] => ${err.message}', 'Network-Error', level: 1000, error: err);
 
     if (err.response?.statusCode == 401) {
-      final isRefresh = err.requestOptions.path.contains('user/mobile/token/refresh/');
+      final isRefresh =
+          err.requestOptions.path.contains(ApiEndpoints.refreshToken);
       final isRetry = err.requestOptions.extra['isRetry'] == true;
 
       if (!isRefresh && !isRetry) {

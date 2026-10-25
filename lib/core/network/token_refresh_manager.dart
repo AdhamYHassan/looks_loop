@@ -41,7 +41,7 @@ class TokenRefreshManager {
       );
 
       final response = await dio.post(
-        'user/mobile/token/refresh/',
+        ApiEndpoints.refreshToken,
         data: {'refresh': refreshToken},
       );
 
