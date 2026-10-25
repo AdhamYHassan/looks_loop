@@ -12,6 +12,7 @@ class AddressEntity extends Equatable {
   final String phone;
   final int cityId;
   final String cityName;
+  final int? provinceId;
   final String area;
   final String street;
   final String building;
@@ -34,6 +35,7 @@ class AddressEntity extends Equatable {
     required this.phone,
     required this.cityId,
     required this.cityName,
+    this.provinceId,
     required this.area,
     required this.street,
     required this.building,
@@ -79,6 +81,7 @@ class AddressEntity extends Equatable {
         phone,
         cityId,
         cityName,
+        provinceId,
         area,
         street,
         building,

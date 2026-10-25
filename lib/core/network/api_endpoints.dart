@@ -13,5 +13,7 @@ class ApiEndpoints {
   static const String cartItems = 'cart/items/';
   static const String looks = 'looks/';
   static String lookDetail(String slug) => 'looks/$slug/';
+  static const String deliveryMethods = 'delivery-methods/';
+  static const String paymentMethods = 'payment-methods/';
+  static const String search = 'search/suggest/';
 }
-

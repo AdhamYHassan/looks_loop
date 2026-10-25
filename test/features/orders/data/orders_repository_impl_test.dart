@@ -11,8 +11,9 @@ import 'package:looks_loop/features/orders/domain/entities/orders_page_entity.da
 class FakeOrdersRemoteDataSource implements OrdersRemoteDataSource {
   final Future<OrdersPageModel> Function()? onGet;
   final Future<OrderDetailModel> Function(String)? onGetDetail;
+  final Future<OrderDetailModel> Function(String)? onCancel;
 
-  FakeOrdersRemoteDataSource({this.onGet, this.onGetDetail});
+  FakeOrdersRemoteDataSource({this.onGet, this.onGetDetail, this.onCancel});
 
   @override
   Future<OrdersPageModel> getOrders() => onGet!();
@@ -20,6 +21,10 @@ class FakeOrdersRemoteDataSource implements OrdersRemoteDataSource {
   @override
   Future<OrderDetailModel> getOrderDetail(String orderNumber) =>
       onGetDetail!(orderNumber);
+
+  @override
+  Future<OrderDetailModel> cancelOrder(String orderNumber) =>
+      onCancel != null ? onCancel!(orderNumber) : onGetDetail!(orderNumber);
 }
 
 void main() {

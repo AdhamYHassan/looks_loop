@@ -44,7 +44,7 @@ void registerCartDependencies() {
   );
 
   // Cubit
-  getIt.registerFactory<CartCubit>(
+  getIt.registerLazySingleton<CartCubit>(
     () => CartCubit(
       getIt<GetCartUseCase>(),
       getIt<UpdateCartQuantityUseCase>(),

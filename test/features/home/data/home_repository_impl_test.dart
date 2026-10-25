@@ -3,6 +3,7 @@ import 'package:looks_loop/core/network/network_result.dart';
 import 'package:looks_loop/features/home/data/datasources/home_remote_data_source.dart';
 import 'package:looks_loop/features/home/data/models/home_feed_models.dart';
 import 'package:looks_loop/features/home/data/repositories/home_repository_impl.dart';
+import 'package:looks_loop/core/cache/catalog_cache.dart';
 import 'package:looks_loop/features/home/domain/entities/home_feed_entities.dart';
 
 import 'package:looks_loop/features/home/data/datasources/home_local_data_source.dart';
@@ -150,11 +151,13 @@ void main() {
     },
   };
 
-  test('HomeRepositoryImpl parses and maps full payload correctly and caches announcements', () async {
+  test('HomeRepositoryImpl parses and maps full payload correctly and caches announcements and categories', () async {
     final localDs = FakeHomeLocalDataSource();
+    final catalogCache = CatalogCache();
     final repo = HomeRepositoryImpl(
       FakeHomeRemoteDataSource(() async => HomeFeedModel.fromJson(sampleJson)),
       localDs,
+      catalogCache,
     );
 
     final result = await repo.getHomeFeed();
@@ -165,6 +168,7 @@ void main() {
     expect(data.heroSlides.first.titleLines.length, 2);
     expect(data.announcements.length, 2);
     expect(localDs.cached, ['NEW DROPS EVERY FRIDAY — 8 PM', 'EASY RETURNS']);
+    expect(catalogCache.hasCategories, isTrue);
     expect(data.categories.length, 1);
     expect(data.categories.first.subcategories.length, 1);
     expect(data.newInProducts.length, 1);
@@ -185,6 +189,7 @@ void main() {
     final repo = HomeRepositoryImpl(
       FakeHomeRemoteDataSource(() async => throw UnimplementedError()),
       localDs,
+      CatalogCache(),
     );
 
     final cached = await repo.getCachedAnnouncements();
@@ -199,6 +204,7 @@ void main() {
           () async => throw Exception('Server unreachable'),
         ),
         FakeHomeLocalDataSource(),
+        CatalogCache(),
       );
 
       final result = await repo.getHomeFeed();

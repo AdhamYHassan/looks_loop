@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:looks_loop/core/di/dependency_injection.dart';
+import 'package:looks_loop/core/routing/routes.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
 import 'package:looks_loop/core/widgets/loaders/loaders.dart';
 import 'package:looks_loop/features/cart/presentation/bloc/cart_cubit.dart';
@@ -59,7 +60,10 @@ class _CartScreenContent extends StatelessWidget {
           bottomNavigationBar: state is CartLoaded
               ? CartStickyCta(
                   total: state.cart.summary.total,
-                  onCheckout: () {},
+                  onCheckout: () => context.push(
+                    Routes.checkout,
+                    extra: state.cart,
+                  ),
                 )
               : null,
           body: SafeArea(

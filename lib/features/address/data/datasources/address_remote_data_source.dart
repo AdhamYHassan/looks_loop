@@ -20,9 +20,13 @@ class AddressRemoteDataSourceImpl implements AddressRemoteDataSource {
   @override
   Future<List<AddressModel>> getAddresses() async {
     final response = await _networkHelper.get(ApiEndpoints.addresses);
-    final data = response.data as List<dynamic>;
-    return data
-        .map((e) => AddressModel.fromJson(e as Map<String, dynamic>))
+    final raw = response.data;
+    final list = raw is Map<String, dynamic> && raw['data'] is List
+        ? raw['data'] as List<dynamic>
+        : (raw is List ? raw : const []);
+    return list
+        .whereType<Map<String, dynamic>>()
+        .map(AddressModel.fromJson)
         .toList();
   }
 
@@ -32,15 +36,24 @@ class AddressRemoteDataSourceImpl implements AddressRemoteDataSource {
       ApiEndpoints.addresses,
       data: request.toJson(),
     );
-    return AddressModel.fromJson(response.data as Map<String, dynamic>);
+    final raw = response.data;
+    final map =
+        raw is Map<String, dynamic> && raw['data'] is Map<String, dynamic>
+            ? raw['data'] as Map<String, dynamic>
+            : (raw as Map<String, dynamic>);
+    return AddressModel.fromJson(map);
   }
 
   @override
   Future<List<ProvinceModel>> getProvinces() async {
     final response = await _networkHelper.get(ApiEndpoints.provincesNested);
-    final data = response.data as List<dynamic>;
-    return data
-        .map((e) => ProvinceModel.fromJson(e as Map<String, dynamic>))
+    final raw = response.data;
+    final list = raw is Map<String, dynamic> && raw['data'] is List
+        ? raw['data'] as List<dynamic>
+        : (raw is List ? raw : const []);
+    return list
+        .whereType<Map<String, dynamic>>()
+        .map(ProvinceModel.fromJson)
         .toList();
   }
 }

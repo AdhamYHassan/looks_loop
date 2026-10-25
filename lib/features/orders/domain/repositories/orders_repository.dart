@@ -9,4 +9,7 @@ abstract interface class OrdersRepository {
 
   /// Fetches the details of a specific order from `orders/$orderNumber/`.
   Future<ApiResult<OrderDetailEntity>> getOrderDetail(String orderNumber);
+
+  /// Cancels an order via POST `orders/$orderNumber/cancel/`.
+  Future<ApiResult<OrderDetailEntity>> cancelOrder(String orderNumber);
 }

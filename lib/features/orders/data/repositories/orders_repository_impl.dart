@@ -29,4 +29,14 @@ class OrdersRepositoryImpl implements OrdersRepository {
       return ApiFailure(NetworkExceptions.getFailure(e));
     }
   }
+
+  @override
+  Future<ApiResult<OrderDetailEntity>> cancelOrder(String orderNumber) async {
+    try {
+      final model = await _remoteDataSource.cancelOrder(orderNumber);
+      return ApiSuccess(model.toEntity());
+    } catch (e) {
+      return ApiFailure(NetworkExceptions.getFailure(e));
+    }
+  }
 }

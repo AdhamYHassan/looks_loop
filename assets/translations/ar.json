@@ -211,6 +211,9 @@
     "free": "مجاناً",
     "total": "الإجمالي",
     "cancel_order": "إلغاء الطلب",
+    "cancel_confirm_title": "إلغاء الطلب",
+    "cancel_confirm_message": "هل أنت متأكد من رغبتك في إلغاء هذا الطلب؟",
+    "cancel_success": "تم إلغاء الطلب بنجاح",
     "status": {
       "pending": "قيد الانتظار",
       "confirmed": "تم التأكيد",
@@ -243,5 +246,12 @@
     "selected_brands": "علامات تجارية مختارة",
     "currency": "ج.م",
     "default_announcement": "اكتشف علامات تجارية محلية وعالمية"
+  },
+  "checkout": {
+    "order_success_title": "تم تأكيد طلبك بنجاح!",
+    "order_success_message": "شكراً لطلبك. لقد استلمنا طلبك وسنقوم بمعالجته قريباً.",
+    "go_to_orders": "الذهاب إلى الطلبات",
+    "back_to_home": "العودة للرئيسية",
+    "order_number": "طلب رقم #{}"
   }
 }

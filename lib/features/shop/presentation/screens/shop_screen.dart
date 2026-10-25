@@ -12,6 +12,7 @@ import 'package:looks_loop/features/home/presentation/bloc/home_state.dart';
 import 'package:looks_loop/features/shop/presentation/bloc/shop_cubit.dart';
 import 'package:looks_loop/features/shop/presentation/bloc/shop_state.dart';
 import 'package:looks_loop/features/shop/presentation/models/shop_feed_resolvers.dart';
+import 'package:looks_loop/features/shop/presentation/models/shop_quick_link_navigation.dart';
 import 'package:looks_loop/features/shop/presentation/widgets/shop_error_view.dart';
 import 'package:looks_loop/features/shop/presentation/widgets/shop_feed_content.dart';
 import 'package:looks_loop/features/shop/presentation/widgets/shop_top_bar.dart';
@@ -45,16 +46,16 @@ class ShopScreen extends StatelessWidget {
                   builder: (context, state) {
                     return switch (state) {
                       ShopInitial() || ShopLoading() => Center(
-                          child: ChasingLoopLoader(
-                            size: 64.w,
-                            color: ColorManager.olive,
-                          ),
+                        child: ChasingLoopLoader(
+                          size: 64.w,
+                          color: ColorManager.olive,
                         ),
+                      ),
                       ShopError(:final message) => ShopErrorView(
-                            message: message,
-                            onRetry: () =>
-                                context.read<ShopCubit>().fetchShopFeed(),
-                          ),
+                        message: message,
+                        onRetry: () =>
+                            context.read<ShopCubit>().fetchShopFeed(),
+                      ),
                       ShopLoaded(
                         :final feedData,
                         :final selectedAudienceId,
@@ -78,20 +79,23 @@ class ShopScreen extends StatelessWidget {
                           },
                           onCategoryTap: (subcat) =>
                               ShopFeedResolvers.navigateToSubcategory(
-                            context,
-                            homeData: homeData,
-                            selectedAudienceId: selectedAudienceId,
-                            subcat: subcat,
-                          ),
+                                context,
+                                homeData: homeData,
+                                selectedAudienceId: selectedAudienceId,
+                                subcat: subcat,
+                              ),
                           onViewAllCategories: () =>
                               ShopFeedResolvers.navigateToViewAll(
-                            context,
-                            homeData: homeData,
-                            selectedAudienceId: selectedAudienceId,
-                            fallbackRail: feedData.newInProducts,
-                          ),
-                          onSelectQuickLink: (link) =>
-                              context.read<ShopCubit>().selectQuickLink(link),
+                                context,
+                                homeData: homeData,
+                                selectedAudienceId: selectedAudienceId,
+                                fallbackRail: feedData.newInProducts,
+                              ),
+                          onSelectQuickLink: (link) {
+                            context.read<ShopCubit>().selectQuickLink(link);
+                            ShopQuickLinkNavigation.navigate(context, link);
+                          },
+
                           onWishlistToggle: (id) =>
                               context.read<ShopCubit>().toggleWishlist(id),
                           onProductTap: (product) {

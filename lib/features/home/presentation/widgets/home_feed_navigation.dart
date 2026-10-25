@@ -7,7 +7,11 @@ import 'package:looks_loop/features/shop/domain/entities/category_detail_entity.
 import 'package:looks_loop/features/shop/presentation/models/category_detail_args.dart';
 
 abstract final class HomeFeedNavigation {
-  static void openCategory(BuildContext context, CategoryEntity cat, List<ProductEntity> newIn) {
+  static void openCategory(
+    BuildContext context,
+    CategoryEntity cat,
+    List<ProductEntity> newIn,
+  ) {
     context.push(
       Routes.categoryDetail,
       extra: CategoryDetailArgs(
@@ -15,13 +19,15 @@ abstract final class HomeFeedNavigation {
         title: cat.name,
         slug: cat.slug,
         subcategories: cat.subcategories
-            .map((sub) => SubCategoryEntity(
-                  id: sub.id.toString(),
-                  name: sub.name,
-                  slug: sub.slug,
-                  productCount: 0,
-                  imageUrl: sub.imageUrl,
-                ))
+            .map(
+              (sub) => SubCategoryEntity(
+                id: sub.id.toString(),
+                name: sub.name,
+                slug: sub.slug,
+                productCount: 0,
+                imageUrl: sub.imageUrl,
+              ),
+            )
             .toList(),
         railProducts: newIn,
       ),
@@ -62,6 +68,18 @@ abstract final class HomeFeedNavigation {
         categoryTitle: 'TRENDING',
         subcategoryTitle: 'NOW',
         isTrending: true,
+      ),
+    );
+  }
+
+  static void openNewInViewAll(BuildContext context) {
+    context.push(
+      Routes.productList,
+      extra: const ProductListArgs(
+        category: '',
+        subcategory: '',
+        categoryTitle: 'NEW IN',
+        isNew: true,
       ),
     );
   }

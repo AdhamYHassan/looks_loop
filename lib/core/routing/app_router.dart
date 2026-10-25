@@ -20,6 +20,7 @@ import 'package:looks_loop/features/shop/domain/entities/shop_feed_entities.dart
 import 'package:looks_loop/features/shop/presentation/bloc/category_detail_cubit.dart';
 import 'package:looks_loop/features/shop/presentation/models/category_detail_args.dart';
 import 'package:looks_loop/features/shop/presentation/screens/category_detail_screen.dart';
+import 'package:looks_loop/features/cart/presentation/bloc/cart_cubit.dart';
 import 'package:looks_loop/features/cart/presentation/screens/cart_screen.dart';
 import 'package:looks_loop/features/wishlist/presentation/bloc/wishlist_cubit.dart';
 import 'package:looks_loop/features/wishlist/presentation/screens/wishlist_screen.dart';
@@ -38,6 +39,10 @@ import 'package:looks_loop/features/product_list/presentation/screens/product_li
 import 'package:looks_loop/features/home/domain/entities/featured_look_entity.dart';
 import 'package:looks_loop/features/looks/presentation/bloc/look_detail_cubit.dart';
 import 'package:looks_loop/features/looks/presentation/bloc/looks_cubit.dart';
+import 'package:looks_loop/features/address/presentation/bloc/address_cubit.dart';
+import 'package:looks_loop/features/cart/domain/entities/cart_entity.dart';
+import 'package:looks_loop/features/checkout/presentation/bloc/checkout_cubit.dart';
+import 'package:looks_loop/features/checkout/presentation/screens/checkout_screen.dart';
 import 'package:looks_loop/features/looks/presentation/screens/look_products_screen.dart';
 import 'package:looks_loop/features/looks/presentation/screens/looks_screen.dart';
 
@@ -273,10 +278,13 @@ class AppRouter {
                       category: args.categorySlug,
                       subcategory: args.subcategorySlug,
                       trending: args.isTrending,
-                      filters: (args.initialBrands.isNotEmpty || args.isSale)
+                      filters: (args.initialBrands.isNotEmpty ||
+                              args.isSale ||
+                              args.isNew)
                           ? SelectedFiltersEntity(
                               brands: args.initialBrands,
                               sale: args.isSale,
+                              newIn: args.isNew,
                             )
                           : null,
                     ),
@@ -297,6 +305,30 @@ class AppRouter {
           state: state,
           child: const CartScreen(),
         ),
+      ),
+      GoRoute(
+        path: Routes.checkout,
+        pageBuilder: (context, state) {
+          final initialCart = state.extra as CartEntity?;
+          return _buildPageWithTransition(
+            context: context,
+            state: state,
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (_) => getIt<CheckoutCubit>(),
+                ),
+                BlocProvider(
+                  create: (_) => getIt<AddressCubit>()..loadAddresses(),
+                ),
+                BlocProvider(
+                  create: (_) => getIt<CartCubit>()..getCart(),
+                ),
+              ],
+              child: CheckoutScreen(initialCart: initialCart),
+            ),
+          );
+        },
       ),
       GoRoute(
         path: Routes.productDetail,

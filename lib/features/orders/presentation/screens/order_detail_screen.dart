@@ -2,27 +2,35 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gap/gap.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
 import 'package:looks_loop/core/theming/styles.dart';
+import 'package:looks_loop/core/widgets/app_snack_bar.dart';
 import 'package:looks_loop/features/home/presentation/widgets/announcement_bar.dart';
-import 'package:looks_loop/features/orders/domain/entities/order_detail_entity.dart';
 import 'package:looks_loop/features/orders/presentation/bloc/order_detail_cubit.dart';
 import 'package:looks_loop/features/orders/presentation/bloc/order_detail_state.dart';
-import 'package:looks_loop/features/orders/presentation/widgets/order_address_section.dart';
-import 'package:looks_loop/features/orders/presentation/widgets/order_cancel_button.dart';
-import 'package:looks_loop/features/orders/presentation/widgets/order_detail_header.dart';
+import 'package:looks_loop/features/orders/presentation/widgets/cancel_order_dialog.dart';
+import 'package:looks_loop/features/orders/presentation/widgets/order_detail_content.dart';
+import 'package:looks_loop/features/orders/presentation/widgets/order_detail_error_view.dart';
 import 'package:looks_loop/features/orders/presentation/widgets/order_detail_skeleton_loader.dart';
-import 'package:looks_loop/features/orders/presentation/widgets/order_info_card.dart';
-import 'package:looks_loop/features/orders/presentation/widgets/order_items_section.dart';
-import 'package:looks_loop/features/orders/presentation/widgets/order_summary_section.dart';
-import 'package:looks_loop/features/orders/presentation/widgets/order_tracking_stepper.dart';
 
 class OrderDetailScreen extends StatelessWidget {
   final String orderNumber;
 
   const OrderDetailScreen({super.key, required this.orderNumber});
+
+  Future<void> _onCancelPressed(BuildContext context) async {
+    final confirmed = await showCancelOrderDialog(context);
+    if (confirmed == true && context.mounted) {
+      final success =
+          await context.read<OrderDetailCubit>().cancelOrder(orderNumber);
+      if (success && context.mounted) {
+        AppSnackBar.showSuccess(
+          context,
+          message: 'orders.cancel_success'.tr(),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,105 +68,42 @@ class OrderDetailScreen extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: BlocBuilder<OrderDetailCubit, OrderDetailState>(
+                child: BlocConsumer<OrderDetailCubit, OrderDetailState>(
+                  listener: (context, state) {
+                    if (state is OrderDetailLoaded &&
+                        state.cancelError != null) {
+                      AppSnackBar.showError(
+                        context,
+                        message: state.cancelError!,
+                      );
+                    }
+                  },
                   builder: (context, state) => switch (state) {
                     OrderDetailInitial() || OrderDetailLoading() =>
                       const OrderDetailSkeletonLoader(),
-                    OrderDetailError(:final message) => _ErrorView(
+                    OrderDetailError(:final message) => OrderDetailErrorView(
                         message: message,
                         onRetry: () => context
                             .read<OrderDetailCubit>()
                             .loadOrderDetail(orderNumber),
                       ),
-                    OrderDetailLoaded(:final order) => RefreshIndicator(
+                    OrderDetailLoaded(:final order, :final isCancelling) =>
+                      RefreshIndicator(
                         color: ColorManager.olive,
                         onRefresh: () => context
                             .read<OrderDetailCubit>()
                             .loadOrderDetail(orderNumber),
-                        child: _DetailContent(order: order),
+                        child: OrderDetailContent(
+                          order: order,
+                          isCancelling: isCancelling,
+                          onCancelTap: () => _onCancelPressed(context),
+                        ),
                       ),
                   },
                 ),
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _DetailContent extends StatelessWidget {
-  final OrderDetailEntity order;
-
-  const _DetailContent({required this.order});
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          OrderDetailHeader(order: order),
-          Gap(16.h),
-          OrderTrackingStepper(order: order),
-          Gap(16.h),
-          OrderItemsSection(items: order.items),
-          Gap(16.h),
-          OrderAddressSection(address: order.address),
-          Gap(16.h),
-          OrderInfoCard(
-            title: 'orders.delivery_method'.tr(),
-            primaryText: 'orders.standard_delivery'.tr(),
-            secondaryText: 'orders.delivery_days'.tr(),
-          ),
-          Gap(16.h),
-          OrderInfoCard(
-            title: 'orders.payment_method'.tr(),
-            primaryText: order.paymentMethodDisplay,
-          ),
-          Gap(16.h),
-          OrderSummarySection(pricing: order.pricing),
-          if (order.canCancel) ...[
-            Gap(20.h),
-            OrderCancelButton(
-              onCancelTap: () {},
-            ),
-          ],
-          Gap(32.h),
-        ],
-      ),
-    );
-  }
-}
-
-class _ErrorView extends StatelessWidget {
-  final String message;
-  final VoidCallback onRetry;
-
-  const _ErrorView({required this.message, required this.onRetry});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(32.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: TextStyles.font14Regular(context),
-            ),
-            Gap(16.h),
-            ElevatedButton(
-              onPressed: onRetry,
-              child: Text('common.retry'.tr()),
-            ),
-          ],
         ),
       ),
     );

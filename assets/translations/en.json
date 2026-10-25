@@ -211,6 +211,9 @@
     "free": "FREE",
     "total": "TOTAL",
     "cancel_order": "CANCEL ORDER",
+    "cancel_confirm_title": "Cancel Order",
+    "cancel_confirm_message": "Are you sure you want to cancel this order?",
+    "cancel_success": "Order cancelled successfully",
     "status": {
       "pending": "Pending",
       "confirmed": "Confirmed",
@@ -243,5 +246,12 @@
     "selected_brands": "SELECTED BRANDS",
     "currency": "EGP",
     "default_announcement": "DISCOVER LOCAL & INTERNATIONAL BRANDS"
+  },
+  "checkout": {
+    "order_success_title": "Order Placed Successfully!",
+    "order_success_message": "Thank you for your order. We have received your request and will process it shortly.",
+    "go_to_orders": "Go to Orders",
+    "back_to_home": "Back to Home",
+    "order_number": "Order #{}"
   }
 }

@@ -18,11 +18,29 @@ final class OrderDetailLoading extends OrderDetailState {
 
 final class OrderDetailLoaded extends OrderDetailState {
   final OrderDetailEntity order;
+  final bool isCancelling;
+  final String? cancelError;
 
-  const OrderDetailLoaded(this.order);
+  const OrderDetailLoaded(
+    this.order, {
+    this.isCancelling = false,
+    this.cancelError,
+  });
+
+  OrderDetailLoaded copyWith({
+    OrderDetailEntity? order,
+    bool? isCancelling,
+    String? Function()? cancelError,
+  }) {
+    return OrderDetailLoaded(
+      order ?? this.order,
+      isCancelling: isCancelling ?? this.isCancelling,
+      cancelError: cancelError != null ? cancelError() : this.cancelError,
+    );
+  }
 
   @override
-  List<Object?> get props => [order];
+  List<Object?> get props => [order, isCancelling, cancelError];
 }
 
 final class OrderDetailError extends OrderDetailState {

@@ -13,6 +13,7 @@ import 'package:looks_loop/features/product_list/presentation/widgets/product_li
 import 'package:looks_loop/features/product_list/presentation/widgets/product_list_grid.dart';
 import 'package:looks_loop/features/product_list/presentation/widgets/product_list_header.dart';
 import 'package:looks_loop/features/product_list/presentation/widgets/product_list_toolbar.dart';
+import 'package:looks_loop/features/product_list/presentation/widgets/product_list_category_rail.dart';
 import 'package:looks_loop/features/product_list/presentation/widgets/product_sort_bottom_sheet.dart';
 
 class ProductListBody extends StatelessWidget {
@@ -71,6 +72,13 @@ class ProductListBody extends StatelessWidget {
               ),
             ),
           ),
+          if (args.category.isEmpty || args.isNew || args.isSale || args.isTrending)
+            SliverToBoxAdapter(
+              child: ProductListCategoryRail(
+                currentCategory: state.category,
+                onSelectCategory: cubit.filterByCategory,
+              ),
+            ),
           SliverToBoxAdapter(
             child: ProductListFilterChips(
               filters: state.currentFilters,

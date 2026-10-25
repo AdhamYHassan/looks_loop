@@ -8,6 +8,7 @@ class HomeTopBar extends StatelessWidget {
   final VoidCallback? onSearchTap;
   final VoidCallback? onBagTap;
   final VoidCallback? onLoaderTap;
+  final bool? showSearchIcon;
 
   const HomeTopBar({
     super.key,
@@ -15,6 +16,7 @@ class HomeTopBar extends StatelessWidget {
     this.onSearchTap,
     this.onBagTap,
     this.onLoaderTap,
+    this.showSearchIcon = false,
   });
 
   @override
@@ -52,16 +54,18 @@ class HomeTopBar extends StatelessWidget {
           _buildLogo(),
           Row(
             children: [
-              IconButton(
-                icon: Icon(
-                  LucideIcons.search,
-                  color: ColorManager.cream,
-                  size: 20.sp,
+              if (showSearchIcon == true) ...[
+                IconButton(
+                  icon: Icon(
+                    LucideIcons.search,
+                    color: ColorManager.cream,
+                    size: 20.sp,
+                  ),
+                  padding: EdgeInsets.zero,
+                  constraints: BoxConstraints(minWidth: 36.w, minHeight: 36.h),
+                  onPressed: onSearchTap,
                 ),
-                padding: EdgeInsets.zero,
-                constraints: BoxConstraints(minWidth: 36.w, minHeight: 36.h),
-                onPressed: onSearchTap,
-              ),
+              ],
               SizedBox(width: 8.w),
               IconButton(
                 icon: Icon(
@@ -70,10 +74,7 @@ class HomeTopBar extends StatelessWidget {
                   size: 20.sp,
                 ),
                 padding: EdgeInsets.zero,
-                constraints: BoxConstraints(
-                  minWidth: 36.w,
-                  minHeight: 36.h,
-                ),
+                constraints: BoxConstraints(minWidth: 36.w, minHeight: 36.h),
                 onPressed: onBagTap,
               ),
             ],

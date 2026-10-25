@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:looks_loop/core/cache/catalog_cache.dart';
 import 'package:looks_loop/core/network/network_exceptions.dart';
 import 'package:looks_loop/core/network/network_result.dart';
 import 'package:looks_loop/features/home/data/datasources/home_local_data_source.dart';
@@ -9,10 +10,12 @@ import 'package:looks_loop/features/home/domain/repositories/home_repository.dar
 class HomeRepositoryImpl implements HomeRepository {
   final HomeRemoteDataSource _remoteDataSource;
   final HomeLocalDataSource _localDataSource;
+  final CatalogCache _catalogCache;
 
   const HomeRepositoryImpl(
     this._remoteDataSource,
     this._localDataSource,
+    this._catalogCache,
   );
 
   @override
@@ -29,6 +32,7 @@ class HomeRepositoryImpl implements HomeRepository {
   Future<ApiResult<HomeFeedData>> getHomeFeed() async {
     try {
       final feedModel = await _remoteDataSource.getHomeFeed();
+      _catalogCache.saveCategories(feedModel.categories);
       await _syncAnnouncementsIfChanged(feedModel.announcements);
       return ApiSuccess(feedModel);
     } catch (e) {

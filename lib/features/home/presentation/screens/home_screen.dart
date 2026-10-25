@@ -14,14 +14,12 @@ import 'package:looks_loop/features/home/presentation/widgets/home_feed_skeleton
 import 'package:looks_loop/features/home/presentation/widgets/home_feed_view.dart';
 import 'package:looks_loop/features/home/presentation/widgets/home_top_bar.dart';
 import 'package:looks_loop/features/main/presentation/bloc/nav_bar_scroll_cubit.dart';
+import 'package:looks_loop/features/search/presentation/widgets/search_modal_view.dart';
 
 class HomeScreen extends StatefulWidget {
   final bool showBottomNavBar;
 
-  const HomeScreen({
-    super.key,
-    this.showBottomNavBar = true,
-  });
+  const HomeScreen({super.key, this.showBottomNavBar = true});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -67,17 +65,26 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: AnimatedOpacity(
                             duration: const Duration(milliseconds: 200),
                             opacity: isScrolled ? 0.0 : 1.0,
-                            child: BlocSelector<HomeCubit, HomeState, List<String>>(
-                              selector: (state) => state.announcements,
-                              builder: (context, announcements) =>
-                                  AnnouncementBar(announcements: announcements),
-                            ),
+                            child:
+                                BlocSelector<
+                                  HomeCubit,
+                                  HomeState,
+                                  List<String>
+                                >(
+                                  selector: (state) => state.announcements,
+                                  builder: (context, announcements) =>
+                                      AnnouncementBar(
+                                        announcements: announcements,
+                                      ),
+                                ),
                           ),
                         ),
                       ),
                       HomeTopBar(
                         isScrolled: isScrolled,
                         onBagTap: () => context.push(Routes.cart),
+                        showSearchIcon: true,
+                        onSearchTap: () => SearchModalView.show(context),
                         onLoaderTap: () =>
                             ChasingLoopPreviewDialog.show(context),
                       ),
@@ -90,13 +97,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   builder: (context, state) {
                     return switch (state) {
                       HomeInitial() ||
-                      HomeLoading() =>
-                        const HomeFeedSkeletonLoader(),
+                      HomeLoading() => const HomeFeedSkeletonLoader(),
                       HomeError(:final message) => HomeErrorView(
-                          message: message,
-                          onRetry: () =>
-                              context.read<HomeCubit>().fetchHomeFeed(),
-                        ),
+                        message: message,
+                        onRetry: () =>
+                            context.read<HomeCubit>().fetchHomeFeed(),
+                      ),
                       HomeLoaded(
                         :final feedData,
                         :final wishlistedProductIds,
@@ -133,4 +139,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-

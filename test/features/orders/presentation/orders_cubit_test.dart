@@ -21,6 +21,10 @@ class FakeOrdersRepository implements OrdersRepository {
   @override
   Future<ApiResult<OrderDetailEntity>> getOrderDetail(String orderNumber) =>
       throw UnimplementedError();
+
+  @override
+  Future<ApiResult<OrderDetailEntity>> cancelOrder(String orderNumber) =>
+      throw UnimplementedError();
 }
 
 void main() {

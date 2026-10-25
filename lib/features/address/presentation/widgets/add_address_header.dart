@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:looks_loop/core/theming/styles.dart';
 
 class AddAddressHeader extends StatelessWidget {
-  const AddAddressHeader({super.key});
+  final String? title;
+
+  const AddAddressHeader({super.key, this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +13,7 @@ class AddAddressHeader extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          'address.add_new'.tr(),
+          title ?? 'address.add_new'.tr(),
           style: TextStyles.font18SemiBold(context),
         ),
         IconButton(

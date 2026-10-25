@@ -59,12 +59,16 @@ class AddAddressLabelSelector extends StatelessWidget {
                           : ColorManager.getTextMuted(context),
                     ),
                     const SizedBox(width: 6),
-                    Text(
-                      label,
-                      style: TextStyles.font12Medium(context).copyWith(
-                        color: isSelected
-                            ? ColorManager.cream
-                            : ColorManager.getText(context),
+                    Flexible(
+                      child: Text(
+                        label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyles.font12Medium(context).copyWith(
+                          color: isSelected
+                              ? ColorManager.cream
+                              : ColorManager.getText(context),
+                        ),
                       ),
                     ),
                   ],

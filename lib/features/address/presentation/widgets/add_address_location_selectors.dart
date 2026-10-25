@@ -25,6 +25,9 @@ class AddAddressLocationSelectors extends StatelessWidget {
   Widget build(BuildContext context) {
     final availableCities = selectedProvince?.cities ?? [];
 
+    final langCode =
+        Localizations.maybeLocaleOf(context)?.languageCode ?? 'en';
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -34,8 +37,7 @@ class AddAddressLocationSelectors extends StatelessWidget {
           hint: 'address.select_province'.tr(),
           value: selectedProvince,
           items: provinces.map((p) {
-            final name =
-                context.locale.languageCode == 'ar' ? p.nameAr : p.nameEn;
+            final name = p.localizedName(langCode);
             return DropdownMenuItem(
               value: p,
               child: Text(name.isNotEmpty ? name : p.name),
@@ -50,8 +52,7 @@ class AddAddressLocationSelectors extends StatelessWidget {
           hint: 'address.select_city'.tr(),
           value: selectedCity,
           items: availableCities.map((c) {
-            final name =
-                context.locale.languageCode == 'ar' ? c.nameAr : c.nameEn;
+            final name = c.localizedName(langCode);
             return DropdownMenuItem(
               value: c,
               child: Text(name.isNotEmpty ? name : c.name),

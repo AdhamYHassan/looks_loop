@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:looks_loop/core/network/network_result.dart';
 import 'package:looks_loop/features/product_list/domain/entities/product_list_entities.dart';
-import 'package:looks_loop/features/product_list/domain/repositories/product_list_repository.dart';
 import 'package:looks_loop/features/product_list/domain/usecases/get_products_usecase.dart';
+import 'package:looks_loop/features/product_list/presentation/bloc/product_list_params_builder.dart';
 import 'package:looks_loop/features/product_list/presentation/bloc/product_list_state.dart';
 
 class ProductListCubit extends Cubit<ProductListState> {
@@ -10,30 +10,6 @@ class ProductListCubit extends Cubit<ProductListState> {
 
   ProductListCubit(this._getProductsUseCase)
       : super(const ProductListInitial());
-
-  GetProductsParams _buildParams({
-    required String category,
-    required String subcategory,
-    required int page,
-    required String sort,
-    required SelectedFiltersEntity filters,
-    String? q,
-    bool trending = false,
-  }) {
-    return GetProductsParams(
-      category: category,
-      subcategory: subcategory,
-      page: page,
-      sort: sort,
-      q: q,
-      brands: filters.brands,
-      sizes: filters.sizes,
-      colors: filters.colors,
-      sale: filters.sale,
-      newIn: filters.newIn,
-      trending: trending ? true : null,
-    );
-  }
 
   Future<void> loadProducts({
     required String category,
@@ -47,7 +23,7 @@ class ProductListCubit extends Cubit<ProductListState> {
 
     final selected = filters ?? const SelectedFiltersEntity();
     final effectiveSort = sort ?? 'recommended';
-    final params = _buildParams(
+    final params = ProductListParamsBuilder.build(
       category: category,
       subcategory: subcategory,
       page: 1,
@@ -58,7 +34,6 @@ class ProductListCubit extends Cubit<ProductListState> {
     );
 
     final result = await _getProductsUseCase(params);
-
     switch (result) {
       case ApiSuccess(:final data):
         emit(ProductListLoaded(
@@ -78,14 +53,11 @@ class ProductListCubit extends Cubit<ProductListState> {
 
   Future<void> loadMore() async {
     final curr = state;
-    if (curr is! ProductListLoaded || curr.isLoadingMore || curr.hasReachedMax) {
-      return;
-    }
+    if (curr is! ProductListLoaded || curr.isLoadingMore || curr.hasReachedMax) return;
 
     emit(curr.copyWith(isLoadingMore: true));
-
     final nextPage = curr.data.page + 1;
-    final params = _buildParams(
+    final params = ProductListParamsBuilder.build(
       category: curr.category,
       subcategory: curr.subcategory,
       page: nextPage,
@@ -96,12 +68,10 @@ class ProductListCubit extends Cubit<ProductListState> {
     );
 
     final result = await _getProductsUseCase(params);
-
     if (isClosed) return;
 
     switch (result) {
       case ApiSuccess(:final data):
-        final combinedProducts = [...curr.data.results, ...data.results];
         final updatedData = ProductListEntity(
           count: data.count,
           page: data.page,
@@ -111,7 +81,7 @@ class ProductListCubit extends Cubit<ProductListState> {
           sortOptions: data.sortOptions.isNotEmpty ? data.sortOptions : curr.data.sortOptions,
           selected: data.selected,
           facets: data.facets,
-          results: combinedProducts,
+          results: [...curr.data.results, ...data.results],
         );
         emit(curr.copyWith(
           data: updatedData,
@@ -123,48 +93,33 @@ class ProductListCubit extends Cubit<ProductListState> {
     }
   }
 
-  void changeSort(String newSort) {
+  void _reload({
+    String? category,
+    String? subcategory,
+    String? sort,
+    String? q,
+    SelectedFiltersEntity? filters,
+  }) {
     final curr = state;
     if (curr is! ProductListLoaded) return;
     loadProducts(
-      category: curr.category,
-      subcategory: curr.subcategory,
-      sort: newSort,
-      q: curr.searchQuery,
-      filters: curr.currentFilters,
+      category: category ?? curr.category,
+      subcategory: subcategory ?? curr.subcategory,
+      sort: sort ?? curr.currentSort,
+      q: q ?? curr.searchQuery,
+      filters: filters ?? curr.currentFilters,
       trending: curr.isTrending,
     );
   }
 
-  void applyFilters(SelectedFiltersEntity newFilters) {
-    final curr = state;
-    if (curr is! ProductListLoaded) return;
-    loadProducts(
-      category: curr.category,
-      subcategory: curr.subcategory,
-      sort: curr.currentSort,
-      q: curr.searchQuery,
-      filters: newFilters,
-      trending: curr.isTrending,
-    );
-  }
+  void changeSort(String newSort) => _reload(sort: newSort);
 
-  void search(String query) {
-    final curr = state;
-    if (curr is! ProductListLoaded) return;
-    loadProducts(
-      category: curr.category,
-      subcategory: curr.subcategory,
-      sort: curr.currentSort,
-      q: query,
-      filters: curr.currentFilters,
-      trending: curr.isTrending,
-    );
-  }
+  void applyFilters(SelectedFiltersEntity newFilters) => _reload(filters: newFilters);
 
-  void clearAllFilters() {
-    final curr = state;
-    if (curr is! ProductListLoaded) return;
-    applyFilters(const SelectedFiltersEntity());
-  }
+  void filterByCategory(String newCategorySlug) =>
+      _reload(category: newCategorySlug, subcategory: '');
+
+  void search(String query) => _reload(q: query);
+
+  void clearAllFilters() => applyFilters(const SelectedFiltersEntity());
 }

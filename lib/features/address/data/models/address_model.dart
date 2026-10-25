@@ -13,6 +13,7 @@ class AddressModel extends Equatable {
   final String phone;
   final int cityId;
   final String cityName;
+  final int? provinceId;
   final String area;
   final String street;
   final String building;
@@ -35,6 +36,7 @@ class AddressModel extends Equatable {
     required this.phone,
     required this.cityId,
     required this.cityName,
+    this.provinceId,
     required this.area,
     required this.street,
     required this.building,
@@ -48,6 +50,26 @@ class AddressModel extends Equatable {
   });
 
   factory AddressModel.fromJson(Map<String, dynamic> json) {
+    final cityRaw = json['city'];
+    final cityId = cityRaw is int
+        ? cityRaw
+        : (cityRaw is Map && cityRaw['id'] is int ? cityRaw['id'] as int : 0);
+
+    final cityName = json['city_name'] as String? ??
+        (cityRaw is Map ? cityRaw['name'] as String? ?? '' : '');
+
+    int? parseProvince() {
+      if (json['province'] is int) return json['province'] as int;
+      if (json['province'] is Map && json['province']['id'] is int) {
+        return json['province']['id'] as int;
+      }
+      if (json['province_id'] is int) return json['province_id'] as int;
+      if (cityRaw is Map && cityRaw['province'] is int) {
+        return cityRaw['province'] as int;
+      }
+      return null;
+    }
+
     return AddressModel(
       id: json['id'] as int? ?? 0,
       label: json['label'] as String? ?? 'home',
@@ -59,8 +81,9 @@ class AddressModel extends Equatable {
       lastName: json['last_name'] as String? ?? '',
       fullName: json['full_name'] as String? ?? '',
       phone: json['phone'] as String? ?? '',
-      cityId: json['city'] as int? ?? 0,
-      cityName: json['city_name'] as String? ?? '',
+      cityId: cityId,
+      cityName: cityName,
+      provinceId: parseProvince(),
       area: json['area'] as String? ?? '',
       street: json['street'] as String? ?? '',
       building: json['building'] as String? ?? '',
@@ -75,72 +98,28 @@ class AddressModel extends Equatable {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'label': label,
-        'title': title,
-        'display_label': displayLabel,
-        'first_name': firstName,
-        'last_name': lastName,
-        'full_name': fullName,
-        'phone': phone,
-        'city': cityId,
-        'city_name': cityName,
-        'area': area,
-        'street': street,
-        'building': building,
-        'floor': floor,
-        'apartment': apartment,
-        'landmark': landmark,
-        'is_default': isDefault,
-        'location': location,
-        'single_line': singleLine,
-        'can_deliver': canDeliver,
+        'id': id, 'label': label, 'title': title, 'display_label': displayLabel,
+        'first_name': firstName, 'last_name': lastName, 'full_name': fullName,
+        'phone': phone, 'city': cityId, 'city_name': cityName,
+        if (provinceId != null) 'province': provinceId,
+        'area': area, 'street': street, 'building': building, 'floor': floor,
+        'apartment': apartment, 'landmark': landmark, 'is_default': isDefault,
+        'location': location, 'single_line': singleLine, 'can_deliver': canDeliver,
       };
 
   AddressEntity toEntity() => AddressEntity(
-        id: id,
-        label: label,
-        title: title,
-        displayLabel: displayLabel,
-        firstName: firstName,
-        lastName: lastName,
-        fullName: fullName,
-        phone: phone,
-        cityId: cityId,
-        cityName: cityName,
-        area: area,
-        street: street,
-        building: building,
-        floor: floor,
-        apartment: apartment,
-        landmark: landmark,
-        isDefault: isDefault,
-        location: location,
-        singleLine: singleLine,
-        canDeliver: canDeliver,
+        id: id, label: label, title: title, displayLabel: displayLabel,
+        firstName: firstName, lastName: lastName, fullName: fullName,
+        phone: phone, cityId: cityId, cityName: cityName, provinceId: provinceId,
+        area: area, street: street, building: building, floor: floor,
+        apartment: apartment, landmark: landmark, isDefault: isDefault,
+        location: location, singleLine: singleLine, canDeliver: canDeliver,
       );
 
   @override
   List<Object?> get props => [
-        id,
-        label,
-        title,
-        displayLabel,
-        firstName,
-        lastName,
-        fullName,
-        phone,
-        cityId,
-        cityName,
-        area,
-        street,
-        building,
-        floor,
-        apartment,
-        landmark,
-        isDefault,
-        location,
-        singleLine,
-        canDeliver,
+        id, label, title, displayLabel, firstName, lastName, fullName, phone,
+        cityId, cityName, provinceId, area, street, building, floor, apartment,
+        landmark, isDefault, location, singleLine, canDeliver,
       ];
 }

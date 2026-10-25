@@ -19,6 +19,11 @@ class _FakeOrdersRepository implements OrdersRepository {
   Future<ApiResult<OrderDetailEntity>> getOrderDetail(String orderNumber) async {
     return detailResult!;
   }
+
+  @override
+  Future<ApiResult<OrderDetailEntity>> cancelOrder(String orderNumber) async {
+    return detailResult!;
+  }
 }
 
 void main() {

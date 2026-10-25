@@ -4,8 +4,10 @@ import 'package:looks_loop/core/di/cart_di.dart';
 import 'package:looks_loop/core/di/brands_di.dart';
 import 'package:looks_loop/core/di/product_list_di.dart';
 import 'package:looks_loop/core/di/looks_di.dart';
+import 'package:looks_loop/core/cache/catalog_cache.dart';
+import 'package:looks_loop/core/di/checkout_di.dart';
+import 'package:looks_loop/core/di/search_di.dart';
 import 'package:looks_loop/features/cart/domain/usecases/add_to_cart_usecase.dart';
-import 'package:looks_loop/features/checkout/presentation/bloc/checkout_cubit.dart';
 import 'package:looks_loop/features/orders/data/datasources/orders_remote_data_source.dart';
 import 'package:looks_loop/features/orders/data/repositories/orders_repository_impl.dart';
 import 'package:looks_loop/features/orders/domain/repositories/orders_repository.dart';
@@ -46,6 +48,7 @@ import 'package:looks_loop/features/more/data/repositories/more_repository_impl.
 import 'package:looks_loop/features/more/domain/repositories/more_repository.dart';
 import 'package:looks_loop/features/more/domain/usecases/get_user_profile_usecase.dart';
 import 'package:looks_loop/features/more/presentation/bloc/more_cubit.dart';
+import 'package:looks_loop/features/orders/domain/usecases/cancel_order_usecase.dart';
 import 'package:looks_loop/features/orders/domain/usecases/get_order_detail_usecase.dart';
 import 'package:looks_loop/features/orders/presentation/bloc/order_detail_cubit.dart';
 import 'package:looks_loop/features/shop/data/datasources/category_detail_remote_data_source.dart';
@@ -83,6 +86,7 @@ Future<void> initAppDependencies() async {
   PaintingBinding.instance.imageCache.maximumSize = 250;
   PaintingBinding.instance.imageCache.maximumSizeBytes = 120 * 1024 * 1024;
 
+  getIt.registerLazySingleton<CatalogCache>(() => CatalogCache());
   getIt.registerLazySingleton<ThemeCubit>(() => ThemeCubit());
 
   // Data Sources
@@ -102,7 +106,11 @@ Future<void> initAppDependencies() async {
 
   // Repositories
   getIt.registerLazySingleton<HomeRepository>(
-    () => HomeRepositoryImpl(getIt<HomeRemoteDataSource>(), getIt<HomeLocalDataSource>()),
+    () => HomeRepositoryImpl(
+      getIt<HomeRemoteDataSource>(),
+      getIt<HomeLocalDataSource>(),
+      getIt<CatalogCache>(),
+    ),
   );
   getIt.registerLazySingleton<ShopRepository>(() => ShopRepositoryImpl(getIt<ShopRemoteDataSource>()));
   getIt.registerLazySingleton<WishlistRepository>(() => WishlistRepositoryImpl(getIt<WishlistRemoteDataSource>()));
@@ -133,6 +141,7 @@ Future<void> initAppDependencies() async {
   getIt.registerLazySingleton<GetProvincesUseCase>(() => GetProvincesUseCase(getIt<AddressRepository>()));
   getIt.registerLazySingleton<GetOrdersUseCase>(() => GetOrdersUseCase(getIt<OrdersRepository>()));
   getIt.registerLazySingleton<GetOrderDetailUseCase>(() => GetOrderDetailUseCase(getIt<OrdersRepository>()));
+  getIt.registerLazySingleton<CancelOrderUseCase>(() => CancelOrderUseCase(getIt<OrdersRepository>()));
   getIt.registerLazySingleton<GetProductDetailUseCase>(() => GetProductDetailUseCase(getIt<ProductDetailRepository>()));
 
   // Cubits (Factory & Singletons)
@@ -159,7 +168,10 @@ Future<void> initAppDependencies() async {
   getIt.registerFactory<LoginCubit>(() => LoginCubit(getIt<LoginUseCase>()));
   getIt.registerFactory<RegisterCubit>(() => RegisterCubit(getIt<RegisterUseCase>()));
   getIt.registerFactory<OrdersCubit>(() => OrdersCubit(getIt<GetOrdersUseCase>()));
-  getIt.registerFactory<OrderDetailCubit>(() => OrderDetailCubit(getIt<GetOrderDetailUseCase>()));
+  getIt.registerFactory<OrderDetailCubit>(() => OrderDetailCubit(
+    getIt<GetOrderDetailUseCase>(),
+    getIt<CancelOrderUseCase>(),
+  ));
   getIt.registerFactory<AddressCubit>(() => AddressCubit(
     getIt<GetAddressesUseCase>(),
     getIt<AddAddressUseCase>(),
@@ -169,11 +181,11 @@ Future<void> initAppDependencies() async {
         getIt<GetProductDetailUseCase>(),
         getIt<AddToCartUseCase>(),
       ));
-  getIt.registerFactory<CheckoutCubit>(() => CheckoutCubit());
-
   registerCartDependencies();
   registerProductListDependencies();
   registerBrandsDependencies();
   registerLooksDependencies();
+  registerCheckoutDependencies();
+  registerSearchDependencies();
 }
 
