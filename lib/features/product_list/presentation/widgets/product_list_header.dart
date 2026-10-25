@@ -24,38 +24,40 @@ class ProductListHeader extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Text(
-                categoryTitle.toUpperCase(),
-                style: TextStyles.font11Eyebrow(context).copyWith(
-                  fontWeight: FontWeight.w600,
+          if (subcategoryTitle.isNotEmpty) ...[
+            Row(
+              children: [
+                Text(
+                  categoryTitle.toUpperCase(),
+                  style: TextStyles.font11Eyebrow(context).copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: ColorManager.getTextMuted(context),
+                    letterSpacing: 1.1,
+                  ),
+                ),
+                Gap(6.w),
+                Icon(
+                  LucideIcons.chevronRight,
+                  size: 11.sp,
                   color: ColorManager.getTextMuted(context),
-                  letterSpacing: 1.1,
                 ),
-              ),
-              Gap(6.w),
-              Icon(
-                LucideIcons.chevronRight,
-                size: 11.sp,
-                color: ColorManager.getTextMuted(context),
-              ),
-              Gap(6.w),
-              Text(
-                subcategoryTitle.toUpperCase(),
-                style: TextStyles.font11Eyebrow(context).copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: ColorManager.getText(context),
-                  letterSpacing: 1.1,
+                Gap(6.w),
+                Text(
+                  subcategoryTitle.toUpperCase(),
+                  style: TextStyles.font11Eyebrow(context).copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: ColorManager.getText(context),
+                    letterSpacing: 1.1,
+                  ),
                 ),
-              ),
-            ],
-          ),
-          Gap(6.h),
+              ],
+            ),
+            Gap(6.h),
+          ],
           Text(
-            subcategoryTitle.toUpperCase(),
+            (subcategoryTitle.isNotEmpty ? subcategoryTitle : categoryTitle).toUpperCase(),
             style: TextStyles.font20Bold(context).copyWith(
-              fontSize: 24.sp,
+              fontSize: 22.sp,
               letterSpacing: 1.2,
               fontWeight: FontWeight.w800,
             ),

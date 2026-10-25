@@ -54,6 +54,13 @@ class ProductListBody extends StatelessWidget {
               count: state.data.count,
             ),
           ),
+          if (args.category.isEmpty || args.isNew || args.isSale || args.isTrending)
+            SliverToBoxAdapter(
+              child: ProductListCategoryRail(
+                currentCategory: state.category,
+                onSelectCategory: cubit.filterByCategory,
+              ),
+            ),
           SliverToBoxAdapter(
             child: ProductListToolbar(
               activeFilterCount: state.currentFilters.activeFilterCount,
@@ -72,13 +79,6 @@ class ProductListBody extends StatelessWidget {
               ),
             ),
           ),
-          if (args.category.isEmpty || args.isNew || args.isSale || args.isTrending)
-            SliverToBoxAdapter(
-              child: ProductListCategoryRail(
-                currentCategory: state.category,
-                onSelectCategory: cubit.filterByCategory,
-              ),
-            ),
           SliverToBoxAdapter(
             child: ProductListFilterChips(
               filters: state.currentFilters,

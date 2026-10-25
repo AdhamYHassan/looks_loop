@@ -71,9 +71,13 @@ class _ProductListScreenState extends State<ProductListScreen> {
                             ? 'TRENDING NOW'
                             : (widget.args.isSale
                                 ? 'ON SALE'
-                                : (widget.args.isBrandFilterLocked
-                                    ? widget.args.subcategoryTitle
-                                    : '${widget.args.categoryTitle} / ${widget.args.subcategoryTitle}')),
+                                : (widget.args.isNew
+                                    ? 'NEW IN'
+                                    : (widget.args.isBrandFilterLocked
+                                        ? widget.args.subcategoryTitle
+                                        : (widget.args.subcategoryTitle.isNotEmpty
+                                            ? '${widget.args.categoryTitle} / ${widget.args.subcategoryTitle}'
+                                            : widget.args.categoryTitle)))),
                         onSearchSubmitted: (q) =>
                             context.read<ProductListCubit>().search(q),
                         onSearchCleared: () =>

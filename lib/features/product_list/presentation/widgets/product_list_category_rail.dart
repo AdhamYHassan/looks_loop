@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gap/gap.dart';
 import 'package:looks_loop/core/cache/catalog_cache.dart';
 import 'package:looks_loop/core/di/dependency_injection.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
@@ -27,16 +28,16 @@ class ProductListCategoryRail extends StatelessWidget {
     final isAllSelected = currentCategory.isEmpty || currentCategory == 'all';
 
     return Container(
-      height: 42.h,
-      margin: EdgeInsets.only(bottom: 8.h),
+      height: 32.h,
+      margin: EdgeInsets.only(bottom: 12.h),
       child: ListView.separated(
-        padding: EdgeInsets.symmetric(horizontal: 16.w),
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
         scrollDirection: Axis.horizontal,
         itemCount: categories.length + 1,
-        separatorBuilder: (_, _) => SizedBox(width: 8.w),
+        separatorBuilder: (_, _) => Gap(8.w),
         itemBuilder: (context, index) {
           if (index == 0) {
-            return _CategoryChip(
+            return _EditorialCategoryTab(
               title: 'ALL',
               isSelected: isAllSelected,
               onTap: () => onSelectCategory(''),
@@ -47,7 +48,7 @@ class ProductListCategoryRail extends StatelessWidget {
           final slug = cat.slug.isNotEmpty ? cat.slug : cat.name.toLowerCase();
           final isSelected = currentCategory.toLowerCase() == slug.toLowerCase();
 
-          return _CategoryChip(
+          return _EditorialCategoryTab(
             title: cat.name.toUpperCase(),
             isSelected: isSelected,
             onTap: () => onSelectCategory(slug),
@@ -58,12 +59,12 @@ class ProductListCategoryRail extends StatelessWidget {
   }
 }
 
-class _CategoryChip extends StatelessWidget {
+class _EditorialCategoryTab extends StatelessWidget {
   final String title;
   final bool isSelected;
   final VoidCallback onTap;
 
-  const _CategoryChip({
+  const _EditorialCategoryTab({
     required this.title,
     required this.isSelected,
     required this.onTap,
@@ -71,27 +72,32 @@ class _CategoryChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final surfaceColor = ColorManager.getSurface(context);
+    final borderColor = ColorManager.getBorder(context);
+    final activeBg = ColorManager.isDark(context) ? ColorManager.olive : ColorManager.ink;
+    final activeText = ColorManager.cream;
+
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeInOutCubic,
+        padding: EdgeInsets.symmetric(horizontal: 14.w),
+        alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: isSelected ? ColorManager.olive : ColorManager.getSurface(context),
-          borderRadius: BorderRadius.circular(20.r),
+          color: isSelected ? activeBg : surfaceColor,
+          borderRadius: BorderRadius.circular(4.r),
           border: Border.all(
-            color: isSelected
-                ? ColorManager.olive
-                : ColorManager.getBorder(context),
+            color: isSelected ? activeBg : borderColor,
             width: 0.8.w,
           ),
         ),
-        alignment: Alignment.center,
         child: Text(
           title,
-          style: TextStyles.font12Medium(context).copyWith(
-            color: isSelected ? ColorManager.cream : ColorManager.getText(context),
+          style: TextStyles.font11Action(context).copyWith(
+            color: isSelected ? activeText : ColorManager.getTextMuted(context),
             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+            letterSpacing: 1.2,
           ),
         ),
       ),
