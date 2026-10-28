@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "425930942400",
+    "project_id": "look-loops",
+    "storage_bucket": "look-loops.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:425930942400:android:1c4d95b8e99860b1ce8a25",
+        "android_client_info": {
+          "package_name": "com.beefirst.look_loops"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQADSs6o-rhXNUwwYEDXZpvuBVIgLnqgU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:425930942400:android:d61cde46ba613dbdce8a25",
+        "android_client_info": {
+          "package_name": "com.beefirst.lookloops"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQADSs6o-rhXNUwwYEDXZpvuBVIgLnqgU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

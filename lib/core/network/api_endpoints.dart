@@ -17,4 +17,7 @@ class ApiEndpoints {
   static const String deliveryMethods = 'delivery-methods/';
   static const String paymentMethods = 'payment-methods/';
   static const String search = 'search/suggest/';
+  static const String appAbout = 'app/about/';
+  static const String appContactUs = 'app/contact-us/';
+  static const String appPolicy = 'app/policy/';
 }

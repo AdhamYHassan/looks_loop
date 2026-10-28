@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:looks_loop/core/theming/colors_manager.dart';
 import 'package:looks_loop/core/theming/styles.dart';
 import 'package:looks_loop/core/widgets/app_cached_image.dart';
 import 'package:looks_loop/features/home/domain/entities/home_feed_entities.dart';
@@ -9,11 +10,7 @@ class HeroSlideItem extends StatelessWidget {
   final HeroSlideEntity slide;
   final VoidCallback? onCtaTap;
 
-  const HeroSlideItem({
-    super.key,
-    required this.slide,
-    this.onCtaTap,
-  });
+  const HeroSlideItem({super.key, required this.slide, this.onCtaTap});
 
   @override
   Widget build(BuildContext context) {
@@ -48,42 +45,48 @@ class HeroSlideItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                slide.eyebrow,
-                style: TextStyles.font11WhiteEyebrow,
-              ),
+              Text(slide.eyebrow, style: TextStyles.font11WhiteEyebrow),
               SizedBox(height: 6.h),
-              Text(
-                slide.title,
-                style: TextStyles.font32WhiteBlack,
-              ),
+              Text(slide.title, style: TextStyles.font32WhiteBlack),
               SizedBox(height: 10.h),
-              Text(
-                slide.copy,
-                style: TextStyles.font13White70Regular,
-              ),
+              Text(slide.copy, style: TextStyles.font13White70Regular),
               SizedBox(height: 16.h),
-              ElevatedButton.icon(
-                onPressed: onCtaTap,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black,
-                  elevation: 0,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 18.w,
-                    vertical: 12.h,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4.r),
-                  ),
-                ),
-                iconAlignment: IconAlignment.end,
-                icon: Icon(LucideIcons.arrowUpRight, size: 16.sp),
-                label: Text(
-                  slide.ctaText,
-                  style: TextStyles.font11BlackCta.copyWith(letterSpacing: 1.2),
-                ),
-              ),
+              // Builder(
+              //   builder: (context) {
+              //     final isDark = ColorManager.isDark(context);
+              //     final buttonBg = isDark
+              //         ? ColorManager.cream
+              //         : ColorManager.ink;
+              //     final buttonFg = isDark
+              //         ? ColorManager.ink
+              //         : ColorManager.cream;
+
+              //     // return ElevatedButton.icon(
+              //     //   onPressed: onCtaTap,
+              //     //   style: ElevatedButton.styleFrom(
+              //     //     backgroundColor: buttonBg,
+              //     //     foregroundColor: buttonFg,
+              //     //     elevation: 0,
+              //     //     padding: EdgeInsets.symmetric(
+              //     //       horizontal: 18.w,
+              //     //       vertical: 12.h,
+              //     //     ),
+              //     //     shape: RoundedRectangleBorder(
+              //     //       borderRadius: BorderRadius.circular(4.r),
+              //     //     ),
+              //     //   ),
+              //     //   iconAlignment: IconAlignment.end,
+              //     //   icon: Icon(LucideIcons.arrowUpRight, size: 16.sp),
+              //     //   label: Text(
+              //     //     slide.ctaText,
+              //     //     style: TextStyles.font11BlackCta.copyWith(
+              //     //       color: buttonFg,
+              //     //       letterSpacing: 1.2,
+              //     //     ),
+              //     //   ),
+              //     // );
+              //   },
+              // ),
             ],
           ),
         ),

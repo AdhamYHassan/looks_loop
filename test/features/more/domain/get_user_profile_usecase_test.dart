@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:looks_loop/core/network/network_result.dart';
+import 'package:looks_loop/features/more/domain/entities/app_info_entity.dart';
+import 'package:looks_loop/features/more/domain/entities/contact_us_entity.dart';
 import 'package:looks_loop/features/more/domain/entities/user_profile_entity.dart';
 import 'package:looks_loop/features/more/domain/repositories/more_repository.dart';
 import 'package:looks_loop/features/more/domain/usecases/get_user_profile_usecase.dart';
@@ -11,6 +13,18 @@ class FakeMoreRepository implements MoreRepository {
 
   @override
   Future<ApiResult<UserProfileEntity>> getUserProfile() async => result;
+
+  @override
+  Future<ApiResult<AppInfoEntity>> getAboutUs() async =>
+      throw UnimplementedError();
+
+  @override
+  Future<ApiResult<AppInfoEntity>> getPolicy() async =>
+      throw UnimplementedError();
+
+  @override
+  Future<ApiResult<ContactUsEntity>> getContactUs() async =>
+      throw UnimplementedError();
 }
 
 void main() {

@@ -9,7 +9,10 @@ import 'package:looks_loop/features/main/presentation/bloc/main_cubit.dart';
 import 'package:looks_loop/features/main/presentation/screens/main_screen.dart';
 import 'package:looks_loop/features/shop/presentation/bloc/shop_cubit.dart';
 import 'package:looks_loop/features/shop/presentation/screens/shop_screen.dart';
+import 'package:looks_loop/features/more/presentation/bloc/app_info_cubit.dart';
+import 'package:looks_loop/features/more/presentation/bloc/app_info_state.dart';
 import 'package:looks_loop/features/more/presentation/bloc/more_cubit.dart';
+import 'package:looks_loop/features/more/presentation/screens/app_info_screen.dart';
 import 'package:looks_loop/features/more/presentation/screens/more_screen.dart';
 import 'package:looks_loop/features/splash/presentation/splash_screen.dart';
 import 'package:looks_loop/features/auth/presentation/bloc/login_cubit.dart';
@@ -194,6 +197,28 @@ class AppRouter {
           child: BlocProvider(
             create: (_) => getIt<MoreCubit>()..loadUserProfile(),
             child: const MoreScreen(),
+          ),
+        ),
+      ),
+      GoRoute(
+        path: Routes.aboutUs,
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: BlocProvider(
+            create: (_) => getIt<AppInfoCubit>()..loadInfo(AppInfoType.aboutUs),
+            child: const AppInfoScreen(type: AppInfoType.aboutUs),
+          ),
+        ),
+      ),
+      GoRoute(
+        path: Routes.policy,
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: BlocProvider(
+            create: (_) => getIt<AppInfoCubit>()..loadInfo(AppInfoType.policy),
+            child: const AppInfoScreen(type: AppInfoType.policy),
           ),
         ),
       ),

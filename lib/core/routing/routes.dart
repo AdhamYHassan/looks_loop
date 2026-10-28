@@ -20,4 +20,6 @@ class Routes {
   static const String looks = '/looks';
   static const String lookProducts = '/look-products';
   static const String checkout = '/checkout';
+  static const String aboutUs = '/about-us';
+  static const String policy = '/policy';
 }

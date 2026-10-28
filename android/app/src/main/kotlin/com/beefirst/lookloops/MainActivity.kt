@@ -1,5 +1,6 @@
-package com.example.looks_loop
+package com.beefirst.lookloops
 
 import io.flutter.embedding.android.FlutterActivity
 
 class MainActivity : FlutterActivity()
+

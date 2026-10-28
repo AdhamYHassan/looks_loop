@@ -22,6 +22,9 @@ class MoreContent extends StatelessWidget {
   final VoidCallback? onSignOutTap;
   final VoidCallback? onAddressesTap;
   final VoidCallback? onLanguageTap;
+  final VoidCallback? onPoliciesTap;
+  final VoidCallback? onAboutUsTap;
+  final VoidCallback? onContactUsTap;
   final Future<void> Function()? onRefresh;
 
   const MoreContent({
@@ -31,6 +34,9 @@ class MoreContent extends StatelessWidget {
     this.onSignOutTap,
     this.onAddressesTap,
     this.onLanguageTap,
+    this.onPoliciesTap,
+    this.onAboutUsTap,
+    this.onContactUsTap,
     this.onRefresh,
   });
 
@@ -84,19 +90,19 @@ class MoreContent extends StatelessWidget {
                   icon: LucideIcons.fileText,
                   label: 'more.items.policies'.tr(),
                   subtitle: 'more.items.policies_sub'.tr(),
-                  onTap: () {},
+                  onTap: onPoliciesTap ?? () => context.push(Routes.policy),
                 ),
                 MoreItemTile(
                   icon: LucideIcons.info,
                   label: 'more.items.about_us'.tr(),
                   subtitle: 'more.items.about_us_sub'.tr(),
-                  onTap: () {},
+                  onTap: onAboutUsTap ?? () => context.push(Routes.aboutUs),
                 ),
                 MoreItemTile(
                   icon: LucideIcons.mail,
                   label: 'more.items.contact_us'.tr(),
                   subtitle: 'more.items.contact_us_sub'.tr(),
-                  onTap: () {},
+                  onTap: onContactUsTap ?? () {},
                 ),
               ],
             ),

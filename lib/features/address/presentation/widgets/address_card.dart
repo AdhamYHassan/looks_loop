@@ -77,3 +77,4 @@ class AddressCard extends StatelessWidget {
   }
 }
 //TODO we need to add on long press options to delete or edit the exisiting address
+// TODO on tap on the wishlist

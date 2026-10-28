@@ -65,7 +65,8 @@ class HomeFeedView extends StatelessWidget {
               child: TrendingGridSection(
                 items: feedData.trendingProducts,
                 onItemTap: (p) => HomeFeedNavigation.openProduct(context, p),
-                onViewAllTap: () => HomeFeedNavigation.openTrendingViewAll(context),
+                onViewAllTap: () =>
+                    HomeFeedNavigation.openTrendingViewAll(context),
               ),
             ),
             if (feedData.featuredLook != null)
@@ -76,7 +77,8 @@ class HomeFeedView extends StatelessWidget {
                     context,
                     feedData.featuredLook!,
                   ),
-                  onExploreTap: () => HomeFeedNavigation.openExploreLooks(context),
+                  onExploreTap: () =>
+                      HomeFeedNavigation.openExploreLooks(context),
                 ),
               ),
             if (feedData.featuredLoops.isNotEmpty)
@@ -91,8 +93,10 @@ class HomeFeedView extends StatelessWidget {
                   products: feedData.saleProducts,
                   wishlistedIds: wishlistedIds,
                   onWishlistToggle: onWishlistToggle,
-                  onProductTap: (p) => HomeFeedNavigation.openProduct(context, p),
-                  onViewAllTap: () => HomeFeedNavigation.openSaleViewAll(context),
+                  onProductTap: (p) =>
+                      HomeFeedNavigation.openProduct(context, p),
+                  onViewAllTap: () =>
+                      HomeFeedNavigation.openSaleViewAll(context),
                 ),
               ),
             if (feedData.editorial != null)

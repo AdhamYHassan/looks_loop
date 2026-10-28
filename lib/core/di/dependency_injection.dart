@@ -44,9 +44,15 @@ import 'package:looks_loop/features/home/presentation/bloc/home_cubit.dart';
 import 'package:looks_loop/features/main/presentation/bloc/main_cubit.dart';
 import 'package:looks_loop/features/main/presentation/bloc/nav_bar_scroll_cubit.dart';
 import 'package:looks_loop/features/more/data/datasources/more_local_data_source.dart';
+import 'package:looks_loop/features/more/data/datasources/more_remote_data_source.dart';
 import 'package:looks_loop/features/more/data/repositories/more_repository_impl.dart';
 import 'package:looks_loop/features/more/domain/repositories/more_repository.dart';
+import 'package:looks_loop/features/more/domain/usecases/get_about_us_usecase.dart';
+import 'package:looks_loop/features/more/domain/usecases/get_contact_us_usecase.dart';
+import 'package:looks_loop/features/more/domain/usecases/get_policy_usecase.dart';
 import 'package:looks_loop/features/more/domain/usecases/get_user_profile_usecase.dart';
+import 'package:looks_loop/features/more/presentation/bloc/app_info_cubit.dart';
+import 'package:looks_loop/features/more/presentation/bloc/contact_us_cubit.dart';
 import 'package:looks_loop/features/more/presentation/bloc/more_cubit.dart';
 import 'package:looks_loop/features/orders/domain/usecases/cancel_order_usecase.dart';
 import 'package:looks_loop/features/orders/domain/usecases/get_order_detail_usecase.dart';
@@ -95,6 +101,7 @@ Future<void> initAppDependencies() async {
   getIt.registerLazySingleton<ShopRemoteDataSource>(() => const ShopRemoteDataSourceImpl());
   getIt.registerLazySingleton<WishlistRemoteDataSource>(() => WishlistRemoteDataSourceImpl(NetworkHelper(DioFactory.getDio())));
   getIt.registerLazySingleton<MoreLocalDataSource>(() => const MoreLocalDataSourceImpl());
+  getIt.registerLazySingleton<MoreRemoteDataSource>(() => MoreRemoteDataSourceImpl(NetworkHelper(DioFactory.getDio())));
   getIt.registerLazySingleton<CategoryDetailRemoteDataSource>(() => const CategoryDetailRemoteDataSourceImpl());
   getIt.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceImpl(NetworkHelper(DioFactory.getDio())));
   getIt.registerLazySingleton<AddressLocalDataSource>(() => AddressLocalDataSourceImpl(addressBox));
@@ -114,7 +121,12 @@ Future<void> initAppDependencies() async {
   );
   getIt.registerLazySingleton<ShopRepository>(() => ShopRepositoryImpl(getIt<ShopRemoteDataSource>()));
   getIt.registerLazySingleton<WishlistRepository>(() => WishlistRepositoryImpl(getIt<WishlistRemoteDataSource>()));
-  getIt.registerLazySingleton<MoreRepository>(() => MoreRepositoryImpl(getIt<MoreLocalDataSource>()));
+  getIt.registerLazySingleton<MoreRepository>(
+    () => MoreRepositoryImpl(
+      getIt<MoreLocalDataSource>(),
+      getIt<MoreRemoteDataSource>(),
+    ),
+  );
   getIt.registerLazySingleton<CategoryDetailRepository>(() => CategoryDetailRepositoryImpl(getIt<CategoryDetailRemoteDataSource>()));
   getIt.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(getIt<AuthRemoteDataSource>()));
   getIt.registerLazySingleton<AddressRepository>(() => AddressRepositoryImpl(getIt<AddressRemoteDataSource>(), getIt<AddressLocalDataSource>()));
@@ -132,6 +144,9 @@ Future<void> initAppDependencies() async {
   getIt.registerLazySingleton<RemoveFromWishlistUseCase>(() => RemoveFromWishlistUseCase(getIt<WishlistRepository>()));
   getIt.registerLazySingleton<WatchWishlistUseCase>(() => WatchWishlistUseCase(getIt<WishlistRepository>()));
   getIt.registerLazySingleton<GetUserProfileUseCase>(() => GetUserProfileUseCase(getIt<MoreRepository>()));
+  getIt.registerLazySingleton<GetAboutUsUseCase>(() => GetAboutUsUseCase(getIt<MoreRepository>()));
+  getIt.registerLazySingleton<GetPolicyUseCase>(() => GetPolicyUseCase(getIt<MoreRepository>()));
+  getIt.registerLazySingleton<GetContactUsUseCase>(() => GetContactUsUseCase(getIt<MoreRepository>()));
   getIt.registerLazySingleton<GetCategoryDetailUseCase>(() => GetCategoryDetailUseCase(getIt<CategoryDetailRepository>()));
   getIt.registerLazySingleton<LoginUseCase>(() => LoginUseCase(getIt<AuthRepository>()));
   getIt.registerLazySingleton<LogoutUseCase>(() => LogoutUseCase(getIt<AuthRepository>()));
@@ -164,6 +179,15 @@ Future<void> initAppDependencies() async {
     getIt<WatchWishlistUseCase>(),
   )..fetchWishlist());
   getIt.registerFactory<MoreCubit>(() => MoreCubit(getIt<GetUserProfileUseCase>(), getIt<LogoutUseCase>()));
+  getIt.registerFactory<AppInfoCubit>(
+    () => AppInfoCubit(
+      getIt<GetAboutUsUseCase>(),
+      getIt<GetPolicyUseCase>(),
+    ),
+  );
+  getIt.registerFactory<ContactUsCubit>(
+    () => ContactUsCubit(getIt<GetContactUsUseCase>()),
+  );
   getIt.registerFactory<CategoryDetailCubit>(() => CategoryDetailCubit(getIt<GetCategoryDetailUseCase>()));
   getIt.registerFactory<LoginCubit>(() => LoginCubit(getIt<LoginUseCase>()));
   getIt.registerFactory<RegisterCubit>(() => RegisterCubit(getIt<RegisterUseCase>()));
