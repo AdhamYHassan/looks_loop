@@ -6,8 +6,10 @@ import 'package:looks_loop/features/address/domain/entities/add_address_params.d
 import 'package:looks_loop/features/address/domain/entities/province_entity.dart';
 import 'package:looks_loop/features/address/domain/repositories/address_repository.dart';
 import 'package:looks_loop/features/address/domain/usecases/add_address_usecase.dart';
+import 'package:looks_loop/features/address/domain/usecases/delete_address_usecase.dart';
 import 'package:looks_loop/features/address/domain/usecases/get_addresses_usecase.dart';
 import 'package:looks_loop/features/address/domain/usecases/get_provinces_usecase.dart';
+import 'package:looks_loop/features/address/domain/usecases/update_address_usecase.dart';
 import 'package:looks_loop/features/address/presentation/bloc/address_cubit.dart';
 import 'package:looks_loop/features/address/presentation/bloc/address_state.dart';
 
@@ -31,6 +33,16 @@ class FakeAddressRepository implements AddressRepository {
       onGetProvinces != null
           ? onGetProvinces!(forceRefresh: forceRefresh)
           : const ApiSuccess([]);
+
+  @override
+  Future<ApiResult<AddressEntity>> updateAddress(
+    int id,
+    AddAddressParams params,
+  ) async =>
+      onAddAddress!(params);
+
+  @override
+  Future<ApiResult<void>> deleteAddress(int id) async => const ApiSuccess(null);
 }
 
 void main() {
@@ -64,6 +76,8 @@ void main() {
     final cubit = AddressCubit(
       GetAddressesUseCase(repo),
       AddAddressUseCase(repo),
+      UpdateAddressUseCase(repo),
+      DeleteAddressUseCase(repo),
       GetProvincesUseCase(repo),
     );
 
@@ -84,6 +98,8 @@ void main() {
     final cubit = AddressCubit(
       GetAddressesUseCase(repo),
       AddAddressUseCase(repo),
+      UpdateAddressUseCase(repo),
+      DeleteAddressUseCase(repo),
       GetProvincesUseCase(repo),
     );
 

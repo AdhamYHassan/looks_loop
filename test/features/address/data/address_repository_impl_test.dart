@@ -24,6 +24,16 @@ class FakeRemoteDataSource implements AddressRemoteDataSource {
 
   @override
   Future<List<ProvinceModel>> getProvinces() async => onGetProvinces!();
+
+  @override
+  Future<AddressModel> updateAddress(
+    int id,
+    AddAddressRequestModel req,
+  ) async =>
+      onAddAddress!(req);
+
+  @override
+  Future<void> deleteAddress(int id) async {}
 }
 
 class FakeLocalDataSource implements AddressLocalDataSource {

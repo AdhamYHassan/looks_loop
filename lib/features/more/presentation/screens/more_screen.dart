@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:looks_loop/core/auth/auth_status_cubit.dart';
+import 'package:looks_loop/core/auth/auth_status_state.dart';
 import 'package:looks_loop/core/di/dependency_injection.dart';
 import 'package:looks_loop/core/routing/routes.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
@@ -57,8 +59,12 @@ class MoreScreen extends StatelessWidget {
                 ),
                 Expanded(
                   child: ContactUsListener(
-                    child: BlocBuilder<MoreCubit, MoreState>(
-                      builder: (context, state) {
+                    child: BlocListener<AuthStatusCubit, AuthStatusState>(
+                      listener: (context, authState) {
+                        context.read<MoreCubit>().loadUserProfile();
+                      },
+                      child: BlocBuilder<MoreCubit, MoreState>(
+                        builder: (context, state) {
                         return switch (state) {
                           MoreInitial() || MoreLoading() => Center(
                               child: CircularProgressIndicator(
@@ -108,6 +114,7 @@ class MoreScreen extends StatelessWidget {
                       },
                     ),
                   ),
+                ),
                 ),
               ],
             ),

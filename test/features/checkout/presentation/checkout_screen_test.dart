@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:looks_loop/features/address/domain/usecases/add_address_usecase.dart';
+import 'package:looks_loop/features/address/domain/usecases/delete_address_usecase.dart';
 import 'package:looks_loop/features/address/domain/usecases/get_addresses_usecase.dart';
 import 'package:looks_loop/features/address/domain/usecases/get_provinces_usecase.dart';
+import 'package:looks_loop/features/address/domain/usecases/update_address_usecase.dart';
 import 'package:looks_loop/features/address/presentation/bloc/address_cubit.dart';
 import 'package:looks_loop/features/cart/presentation/bloc/cart_cubit.dart';
 import 'package:looks_loop/features/checkout/presentation/bloc/checkout_cubit.dart';
@@ -50,6 +52,8 @@ void main() {
     final addressCubit = AddressCubit(
       GetAddressesUseCase(repo),
       AddAddressUseCase(repo),
+      UpdateAddressUseCase(repo),
+      DeleteAddressUseCase(repo),
       GetProvincesUseCase(repo),
     );
     final checkoutCubit = CheckoutCubit(

@@ -74,6 +74,57 @@ class AddressRepositoryImpl implements AddressRepository {
   }
 
   @override
+  Future<ApiResult<AddressEntity>> updateAddress(
+    int id,
+    AddAddressParams params,
+  ) async {
+    try {
+      final request = AddAddressRequestModel.fromEntity(params);
+      final model = await _remoteDataSource.updateAddress(id, request);
+      final entity = model.toEntity();
+
+      if (_memoryAddresses != null) {
+        _memoryAddresses = _memoryAddresses!
+            .map((a) => a.id == id ? entity : a)
+            .toList();
+      }
+
+      final currentCache = await _localDataSource.getCachedAddresses() ?? [];
+      final updatedCache = currentCache
+          .map((m) => m.id == id ? model : m)
+          .toList();
+      await _localDataSource.cacheAddresses(updatedCache);
+
+      return ApiSuccess(entity);
+    } on DioException catch (e) {
+      return ApiFailure(NetworkExceptions.getFailure(e));
+    } catch (e) {
+      return ApiFailure(NetworkExceptions.getFailure(e));
+    }
+  }
+
+  @override
+  Future<ApiResult<void>> deleteAddress(int id) async {
+    try {
+      await _remoteDataSource.deleteAddress(id);
+
+      if (_memoryAddresses != null) {
+        _memoryAddresses = _memoryAddresses!.where((a) => a.id != id).toList();
+      }
+
+      final currentCache = await _localDataSource.getCachedAddresses() ?? [];
+      final updatedCache = currentCache.where((m) => m.id != id).toList();
+      await _localDataSource.cacheAddresses(updatedCache);
+
+      return const ApiSuccess(null);
+    } on DioException catch (e) {
+      return ApiFailure(NetworkExceptions.getFailure(e));
+    } catch (e) {
+      return ApiFailure(NetworkExceptions.getFailure(e));
+    }
+  }
+
+  @override
   Future<ApiResult<List<ProvinceEntity>>> getProvinces({
     bool forceRefresh = false,
   }) async {

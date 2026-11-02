@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:looks_loop/core/helpers/safe_emit_mixin.dart';
 import 'package:looks_loop/core/network/network_result.dart';
 import 'package:looks_loop/features/cart/domain/entities/cart_entity.dart';
 import 'package:looks_loop/features/cart/domain/entities/cart_item_entity.dart';
@@ -9,7 +10,7 @@ import 'package:looks_loop/features/cart/domain/usecases/remove_promo_code_useca
 import 'package:looks_loop/features/cart/domain/usecases/update_cart_quantity_usecase.dart';
 import 'package:looks_loop/features/cart/presentation/bloc/cart_state.dart';
 
-class CartCubit extends Cubit<CartState> {
+class CartCubit extends Cubit<CartState> with SafeEmitMixin<CartState> {
   final GetCartUseCase _getCartUseCase;
   final UpdateCartQuantityUseCase _updateQuantityUseCase;
   final RemoveCartItemUseCase _removeCartItemUseCase;

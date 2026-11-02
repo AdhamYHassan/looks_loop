@@ -1,4 +1,3 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -56,10 +55,9 @@ class MoreUserCard extends StatelessWidget {
               children: [
                 Text(
                   name,
-                  style: TextStyles.font13TextBold(context).copyWith(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: TextStyles.font13TextBold(
+                    context,
+                  ).copyWith(fontSize: 14.sp, fontWeight: FontWeight.w700),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -67,10 +65,9 @@ class MoreUserCard extends StatelessWidget {
                   Gap(3.h),
                   Text(
                     phone!,
-                    style: TextStyles.font13MutedMedium(context).copyWith(
-                      fontSize: 12.sp,
-                      color: mutedColor,
-                    ),
+                    style: TextStyles.font13MutedMedium(
+                      context,
+                    ).copyWith(fontSize: 12.sp, color: mutedColor),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -78,30 +75,31 @@ class MoreUserCard extends StatelessWidget {
               ],
             ),
           ),
-          Gap(10.w),
-          OutlinedButton(
-            onPressed: onViewAccountTap,
-            style: OutlinedButton.styleFrom(
-              foregroundColor: ColorManager.olive,
-              side: BorderSide(
-                color: ColorManager.getBorder(context),
-                width: 1.w,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
-            ),
-            child: Text(
-              'more.view_account'.tr(),
-              style: TextStyle(
-                fontSize: 10.5.sp,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.8,
-                color: ColorManager.getText(context),
-              ),
-            ),
-          ),
+          // Gap(10.w),
+          // OutlinedButton(
+          //   onPressed: onViewAccountTap,
+          //   style: OutlinedButton.styleFrom(
+          //     foregroundColor: ColorManager.olive,
+          //     side: BorderSide(
+          //       color: ColorManager.getBorder(context),
+          //       width: 1.w,
+          //     ),
+          //     shape: RoundedRectangleBorder(
+          //       borderRadius: BorderRadius.circular(8.r),
+          //     ),
+          //     padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+          //   ),
+          //   child: Text(
+          //     'more.view_account'.tr(),
+          //     style: TextStyle(
+          //       fontSize: 10.5.sp,
+          //       fontWeight: FontWeight.w700,
+          //       letterSpacing: 0.8,
+          //       color: ColorManager.getText(context),
+          //     ),
+          //   ),
+          // ),
+          // TODO : to be impl again
         ],
       ),
     );

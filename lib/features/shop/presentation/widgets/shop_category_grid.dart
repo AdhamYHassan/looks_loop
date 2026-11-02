@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:looks_loop/core/helpers/responsive_helper.dart';
 import 'package:looks_loop/core/theming/styles.dart';
 import 'package:looks_loop/core/widgets/app_cached_image.dart';
 import 'package:looks_loop/features/home/presentation/widgets/section_header.dart';
@@ -35,16 +36,23 @@ class ShopCategoryGrid extends StatelessWidget {
         ),
         Gap(10.h),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 18.w),
+          padding: EdgeInsets.symmetric(
+            horizontal: ResponsiveHelper.getContentPadding(context),
+          ),
           child: GridView.builder(
             padding: EdgeInsets.zero,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: categories.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 10.w,
-              mainAxisSpacing: 10.h,
+              crossAxisCount: ResponsiveHelper.getGridCrossAxisCount(
+                context,
+                phone: 2,
+                tablet: 3,
+                desktop: 4,
+              ),
+              crossAxisSpacing: 12.w,
+              mainAxisSpacing: 12.h,
               childAspectRatio: 1,
             ),
             itemBuilder: (context, index) {

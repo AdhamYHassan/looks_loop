@@ -14,6 +14,7 @@ import 'package:looks_loop/features/more/presentation/bloc/app_info_state.dart';
 import 'package:looks_loop/features/more/presentation/bloc/more_cubit.dart';
 import 'package:looks_loop/features/more/presentation/screens/app_info_screen.dart';
 import 'package:looks_loop/features/more/presentation/screens/more_screen.dart';
+import 'package:looks_loop/features/more/presentation/screens/settings_screen.dart';
 import 'package:looks_loop/features/splash/presentation/splash_screen.dart';
 import 'package:looks_loop/features/auth/presentation/bloc/login_cubit.dart';
 import 'package:looks_loop/features/auth/presentation/bloc/register_cubit.dart';
@@ -223,6 +224,20 @@ class AppRouter {
         ),
       ),
       GoRoute(
+        path: Routes.settings,
+        pageBuilder: (context, state) {
+          final isGuest = (state.extra as bool?) ?? false;
+          return _buildPageWithTransition(
+            context: context,
+            state: state,
+            child: BlocProvider.value(
+              value: getIt<MoreCubit>(),
+              child: SettingsScreen(isGuest: isGuest),
+            ),
+          );
+        },
+      ),
+      GoRoute(
         path: Routes.categoryDetail,
         pageBuilder: (context, state) {
           final extra = state.extra;
@@ -346,8 +361,8 @@ class AppRouter {
                 BlocProvider(
                   create: (_) => getIt<AddressCubit>()..loadAddresses(),
                 ),
-                BlocProvider(
-                  create: (_) => getIt<CartCubit>()..getCart(),
+                BlocProvider.value(
+                  value: getIt<CartCubit>()..getCart(),
                 ),
               ],
               child: CheckoutScreen(initialCart: initialCart),

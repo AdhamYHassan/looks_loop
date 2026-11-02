@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import 'package:looks_loop/core/routing/routes.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
 import 'package:looks_loop/features/home/domain/entities/product_entities.dart';
 import 'package:looks_loop/features/wishlist/presentation/widgets/wishlist_browse_button.dart';
@@ -43,9 +45,15 @@ class WishlistContent extends StatelessWidget {
                     for (int i = 0; i < items.length; i++) ...[
                       if (i > 0) Gap(16.h),
                       RepaintBoundary(
-                        child: WishlistItemCard(
-                          product: items[i],
-                          onRemove: () => onRemoveItem?.call(items[i].id),
+                        child: GestureDetector(
+                          onTap: () => context.go(
+                            Routes.productDetail,
+                            extra: items[i].slug,
+                          ),
+                          child: WishlistItemCard(
+                            product: items[i],
+                            onRemove: () => onRemoveItem?.call(items[i].id),
+                          ),
                         ),
                       ),
                     ],

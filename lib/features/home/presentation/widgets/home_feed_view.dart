@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:looks_loop/core/routing/routes.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
+import 'package:looks_loop/core/widgets/responsive_content_wrapper.dart';
 import 'package:looks_loop/features/home/domain/entities/home_feed_entities.dart';
 import 'package:looks_loop/features/home/presentation/widgets/brand_strip_section.dart';
 import 'package:looks_loop/features/home/presentation/widgets/categories_section.dart';
@@ -36,9 +37,10 @@ class HomeFeedView extends StatelessWidget {
       onRefresh: onRefresh ?? () async {},
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+        child: ResponsiveContentWrapper(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
             RepaintBoundary(
               child: HeroCarouselSection(slides: feedData.heroSlides),
             ),
@@ -114,6 +116,7 @@ class HomeFeedView extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }

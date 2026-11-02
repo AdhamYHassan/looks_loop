@@ -26,6 +26,9 @@ class FakeAuthRepoForLogout implements AuthRepository {
 
   @override
   Future<ApiResult<void>> logout() async => logoutResult;
+
+  @override
+  Future<ApiResult<void>> deleteAccount(String password) async => logoutResult;
 }
 
 void main() {

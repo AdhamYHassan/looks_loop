@@ -52,6 +52,10 @@ class FakeAuthRepoForScreenTest implements AuthRepository {
 
   @override
   Future<ApiResult<void>> logout() async => const ApiSuccess(null);
+
+  @override
+  Future<ApiResult<void>> deleteAccount(String password) async =>
+      const ApiSuccess(null);
 }
 
 void main() {
@@ -60,9 +64,8 @@ void main() {
       designSize: const Size(375, 812),
       builder: (context, _) => MaterialApp(
         home: BlocProvider(
-          create: (_) => RegisterCubit(
-            RegisterUseCase(FakeAuthRepoForScreenTest()),
-          ),
+          create: (_) =>
+              RegisterCubit(RegisterUseCase(FakeAuthRepoForScreenTest())),
           child: child,
         ),
       ),
@@ -70,25 +73,26 @@ void main() {
   }
 
   group('RegisterScreen & Form Widget Tests', () {
-    testWidgets('renders hero, header, fields, gender selector, and continue button',
-        (tester) async {
-      await tester.pumpWidget(
-        buildTestableWidget(const RegisterScreen()),
-      );
-      await tester.pump(const Duration(milliseconds: 500));
+    testWidgets(
+      'renders hero, header, fields, gender selector, and continue button',
+      (tester) async {
+        await tester.pumpWidget(buildTestableWidget(const RegisterScreen()));
+        await tester.pump(const Duration(milliseconds: 500));
 
-      expect(find.byType(LoginHero), findsOneWidget);
-      expect(find.byType(ChasingLoopLoader), findsWidgets);
-      expect(find.byType(RegisterForm), findsOneWidget);
-      expect(find.byType(RegisterHeaderTitle), findsOneWidget);
-      expect(find.byType(RegisterLabeledField), findsNWidgets(7));
-      expect(find.byType(PasswordRequirementsView), findsOneWidget);
-      expect(find.byType(RegisterGenderSelector), findsOneWidget);
-      expect(find.byType(LoginSubmitButton), findsOneWidget);
-    });
+        expect(find.byType(LoginHero), findsOneWidget);
+        expect(find.byType(ChasingLoopLoader), findsWidgets);
+        expect(find.byType(RegisterForm), findsOneWidget);
+        expect(find.byType(RegisterHeaderTitle), findsOneWidget);
+        expect(find.byType(RegisterLabeledField), findsNWidgets(7));
+        expect(find.byType(PasswordRequirementsView), findsOneWidget);
+        expect(find.byType(RegisterGenderSelector), findsOneWidget);
+        expect(find.byType(LoginSubmitButton), findsOneWidget);
+      },
+    );
 
-    testWidgets('submits form with entered registration fields',
-        (tester) async {
+    testWidgets('submits form with entered registration fields', (
+      tester,
+    ) async {
       RegisterParams? submittedParams;
 
       await tester.pumpWidget(

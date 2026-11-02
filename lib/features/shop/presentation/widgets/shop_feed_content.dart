@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:looks_loop/core/routing/routes.dart';
+import 'package:looks_loop/core/widgets/responsive_content_wrapper.dart';
 import 'package:looks_loop/features/home/domain/entities/home_feed_entities.dart';
 import 'package:looks_loop/features/product_list/domain/entities/product_list_args.dart';
 import 'package:looks_loop/features/shop/domain/entities/shop_feed_entities.dart';
@@ -62,18 +63,18 @@ class ShopFeedContent extends StatelessWidget {
     );
     final audienceTitle =
         selectedCat?.name.toUpperCase() ?? _resolveAudienceTitle();
-    final newIn =
-        (homeFeedData != null && homeFeedData!.newInProducts.isNotEmpty)
-            ? homeFeedData!.newInProducts
-            : feedData.newInProducts;
+    final newIn = (homeFeedData?.newInProducts.isNotEmpty ?? false)
+        ? homeFeedData!.newInProducts
+        : feedData.newInProducts;
 
     return RefreshIndicator(
       onRefresh: onRefresh ?? () async {},
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+        child: ResponsiveContentWrapper(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
             const RepaintBoundary(child: ShopHubHeader()),
             RepaintBoundary(
               child: ShopCatSelector(
@@ -134,15 +135,16 @@ class ShopFeedContent extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
-  String _resolveAudienceTitle() {
-    for (final audience in feedData.audiences) {
-      if (audience.id == selectedAudienceId) return audience.title;
-    }
-    return feedData.audiences.isNotEmpty
-        ? feedData.audiences.first.title
-        : 'Women';
-  }
+  String _resolveAudienceTitle() => feedData.audiences
+      .firstWhere(
+        (a) => a.id == selectedAudienceId,
+        orElse: () => feedData.audiences.isNotEmpty
+            ? feedData.audiences.first
+            : const ShopAudienceEntity(id: 'women', title: 'Women', imageUrl: ''),
+      )
+      .title;
 }

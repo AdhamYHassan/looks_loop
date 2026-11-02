@@ -237,7 +237,9 @@ class _RegisterFormState extends State<RegisterForm>
           child: RegisterGenderSelector(
             selectedGender: _selectedGender,
             onGenderSelected: (gender) {
-              _selectedGender = gender;
+              setState(() {
+                _selectedGender = gender;
+              });
               _onInputsChanged();
             },
           ),

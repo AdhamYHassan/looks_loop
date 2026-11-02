@@ -86,7 +86,26 @@
     "terms_conditions": "الشروط والأحكام",
     "about_us": "عن التطبيق",
     "contact_us": "اتصل بنا",
-    "change_password": "تغيير كلمة المرور"
+    "change_password": "تغيير كلمة المرور",
+    "sections": {
+      "data_storage": "البيانات والتخزين",
+      "about_app": "عن لوك لوبس",
+      "account_actions": "الحساب"
+    },
+    "items": {
+      "clear_cache": "مسح الذاكرة المؤقتة",
+      "clear_cache_sub": "تفريغ مساحة تخزين الصور المؤقتة",
+      "cache_cleared": "تم مسح الذاكرة المؤقتة بنجاح",
+      "app_version": "إصدار التطبيق",
+      "delete_account": "حذف الحساب",
+      "delete_account_sub": "حذف حسابك وجميع بياناتك نهائياً",
+      "delete_account_title": "حذف الحساب",
+      "delete_account_message": "هل أنت متأكد من رغبتك في حذف الحساب؟ يرجى إدخال كلمة المرور للتأكيد. هذا الإجراء نهائي ولا يمكن التراجع عنه.",
+      "enter_password_to_confirm": "أدخل كلمة المرور للتأكيد",
+      "password_required": "كلمة المرور مطلوبة",
+      "delete_confirm": "حذف",
+      "delete_requested": "تم حذف الحساب بنجاح"
+    }
   },
   "validation": {
     "required_field": "هذا الحقل مطلوب",
@@ -178,7 +197,11 @@
     "landmark": "علامة مميزة (اختياري)",
     "set_as_default": "تعيين كعنوان افتراضي",
     "save_address": "حفظ العنوان",
-    "address_saved_success": "تم حفظ العنوان بنجاح"
+    "address_saved_success": "تم حفظ العنوان بنجاح",
+    "address_updated_success": "تم تحديث العنوان بنجاح",
+    "address_deleted_success": "تم حذف العنوان بنجاح",
+    "delete_title": "حذف العنوان",
+    "delete_confirm_msg": "هل أنت متأكد من رغبتك في حذف هذا العنوان؟ لا يمكن التراجع عن هذا الإجراء."
   },
   "orders": {
     "title": "طلباتي",

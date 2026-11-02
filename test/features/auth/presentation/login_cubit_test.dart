@@ -20,8 +20,7 @@ class MockAuthRepository implements AuthRepository {
     required String phone,
     required String password,
     String? cartToken,
-  }) async =>
-      result;
+  }) async => result;
 
   @override
   Future<ApiResult<AuthResponseEntity>> register(RegisterParams params) async =>
@@ -29,6 +28,10 @@ class MockAuthRepository implements AuthRepository {
 
   @override
   Future<ApiResult<void>> logout() async => const ApiSuccess(null);
+
+  @override
+  Future<ApiResult<void>> deleteAccount(String password) async =>
+      const ApiSuccess(null);
 }
 
 void main() {
@@ -41,41 +44,44 @@ void main() {
       email: 'adham@gmail.com',
       preferredLanguage: 'en',
     ),
-    tokens: AuthTokensEntity(
-      access: 'access_jwt',
-      refresh: 'refresh_jwt',
-    ),
+    tokens: AuthTokensEntity(access: 'access_jwt', refresh: 'refresh_jwt'),
   );
 
-  test('LoginCubit emits [LoginLoading, LoginSuccess] upon successful login', () async {
-    final repo = MockAuthRepository(const ApiSuccess(dummyAuthResponse));
-    final cubit = LoginCubit(LoginUseCase(repo));
+  test(
+    'LoginCubit emits [LoginLoading, LoginSuccess] upon successful login',
+    () async {
+      final repo = MockAuthRepository(const ApiSuccess(dummyAuthResponse));
+      final cubit = LoginCubit(LoginUseCase(repo));
 
-    expectLater(
-      cubit.stream,
-      emitsInOrder([
-        const LoginLoading(),
-        const LoginSuccess(dummyAuthResponse),
-      ]),
-    );
+      expectLater(
+        cubit.stream,
+        emitsInOrder([
+          const LoginLoading(),
+          const LoginSuccess(dummyAuthResponse),
+        ]),
+      );
 
-    await cubit.login(phone: '+201007951864', password: 'SecretPassword');
-  });
+      await cubit.login(phone: '+201007951864', password: 'SecretPassword');
+    },
+  );
 
-  test('LoginCubit emits [LoginLoading, LoginError] upon login failure', () async {
-    final repo = MockAuthRepository(
-      const ApiFailure(ServerFailure('Invalid phone or password')),
-    );
-    final cubit = LoginCubit(LoginUseCase(repo));
+  test(
+    'LoginCubit emits [LoginLoading, LoginError] upon login failure',
+    () async {
+      final repo = MockAuthRepository(
+        const ApiFailure(ServerFailure('Invalid phone or password')),
+      );
+      final cubit = LoginCubit(LoginUseCase(repo));
 
-    expectLater(
-      cubit.stream,
-      emitsInOrder([
-        const LoginLoading(),
-        const LoginError('Invalid phone or password'),
-      ]),
-    );
+      expectLater(
+        cubit.stream,
+        emitsInOrder([
+          const LoginLoading(),
+          const LoginError('Invalid phone or password'),
+        ]),
+      );
 
-    await cubit.login(phone: '+201007951864', password: 'WrongPassword');
-  });
+      await cubit.login(phone: '+201007951864', password: 'WrongPassword');
+    },
+  );
 }

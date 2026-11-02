@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:looks_loop/core/routing/routes.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
 import 'package:looks_loop/core/theming/theme_cubit.dart';
 import 'package:looks_loop/features/more/presentation/widgets/more_item_tile.dart';
@@ -9,10 +11,12 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class MorePreferencesSection extends StatelessWidget {
   final VoidCallback? onLanguageTap;
+  final VoidCallback? onSettingsTap;
 
   const MorePreferencesSection({
     super.key,
     this.onLanguageTap,
+    this.onSettingsTap,
   });
 
   @override
@@ -25,11 +29,6 @@ class MorePreferencesSection extends StatelessWidget {
     return MoreSectionCard(
       title: 'more.sections.preferences'.tr(),
       items: [
-        MoreItemTile(
-          icon: LucideIcons.bell,
-          label: 'more.items.notifications'.tr(),
-          onTap: () {},
-        ),
         MoreItemTile(
           icon: LucideIcons.globe,
           label: 'more.items.language'.tr(),
@@ -53,7 +52,8 @@ class MorePreferencesSection extends StatelessWidget {
         MoreItemTile(
           icon: LucideIcons.settings,
           label: 'more.items.settings'.tr(),
-          onTap: () {},
+          subtitle: 'Notifications, storage & account',
+          onTap: onSettingsTap ?? () => context.push(Routes.settings),
         ),
       ],
     );

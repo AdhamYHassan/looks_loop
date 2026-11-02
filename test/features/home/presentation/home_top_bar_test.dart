@@ -10,9 +10,7 @@ void main() {
   Widget buildTestableWidget(Widget child) {
     return ScreenUtilInit(
       designSize: const Size(375, 812),
-      builder: (context, _) => MaterialApp(
-        home: Scaffold(body: child),
-      ),
+      builder: (context, _) => MaterialApp(home: Scaffold(body: child)),
     );
   }
 
@@ -20,7 +18,7 @@ void main() {
     testWidgets('renders search and bag icons in HomeTopBar', (tester) async {
       await tester.pumpWidget(
         buildTestableWidget(
-          const HomeTopBar(),
+          const HomeTopBar(showSearchIcon: true),
         ),
       );
 
@@ -28,32 +26,35 @@ void main() {
       expect(find.byIcon(LucideIcons.shoppingBag), findsOneWidget);
     });
 
-    testWidgets('ChasingLoopPreviewDialog shows ChasingLoopLoader and closes on X', (tester) async {
-      await tester.pumpWidget(
-        buildTestableWidget(
-          Builder(
-            builder: (context) => ElevatedButton(
-              onPressed: () => ChasingLoopPreviewDialog.show(context),
-              child: const Text('Open'),
+    testWidgets(
+      'ChasingLoopPreviewDialog shows ChasingLoopLoader and closes on X',
+      (tester) async {
+        await tester.pumpWidget(
+          buildTestableWidget(
+            Builder(
+              builder: (context) => ElevatedButton(
+                onPressed: () => ChasingLoopPreviewDialog.show(context),
+                child: const Text('Open'),
+              ),
             ),
           ),
-        ),
-      );
+        );
 
-      await tester.tap(find.text('Open'));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 100));
+        await tester.tap(find.text('Open'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 100));
 
-      expect(find.byType(ChasingLoopPreviewDialog), findsOneWidget);
-      expect(find.byType(ChasingLoopLoader), findsOneWidget);
-      expect(find.text('Brand Loop Loader'), findsOneWidget);
+        expect(find.byType(ChasingLoopPreviewDialog), findsOneWidget);
+        expect(find.byType(ChasingLoopLoader), findsOneWidget);
+        expect(find.text('Brand Loop Loader'), findsOneWidget);
 
-      // Tap close button
-      await tester.tap(find.byIcon(LucideIcons.x));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 300));
+        // Tap close button
+        await tester.tap(find.byIcon(LucideIcons.x));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
 
-      expect(find.byType(ChasingLoopPreviewDialog), findsNothing);
-    });
+        expect(find.byType(ChasingLoopPreviewDialog), findsNothing);
+      },
+    );
   });
 }

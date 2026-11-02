@@ -29,6 +29,9 @@ class FakeCaptureLoginDataSource implements AuthRemoteDataSource {
 
   @override
   Future<void> logout(String refreshToken) async {}
+
+  @override
+  Future<void> deleteAccount(String password) async {}
 }
 
 void main() {
@@ -47,35 +50,36 @@ void main() {
       email: 'ahmed@test.com',
       preferredLanguage: 'en',
     ),
-    tokens: AuthTokensModel(
-      access: 'access_123',
-      refresh: 'refresh_123',
-    ),
+    tokens: AuthTokensModel(access: 'access_123', refresh: 'refresh_123'),
   );
 
-  test('AuthRepositoryImpl.login includes stored cart_token and clears it on success',
-      () async {
-    LoginRequestModel? captured;
-    final ds = FakeCaptureLoginDataSource(
-      dummyResponse,
-      onLogin: (req) => captured = req,
-    );
-    final repo = AuthRepositoryImpl(ds);
+  test(
+    'AuthRepositoryImpl.login includes stored cart_token and clears it on success',
+    () async {
+      LoginRequestModel? captured;
+      final ds = FakeCaptureLoginDataSource(
+        dummyResponse,
+        onLogin: (req) => captured = req,
+      );
+      final repo = AuthRepositoryImpl(ds);
 
-    await SecureStorageHelper.saveCartToken('app_d12ec900ead7f104c42d806f51ffe5d3');
+      await SecureStorageHelper.saveCartToken(
+        'app_d12ec900ead7f104c42d806f51ffe5d3',
+      );
 
-    final result = await repo.login(
-      phone: '+201001234567',
-      password: 'password123',
-    );
+      final result = await repo.login(
+        phone: '+201001234567',
+        password: 'password123',
+      );
 
-    expect(result, isA<ApiSuccess<AuthResponseEntity>>());
-    expect(captured?.phone, '+201001234567');
-    expect(captured?.password, 'password123');
-    expect(captured?.cartToken, 'app_d12ec900ead7f104c42d806f51ffe5d3');
+      expect(result, isA<ApiSuccess<AuthResponseEntity>>());
+      expect(captured?.phone, '+201001234567');
+      expect(captured?.password, 'password123');
+      expect(captured?.cartToken, 'app_d12ec900ead7f104c42d806f51ffe5d3');
 
-    // Token must be cleared from secure storage
-    final storedToken = await SecureStorageHelper.getCartToken();
-    expect(storedToken, isNull);
-  });
+      // Token must be cleared from secure storage
+      final storedToken = await SecureStorageHelper.getCartToken();
+      expect(storedToken, isNull);
+    },
+  );
 }

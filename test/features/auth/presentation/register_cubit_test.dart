@@ -30,6 +30,10 @@ class MockAuthRepositoryForRegister implements AuthRepository {
 
   @override
   Future<ApiResult<void>> logout() async => const ApiSuccess(null);
+
+  @override
+  Future<ApiResult<void>> deleteAccount(String password) async =>
+      const ApiSuccess(null);
 }
 
 void main() {
@@ -42,10 +46,7 @@ void main() {
       email: 'ahmed@test.com',
       preferredLanguage: 'en',
     ),
-    tokens: AuthTokensEntity(
-      access: 'jwt_access',
-      refresh: 'jwt_refresh',
-    ),
+    tokens: AuthTokensEntity(access: 'jwt_access', refresh: 'jwt_refresh'),
   );
 
   const testParams = RegisterParams(
@@ -55,38 +56,43 @@ void main() {
     email: 'ahmed@test.com',
   );
 
-  test('RegisterCubit emits [RegisterLoading, RegisterSuccess] upon successful register',
-      () async {
-    final repo =
-        MockAuthRepositoryForRegister(const ApiSuccess(dummyAuthResponse));
-    final cubit = RegisterCubit(RegisterUseCase(repo));
+  test(
+    'RegisterCubit emits [RegisterLoading, RegisterSuccess] upon successful register',
+    () async {
+      final repo = MockAuthRepositoryForRegister(
+        const ApiSuccess(dummyAuthResponse),
+      );
+      final cubit = RegisterCubit(RegisterUseCase(repo));
 
-    expectLater(
-      cubit.stream,
-      emitsInOrder([
-        const RegisterLoading(),
-        const RegisterSuccess(dummyAuthResponse),
-      ]),
-    );
+      expectLater(
+        cubit.stream,
+        emitsInOrder([
+          const RegisterLoading(),
+          const RegisterSuccess(dummyAuthResponse),
+        ]),
+      );
 
-    await cubit.register(testParams);
-  });
+      await cubit.register(testParams);
+    },
+  );
 
-  test('RegisterCubit emits [RegisterLoading, RegisterError] upon register failure',
-      () async {
-    final repo = MockAuthRepositoryForRegister(
-      const ApiFailure(ServerFailure('Phone number already in use')),
-    );
-    final cubit = RegisterCubit(RegisterUseCase(repo));
+  test(
+    'RegisterCubit emits [RegisterLoading, RegisterError] upon register failure',
+    () async {
+      final repo = MockAuthRepositoryForRegister(
+        const ApiFailure(ServerFailure('Phone number already in use')),
+      );
+      final cubit = RegisterCubit(RegisterUseCase(repo));
 
-    expectLater(
-      cubit.stream,
-      emitsInOrder([
-        const RegisterLoading(),
-        const RegisterError('Phone number already in use'),
-      ]),
-    );
+      expectLater(
+        cubit.stream,
+        emitsInOrder([
+          const RegisterLoading(),
+          const RegisterError('Phone number already in use'),
+        ]),
+      );
 
-    await cubit.register(testParams);
-  });
+      await cubit.register(testParams);
+    },
+  );
 }

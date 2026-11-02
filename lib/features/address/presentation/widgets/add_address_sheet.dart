@@ -58,7 +58,12 @@ class _AddAddressSheetState extends State<AddAddressSheet> {
       isDefault: _isDefault,
     );
 
-    final success = await context.read<AddressCubit>().addAddress(params);
+    final cubit = context.read<AddressCubit>();
+    final isEditing = widget.initialAddress != null;
+    final success = isEditing
+        ? await cubit.updateAddress(widget.initialAddress!.id, params)
+        : await cubit.addAddress(params);
+
     if (success && mounted) Navigator.of(context).pop();
   }
 

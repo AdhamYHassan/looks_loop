@@ -11,6 +11,7 @@ import 'package:looks_loop/features/address/presentation/widgets/address_card.da
 import 'package:looks_loop/features/address/presentation/widgets/address_empty_view.dart';
 import 'package:looks_loop/features/address/presentation/widgets/address_skeleton_loader.dart';
 import 'package:looks_loop/features/address/presentation/widgets/add_address_sheet.dart';
+import 'package:looks_loop/features/address/presentation/widgets/delete_address_dialog.dart';
 
 class AddressListSheet extends StatelessWidget {
   const AddressListSheet({super.key});
@@ -28,7 +29,7 @@ class AddressListSheet extends StatelessWidget {
     );
   }
 
-  void _openAddAddress(BuildContext context) {
+  void _openAddAddress(BuildContext context, {AddressEntity? address}) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -36,9 +37,16 @@ class AddressListSheet extends StatelessWidget {
       backgroundColor: Colors.transparent,
       builder: (_) => BlocProvider.value(
         value: context.read<AddressCubit>(),
-        child: const AddAddressSheet(),
+        child: AddAddressSheet(initialAddress: address),
       ),
     );
+  }
+
+  Future<void> _handleDeleteAddress(BuildContext context, int addressId) async {
+    final confirmed = await showDeleteAddressDialog(context);
+    if (confirmed == true && context.mounted) {
+      await context.read<AddressCubit>().deleteAddress(addressId);
+    }
   }
 
   @override
@@ -100,12 +108,12 @@ class AddressListSheet extends StatelessWidget {
         AddressEmptyView(
           onAddAddress: () => _openAddAddress(context),
         ),
-      AddressLoaded(:final addresses) => _buildAddressList(addresses),
+      AddressLoaded(:final addresses) => _buildAddressList(context, addresses),
       AddressActionSuccess(:final addresses) when addresses.isEmpty =>
         AddressEmptyView(
           onAddAddress: () => _openAddAddress(context),
         ),
-      AddressActionSuccess(:final addresses) => _buildAddressList(addresses),
+      AddressActionSuccess(:final addresses) => _buildAddressList(context, addresses),
       AddressError(:final message) => Padding(
           padding: const EdgeInsets.all(32.0),
           child: Column(
@@ -127,14 +135,18 @@ class AddressListSheet extends StatelessWidget {
     };
   }
 
-  Widget _buildAddressList(List<AddressEntity> addresses) {
+  Widget _buildAddressList(BuildContext context, List<AddressEntity> addresses) {
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       itemCount: addresses.length,
       shrinkWrap: true,
       itemBuilder: (context, index) {
         final address = addresses[index];
-        return AddressCard(address: address);
+        return AddressCard(
+          address: address,
+          onEdit: () => _openAddAddress(context, address: address),
+          onDelete: () => _handleDeleteAddress(context, address.id),
+        );
       },
     );
   }

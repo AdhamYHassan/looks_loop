@@ -11,6 +11,15 @@ abstract interface class AddressRepository {
   /// Adds a new delivery address via `POST me/addresses/`.
   Future<ApiResult<AddressEntity>> addAddress(AddAddressParams params);
 
+  /// Updates an existing address via `PATCH me/addresses/{id}/`.
+  Future<ApiResult<AddressEntity>> updateAddress(
+    int id,
+    AddAddressParams params,
+  );
+
+  /// Deletes an address via `DELETE me/addresses/{id}/`.
+  Future<ApiResult<void>> deleteAddress(int id);
+
   /// Fetches nested provinces and cities from `provinces/nested/?country=1`
   /// with session-level in-memory cache.
   Future<ApiResult<List<ProvinceEntity>>> getProvinces({

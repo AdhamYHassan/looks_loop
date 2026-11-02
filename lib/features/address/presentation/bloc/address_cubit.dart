@@ -4,13 +4,17 @@ import 'package:looks_loop/features/address/domain/entities/address_entity.dart'
 import 'package:looks_loop/features/address/domain/entities/add_address_params.dart';
 import 'package:looks_loop/features/address/domain/entities/province_entity.dart';
 import 'package:looks_loop/features/address/domain/usecases/add_address_usecase.dart';
+import 'package:looks_loop/features/address/domain/usecases/delete_address_usecase.dart';
 import 'package:looks_loop/features/address/domain/usecases/get_addresses_usecase.dart';
 import 'package:looks_loop/features/address/domain/usecases/get_provinces_usecase.dart';
+import 'package:looks_loop/features/address/domain/usecases/update_address_usecase.dart';
 import 'package:looks_loop/features/address/presentation/bloc/address_state.dart';
 
 class AddressCubit extends Cubit<AddressState> {
   final GetAddressesUseCase _getAddressesUseCase;
   final AddAddressUseCase _addAddressUseCase;
+  final UpdateAddressUseCase _updateAddressUseCase;
+  final DeleteAddressUseCase _deleteAddressUseCase;
   final GetProvincesUseCase _getProvincesUseCase;
 
   List<AddressEntity> _currentAddresses = [];
@@ -19,6 +23,8 @@ class AddressCubit extends Cubit<AddressState> {
   AddressCubit(
     this._getAddressesUseCase,
     this._addAddressUseCase,
+    this._updateAddressUseCase,
+    this._deleteAddressUseCase,
     this._getProvincesUseCase,
   ) : super(const AddressInitial());
 
@@ -79,6 +85,74 @@ class AddressCubit extends Cubit<AddressState> {
         ));
         return true;
       case ApiFailure<AddressEntity>(:final failure):
+        if (currentState is AddressLoaded) {
+          emit(currentState.copyWith(isSaving: false));
+        }
+        emit(AddressError(
+          message: failure.message,
+          addresses: _currentAddresses,
+          provinces: _currentProvinces,
+        ));
+        return false;
+    }
+  }
+
+  Future<bool> updateAddress(int id, AddAddressParams params) async {
+    final currentState = state;
+    if (currentState is AddressLoaded) {
+      emit(currentState.copyWith(isSaving: true));
+    }
+
+    final result = await _updateAddressUseCase(id, params);
+
+    switch (result) {
+      case ApiSuccess<AddressEntity>(:final data):
+        _currentAddresses = _currentAddresses.map((a) => a.id == id ? data : a).toList();
+        emit(AddressActionSuccess(
+          message: 'address.address_updated_success',
+          addresses: _currentAddresses,
+          provinces: _currentProvinces,
+        ));
+        emit(AddressLoaded(
+          addresses: _currentAddresses,
+          provinces: _currentProvinces,
+        ));
+        return true;
+      case ApiFailure<AddressEntity>(:final failure):
+        if (currentState is AddressLoaded) {
+          emit(currentState.copyWith(isSaving: false));
+        }
+        emit(AddressError(
+          message: failure.message,
+          addresses: _currentAddresses,
+          provinces: _currentProvinces,
+        ));
+        return false;
+    }
+  }
+
+  Future<bool> deleteAddress(int id) async {
+    final currentState = state;
+    if (currentState is AddressLoaded) {
+      emit(currentState.copyWith(isSaving: true));
+    }
+
+    final result = await _deleteAddressUseCase(id);
+
+    switch (result) {
+      case ApiSuccess<void>():
+        _currentAddresses = _currentAddresses.where((a) => a.id != id).toList();
+        emit(AddressActionSuccess(
+          message: 'address.address_deleted_success',
+          addresses: _currentAddresses,
+          provinces: _currentProvinces,
+        ));
+        emit(AddressLoaded(
+          addresses: _currentAddresses,
+          provinces: _currentProvinces,
+        ));
+        return true;
+      case ApiFailure<void>(:final failure):
         if (currentState is AddressLoaded) {
           emit(currentState.copyWith(isSaving: false));
         }

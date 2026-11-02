@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:looks_loop/core/helpers/responsive_helper.dart';
 import 'package:looks_loop/core/theming/styles.dart';
 import 'package:looks_loop/core/widgets/app_cached_image.dart';
 import 'package:looks_loop/features/shop/domain/entities/shop_feed_entities.dart';
@@ -29,26 +30,32 @@ class ShopCatSelector extends StatelessWidget {
     }
     final halfItems = audiences.where((a) => a != largeItem).toList();
 
+    final isTablet = ResponsiveHelper.isTablet(context);
+    final largeHeight = isTablet ? 360.0 : 235.h;
+    final halfHeight = isTablet ? 220.0 : 155.h;
+
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      padding: EdgeInsets.symmetric(
+        horizontal: ResponsiveHelper.getContentPadding(context),
+      ),
       child: Column(
         children: [
           _AudienceTile(
             item: largeItem,
-            height: 235.h,
+            height: largeHeight,
             isLarge: true,
             onTap: () => onSelectAudience?.call(largeItem),
           ),
           if (halfItems.isNotEmpty) ...[
-            Gap(10.h),
+            Gap(12.h),
             Row(
               children: [
                 for (int i = 0; i < halfItems.length; i++) ...[
-                  if (i > 0) Gap(10.w),
+                  if (i > 0) Gap(12.w),
                   Expanded(
                     child: _AudienceTile(
                       item: halfItems[i],
-                      height: 155.h,
+                      height: halfHeight,
                       isLarge: false,
                       onTap: () => onSelectAudience?.call(halfItems[i]),
                     ),
@@ -92,11 +99,11 @@ class _AudienceTile extends StatelessWidget {
           children: [
             AppCachedImage(
               imageUrl: item.imageUrl,
-              fit: BoxFit.fill,
+              fit: BoxFit.cover,
               alignment: isLarge ? Alignment.topCenter : Alignment.center,
-              memCacheWidth: isLarge ? 800 : 500,
-              memCacheHeight: isLarge ? 500 : 350,
-              maxDiskWidth: 1000,
+              memCacheWidth: isLarge ? 1200 : 800,
+              memCacheHeight: isLarge ? 800 : 600,
+              maxDiskWidth: 1400,
             ),
             Container(
               decoration: const BoxDecoration(

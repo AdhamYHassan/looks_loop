@@ -32,6 +32,16 @@ class FakeCheckoutAddressRepo implements AddressRepository {
   Future<ApiResult<List<ProvinceEntity>>> getProvinces(
           {bool forceRefresh = false}) async =>
       ApiSuccess(provinces);
+
+  @override
+  Future<ApiResult<AddressEntity>> updateAddress(
+    int id,
+    AddAddressParams params,
+  ) async =>
+      ApiSuccess(addresses.first);
+
+  @override
+  Future<ApiResult<void>> deleteAddress(int id) async => const ApiSuccess(null);
 }
 
 class FakeCheckoutCartRepo implements CartRepository {

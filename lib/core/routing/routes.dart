@@ -22,4 +22,5 @@ class Routes {
   static const String checkout = '/checkout';
   static const String aboutUs = '/about-us';
   static const String policy = '/policy';
+  static const String settings = '/settings';
 }

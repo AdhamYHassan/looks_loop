@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:looks_loop/core/helpers/responsive_helper.dart';
 import 'package:looks_loop/features/home/domain/entities/product_entities.dart';
 import 'package:looks_loop/features/home/presentation/widgets/product_card.dart';
 import 'package:looks_loop/features/home/presentation/widgets/section_header.dart';
@@ -37,9 +38,11 @@ class ShopProductRail extends StatelessWidget {
         ),
         Gap(4.h),
         SizedBox(
-          height: 275.h,
+          height: ResponsiveHelper.isTablet(context) ? 350.0 : 300.h,
           child: ListView.separated(
-            padding: EdgeInsets.symmetric(horizontal: 18.w),
+            padding: EdgeInsets.symmetric(
+              horizontal: ResponsiveHelper.getContentPadding(context),
+            ),
             scrollDirection: Axis.horizontal,
             itemCount: products.length,
             separatorBuilder: (_, _) => Gap(14.w),

@@ -27,6 +27,9 @@ class FakeRemoteDataSource implements AuthRemoteDataSource {
 
   @override
   Future<void> logout(String refreshToken) async {}
+
+  @override
+  Future<void> deleteAccount(String password) async {}
 }
 
 void main() {
@@ -51,58 +54,65 @@ void main() {
     ),
   );
 
-  test('AuthRepositoryImpl.register saves tokens for auto-login and returns success entity',
-      () async {
-    final remoteDataSource = FakeRemoteDataSource(dummyResponseModel);
-    final repo = AuthRepositoryImpl(remoteDataSource);
+  test(
+    'AuthRepositoryImpl.register saves tokens for auto-login and returns success entity',
+    () async {
+      final remoteDataSource = FakeRemoteDataSource(dummyResponseModel);
+      final repo = AuthRepositoryImpl(remoteDataSource);
 
-    const params = RegisterParams(
-      phone: '+201001234567',
-      password: 'password123',
-      name: 'Ahmed Medhat',
-      email: 'ahmed@test.com',
-      gender: 'male',
-      birthday: '2026-10-06',
-    );
+      const params = RegisterParams(
+        phone: '+201001234567',
+        password: 'password123',
+        name: 'Ahmed Medhat',
+        email: 'ahmed@test.com',
+        gender: 'male',
+        birthday: '2026-10-06',
+      );
 
-    final result = await repo.register(params);
+      final result = await repo.register(params);
 
-    expect(result, isA<ApiSuccess<AuthResponseEntity>>());
-    final entity = (result as ApiSuccess<AuthResponseEntity>).data;
-    expect(entity.user.name, equals('Ahmed Medhat'));
-    expect(entity.tokens.access, equals('access_sample_token'));
-  });
+      expect(result, isA<ApiSuccess<AuthResponseEntity>>());
+      final entity = (result as ApiSuccess<AuthResponseEntity>).data;
+      expect(entity.user.name, equals('Ahmed Medhat'));
+      expect(entity.tokens.access, equals('access_sample_token'));
+    },
+  );
 
-  test('AuthRepositoryImpl.register correctly maps DioException 400 with phone error to user message',
-      () async {
-    final dioError = DioException(
-      requestOptions: RequestOptions(path: '/auth/register/'),
-      response: Response(
+  test(
+    'AuthRepositoryImpl.register correctly maps DioException 400 with phone error to user message',
+    () async {
+      final dioError = DioException(
         requestOptions: RequestOptions(path: '/auth/register/'),
-        statusCode: 400,
-        data: {
-          'phone': ['This mobile number is already registered.']
-        },
-      ),
-      type: DioExceptionType.badResponse,
-    );
+        response: Response(
+          requestOptions: RequestOptions(path: '/auth/register/'),
+          statusCode: 400,
+          data: {
+            'phone': ['This mobile number is already registered.'],
+          },
+        ),
+        type: DioExceptionType.badResponse,
+      );
 
-    final remoteDataSource = FakeErrorRemoteDataSource(dioError);
-    final repo = AuthRepositoryImpl(remoteDataSource);
+      final remoteDataSource = FakeErrorRemoteDataSource(dioError);
+      final repo = AuthRepositoryImpl(remoteDataSource);
 
-    const params = RegisterParams(
-      phone: '+201001234567',
-      password: 'password123',
-      name: 'Ahmed Medhat',
-      email: 'ahmed@test.com',
-    );
+      const params = RegisterParams(
+        phone: '+201001234567',
+        password: 'password123',
+        name: 'Ahmed Medhat',
+        email: 'ahmed@test.com',
+      );
 
-    final result = await repo.register(params);
+      final result = await repo.register(params);
 
-    expect(result, isA<ApiFailure<AuthResponseEntity>>());
-    final failure = (result as ApiFailure<AuthResponseEntity>).failure;
-    expect(failure.message, equals('This mobile number is already registered.'));
-  });
+      expect(result, isA<ApiFailure<AuthResponseEntity>>());
+      final failure = (result as ApiFailure<AuthResponseEntity>).failure;
+      expect(
+        failure.message,
+        equals('This mobile number is already registered.'),
+      );
+    },
+  );
 }
 
 class FakeErrorRemoteDataSource implements AuthRemoteDataSource {
@@ -120,4 +130,7 @@ class FakeErrorRemoteDataSource implements AuthRemoteDataSource {
 
   @override
   Future<void> logout(String refreshToken) async => throw error;
+
+  @override
+  Future<void> deleteAccount(String password) async => throw error;
 }

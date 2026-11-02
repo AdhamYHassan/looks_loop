@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:looks_loop/core/auth/auth_status_cubit.dart';
 import 'package:looks_loop/core/di/dependency_injection.dart';
 import 'package:looks_loop/core/helpers/firebase_helper.dart';
 import 'package:looks_loop/core/routing/app_router.dart';
@@ -32,8 +33,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<ThemeCubit>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: getIt<ThemeCubit>()),
+        BlocProvider.value(value: getIt<AuthStatusCubit>()..checkAuthStatus()),
+      ],
       child: LayoutBuilder(
         builder: (context, constraints) {
           const double tabletScaleFactor = 1.5;

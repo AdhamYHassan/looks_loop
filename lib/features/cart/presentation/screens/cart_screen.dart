@@ -33,8 +33,8 @@ class CartScreen extends StatelessWidget {
     }
 
     if (getIt.isRegistered<CartCubit>()) {
-      return BlocProvider(
-        create: (_) => getIt<CartCubit>()..getCart(),
+      return BlocProvider.value(
+        value: getIt<CartCubit>()..getCart(),
         child: const _CartScreenContent(),
       );
     }

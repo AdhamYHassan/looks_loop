@@ -3,11 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:looks_loop/core/auth/auth_status_cubit.dart';
+import 'package:looks_loop/core/di/dependency_injection.dart';
 import 'package:looks_loop/core/routing/routes.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
 import 'package:looks_loop/core/widgets/app_snack_bar.dart';
 import 'package:looks_loop/features/auth/presentation/bloc/register_cubit.dart';
 import 'package:looks_loop/features/auth/presentation/bloc/register_state.dart';
+import 'package:looks_loop/features/more/domain/entities/user_profile_entity.dart';
 import 'package:looks_loop/features/auth/presentation/widgets/login_hero.dart';
 import 'package:looks_loop/features/auth/presentation/widgets/login_sheet.dart';
 import 'package:looks_loop/features/auth/presentation/widgets/login_terms_notice.dart';
@@ -25,6 +28,14 @@ class RegisterScreen extends StatelessWidget {
         final name = authResponse.user.name.isNotEmpty
             ? authResponse.user.name
             : 'LookLoops';
+        getIt<AuthStatusCubit>().setAuthenticated(
+          UserProfileEntity(
+            name: name,
+            isGuest: false,
+            email: authResponse.user.email,
+            phone: authResponse.user.phone,
+          ),
+        );
         AppSnackBar.showSuccess(
           context,
           message: 'Welcome to LookLoops, $name!',

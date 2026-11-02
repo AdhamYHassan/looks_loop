@@ -59,6 +59,10 @@ class FakeAuthRepo implements AuthRepository {
 
   @override
   Future<ApiResult<void>> logout() async => const ApiSuccess(null);
+
+  @override
+  Future<ApiResult<void>> deleteAccount(String password) async =>
+      const ApiSuccess(null);
 }
 
 void main() {
@@ -75,21 +79,24 @@ void main() {
   }
 
   group('LoginScreen Smoke & Interaction Tests', () {
-    testWidgets('renders hero, chasing loader, form and buttons without error', (tester) async {
-      await tester.pumpWidget(
-        buildTestableWidget(const LoginScreen()),
-      );
-      await tester.pump(const Duration(milliseconds: 500));
+    testWidgets(
+      'renders hero, chasing loader, form and buttons without error',
+      (tester) async {
+        await tester.pumpWidget(buildTestableWidget(const LoginScreen()));
+        await tester.pump(const Duration(milliseconds: 500));
 
-      expect(find.byType(LoginHero), findsOneWidget);
-      expect(find.byType(ChasingLoopLoader), findsWidgets);
-      expect(find.byType(LoginForm), findsOneWidget);
-      expect(find.byType(LoginInputField), findsNWidgets(2));
-      expect(find.byType(LoginSubmitButton), findsOneWidget);
-      expect(find.byType(AnimatedArrowIcon), findsOneWidget);
-    });
+        expect(find.byType(LoginHero), findsOneWidget);
+        expect(find.byType(ChasingLoopLoader), findsWidgets);
+        expect(find.byType(LoginForm), findsOneWidget);
+        expect(find.byType(LoginInputField), findsNWidgets(2));
+        expect(find.byType(LoginSubmitButton), findsOneWidget);
+        expect(find.byType(AnimatedArrowIcon), findsOneWidget);
+      },
+    );
 
-    testWidgets('submitting form triggers onSubmit with entered values', (tester) async {
+    testWidgets('submitting form triggers onSubmit with entered values', (
+      tester,
+    ) async {
       String? submittedPhone;
       String? submittedPassword;
 

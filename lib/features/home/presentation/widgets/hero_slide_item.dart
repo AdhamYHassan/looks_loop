@@ -51,42 +51,40 @@ class HeroSlideItem extends StatelessWidget {
               SizedBox(height: 10.h),
               Text(slide.copy, style: TextStyles.font13White70Regular),
               SizedBox(height: 16.h),
-              // Builder(
-              //   builder: (context) {
-              //     final isDark = ColorManager.isDark(context);
-              //     final buttonBg = isDark
-              //         ? ColorManager.cream
-              //         : ColorManager.ink;
-              //     final buttonFg = isDark
-              //         ? ColorManager.ink
-              //         : ColorManager.cream;
+              Builder(
+                builder: (context) {
+                  final isDark = ColorManager.isDark(context);
+                  final buttonBg =
+                      isDark ? ColorManager.cream : ColorManager.ink;
+                  final buttonFg =
+                      isDark ? ColorManager.ink : ColorManager.cream;
 
-              //     // return ElevatedButton.icon(
-              //     //   onPressed: onCtaTap,
-              //     //   style: ElevatedButton.styleFrom(
-              //     //     backgroundColor: buttonBg,
-              //     //     foregroundColor: buttonFg,
-              //     //     elevation: 0,
-              //     //     padding: EdgeInsets.symmetric(
-              //     //       horizontal: 18.w,
-              //     //       vertical: 12.h,
-              //     //     ),
-              //     //     shape: RoundedRectangleBorder(
-              //     //       borderRadius: BorderRadius.circular(4.r),
-              //     //     ),
-              //     //   ),
-              //     //   iconAlignment: IconAlignment.end,
-              //     //   icon: Icon(LucideIcons.arrowUpRight, size: 16.sp),
-              //     //   label: Text(
-              //     //     slide.ctaText,
-              //     //     style: TextStyles.font11BlackCta.copyWith(
-              //     //       color: buttonFg,
-              //     //       letterSpacing: 1.2,
-              //     //     ),
-              //     //   ),
-              //     // );
-              //   },
-              // ),
+                  return ElevatedButton.icon(
+                    onPressed: onCtaTap,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: buttonBg,
+                      foregroundColor: buttonFg,
+                      elevation: 0,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 18.w,
+                        vertical: 12.h,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4.r),
+                      ),
+                    ),
+                    iconAlignment: IconAlignment.end,
+                    icon: Icon(LucideIcons.arrowUpRight, size: 16.sp),
+                    label: Text(
+                      slide.ctaText,
+                      style: TextStyles.font11BlackCta.copyWith(
+                        color: buttonFg,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                  );
+                },
+              ),
             ],
           ),
         ),

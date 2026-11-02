@@ -8,6 +8,8 @@ import 'package:looks_loop/features/address/data/models/province_model.dart';
 abstract interface class AddressRemoteDataSource {
   Future<List<AddressModel>> getAddresses();
   Future<AddressModel> addAddress(AddAddressRequestModel request);
+  Future<AddressModel> updateAddress(int id, AddAddressRequestModel request);
+  Future<void> deleteAddress(int id);
   Future<List<ProvinceModel>> getProvinces();
 }
 
@@ -42,6 +44,28 @@ class AddressRemoteDataSourceImpl implements AddressRemoteDataSource {
             ? raw['data'] as Map<String, dynamic>
             : (raw as Map<String, dynamic>);
     return AddressModel.fromJson(map);
+  }
+
+  @override
+  Future<AddressModel> updateAddress(
+    int id,
+    AddAddressRequestModel request,
+  ) async {
+    final response = await _networkHelper.patch(
+      ApiEndpoints.addressDetail(id),
+      data: request.toJson(),
+    );
+    final raw = response.data;
+    final map =
+        raw is Map<String, dynamic> && raw['data'] is Map<String, dynamic>
+            ? raw['data'] as Map<String, dynamic>
+            : (raw as Map<String, dynamic>);
+    return AddressModel.fromJson(map);
+  }
+
+  @override
+  Future<void> deleteAddress(int id) async {
+    await _networkHelper.delete(ApiEndpoints.addressDetail(id));
   }
 
   @override

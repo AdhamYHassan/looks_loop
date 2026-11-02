@@ -27,6 +27,10 @@ class FakeAuthRepoForRegister implements AuthRepository {
 
   @override
   Future<ApiResult<void>> logout() async => const ApiSuccess(null);
+
+  @override
+  Future<ApiResult<void>> deleteAccount(String password) async =>
+      const ApiSuccess(null);
 }
 
 void main() {
@@ -39,29 +43,31 @@ void main() {
       email: 'user@example.com',
       preferredLanguage: 'en',
     ),
-    tokens: AuthTokensEntity(
-      access: 'access_jwt',
-      refresh: 'refresh_jwt',
-    ),
+    tokens: AuthTokensEntity(access: 'access_jwt', refresh: 'refresh_jwt'),
   );
 
-  test('RegisterUseCase executes repository register and returns ApiSuccess',
-      () async {
-    final repo = FakeAuthRepoForRegister(const ApiSuccess(dummyAuthResponse));
-    final useCase = RegisterUseCase(repo);
+  test(
+    'RegisterUseCase executes repository register and returns ApiSuccess',
+    () async {
+      final repo = FakeAuthRepoForRegister(const ApiSuccess(dummyAuthResponse));
+      final useCase = RegisterUseCase(repo);
 
-    const params = RegisterParams(
-      phone: '+201001234567',
-      password: 'password123',
-      name: 'Ahmed Medhat',
-      email: 'user@example.com',
-      gender: 'male',
-      birthday: '2026-10-06',
-    );
+      const params = RegisterParams(
+        phone: '+201001234567',
+        password: 'password123',
+        name: 'Ahmed Medhat',
+        email: 'user@example.com',
+        gender: 'male',
+        birthday: '2026-10-06',
+      );
 
-    final result = await useCase(params);
+      final result = await useCase(params);
 
-    expect(result, isA<ApiSuccess<AuthResponseEntity>>());
-    expect((result as ApiSuccess<AuthResponseEntity>).data, dummyAuthResponse);
-  });
+      expect(result, isA<ApiSuccess<AuthResponseEntity>>());
+      expect(
+        (result as ApiSuccess<AuthResponseEntity>).data,
+        dummyAuthResponse,
+      );
+    },
+  );
 }

@@ -12,4 +12,6 @@ abstract interface class AuthRepository {
   Future<ApiResult<AuthResponseEntity>> register(RegisterParams params);
 
   Future<ApiResult<void>> logout();
+
+  Future<ApiResult<void>> deleteAccount(String password);
 }

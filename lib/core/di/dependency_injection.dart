@@ -4,6 +4,7 @@ import 'package:looks_loop/core/di/cart_di.dart';
 import 'package:looks_loop/core/di/brands_di.dart';
 import 'package:looks_loop/core/di/product_list_di.dart';
 import 'package:looks_loop/core/di/looks_di.dart';
+import 'package:looks_loop/core/auth/auth_status_cubit.dart';
 import 'package:looks_loop/core/cache/catalog_cache.dart';
 import 'package:looks_loop/core/di/checkout_di.dart';
 import 'package:looks_loop/core/di/search_di.dart';
@@ -23,12 +24,15 @@ import 'package:looks_loop/features/address/data/datasources/address_remote_data
 import 'package:looks_loop/features/address/data/repositories/address_repository_impl.dart';
 import 'package:looks_loop/features/address/domain/repositories/address_repository.dart';
 import 'package:looks_loop/features/address/domain/usecases/add_address_usecase.dart';
+import 'package:looks_loop/features/address/domain/usecases/delete_address_usecase.dart';
 import 'package:looks_loop/features/address/domain/usecases/get_addresses_usecase.dart';
 import 'package:looks_loop/features/address/domain/usecases/get_provinces_usecase.dart';
+import 'package:looks_loop/features/address/domain/usecases/update_address_usecase.dart';
 import 'package:looks_loop/features/address/presentation/bloc/address_cubit.dart';
 import 'package:looks_loop/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:looks_loop/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:looks_loop/features/auth/domain/repositories/auth_repository.dart';
+import 'package:looks_loop/features/auth/domain/usecases/delete_account_usecase.dart';
 import 'package:looks_loop/features/auth/domain/usecases/login_usecase.dart';
 import 'package:looks_loop/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:looks_loop/features/auth/domain/usecases/register_usecase.dart';
@@ -150,9 +154,12 @@ Future<void> initAppDependencies() async {
   getIt.registerLazySingleton<GetCategoryDetailUseCase>(() => GetCategoryDetailUseCase(getIt<CategoryDetailRepository>()));
   getIt.registerLazySingleton<LoginUseCase>(() => LoginUseCase(getIt<AuthRepository>()));
   getIt.registerLazySingleton<LogoutUseCase>(() => LogoutUseCase(getIt<AuthRepository>()));
+  getIt.registerLazySingleton<DeleteAccountUseCase>(() => DeleteAccountUseCase(getIt<AuthRepository>()));
   getIt.registerLazySingleton<RegisterUseCase>(() => RegisterUseCase(getIt<AuthRepository>()));
   getIt.registerLazySingleton<GetAddressesUseCase>(() => GetAddressesUseCase(getIt<AddressRepository>()));
   getIt.registerLazySingleton<AddAddressUseCase>(() => AddAddressUseCase(getIt<AddressRepository>()));
+  getIt.registerLazySingleton<UpdateAddressUseCase>(() => UpdateAddressUseCase(getIt<AddressRepository>()));
+  getIt.registerLazySingleton<DeleteAddressUseCase>(() => DeleteAddressUseCase(getIt<AddressRepository>()));
   getIt.registerLazySingleton<GetProvincesUseCase>(() => GetProvincesUseCase(getIt<AddressRepository>()));
   getIt.registerLazySingleton<GetOrdersUseCase>(() => GetOrdersUseCase(getIt<OrdersRepository>()));
   getIt.registerLazySingleton<GetOrderDetailUseCase>(() => GetOrderDetailUseCase(getIt<OrdersRepository>()));
@@ -160,6 +167,9 @@ Future<void> initAppDependencies() async {
   getIt.registerLazySingleton<GetProductDetailUseCase>(() => GetProductDetailUseCase(getIt<ProductDetailRepository>()));
 
   // Cubits (Factory & Singletons)
+  getIt.registerLazySingleton<AuthStatusCubit>(
+    () => AuthStatusCubit(getIt<GetUserProfileUseCase>()),
+  );
   getIt.registerFactory<MainCubit>(() => MainCubit());
   getIt.registerFactory<NavBarScrollCubit>(() => NavBarScrollCubit());
   getIt.registerLazySingleton<HomeCubit>(
@@ -178,7 +188,14 @@ Future<void> initAppDependencies() async {
     getIt<RemoveFromWishlistUseCase>(),
     getIt<WatchWishlistUseCase>(),
   )..fetchWishlist());
-  getIt.registerFactory<MoreCubit>(() => MoreCubit(getIt<GetUserProfileUseCase>(), getIt<LogoutUseCase>()));
+  getIt.registerFactory<MoreCubit>(
+    () => MoreCubit(
+      getIt<GetUserProfileUseCase>(),
+      getIt<LogoutUseCase>(),
+      getIt<DeleteAccountUseCase>(),
+      getIt<AuthStatusCubit>(),
+    ),
+  );
   getIt.registerFactory<AppInfoCubit>(
     () => AppInfoCubit(
       getIt<GetAboutUsUseCase>(),
@@ -199,6 +216,8 @@ Future<void> initAppDependencies() async {
   getIt.registerFactory<AddressCubit>(() => AddressCubit(
     getIt<GetAddressesUseCase>(),
     getIt<AddAddressUseCase>(),
+    getIt<UpdateAddressUseCase>(),
+    getIt<DeleteAddressUseCase>(),
     getIt<GetProvincesUseCase>(),
   ));
   getIt.registerFactory<ProductDetailCubit>(() => ProductDetailCubit(

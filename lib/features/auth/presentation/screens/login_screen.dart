@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:looks_loop/core/auth/auth_status_cubit.dart';
+import 'package:looks_loop/core/di/dependency_injection.dart';
 import 'package:looks_loop/core/routing/routes.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
 import 'package:looks_loop/core/widgets/app_snack_bar.dart';
@@ -11,7 +12,7 @@ import 'package:looks_loop/features/auth/presentation/bloc/login_state.dart';
 import 'package:looks_loop/features/auth/presentation/widgets/login_form.dart';
 import 'package:looks_loop/features/auth/presentation/widgets/login_hero.dart';
 import 'package:looks_loop/features/auth/presentation/widgets/login_sheet.dart';
-import 'package:looks_loop/features/auth/presentation/widgets/login_terms_notice.dart';
+import 'package:looks_loop/features/more/domain/entities/user_profile_entity.dart';
 
 /// Complete editorial Login screen wired to LoginCubit for authentication.
 class LoginScreen extends StatelessWidget {
@@ -25,10 +26,15 @@ class LoginScreen extends StatelessWidget {
         final name = authResponse.user.name.isNotEmpty
             ? authResponse.user.name
             : 'LookLoops';
-        AppSnackBar.showSuccess(
-          context,
-          message: 'Welcome back, $name!',
+        getIt<AuthStatusCubit>().setAuthenticated(
+          UserProfileEntity(
+            name: name,
+            isGuest: false,
+            email: authResponse.user.email,
+            phone: authResponse.user.phone,
+          ),
         );
+        AppSnackBar.showSuccess(context, message: 'Welcome back, $name!');
         if (context.canPop()) {
           context.pop();
         } else {
@@ -70,16 +76,16 @@ class LoginScreen extends StatelessWidget {
                                 isLoading: isLoading,
                                 onSubmit: (phone, password) {
                                   context.read<LoginCubit>().login(
-                                        phone: phone,
-                                        password: password,
-                                      );
+                                    phone: phone,
+                                    password: password,
+                                  );
                                 },
                                 onCreateAccount: () =>
                                     context.push(Routes.register),
                               ),
-                              const Spacer(),
-                              SizedBox(height: 24.h),
-                              const LoginTermsNotice(),
+                              // const Spacer(),
+                              // SizedBox(height: 24.h),
+                              // const LoginTermsNotice(),
                             ],
                           ),
                         ),

@@ -5,6 +5,7 @@ class ApiEndpoints {
   static const String logout = 'auth/logout/';
   static const String refreshToken = 'auth/token/refresh/';
   static const String addresses = 'me/addresses/';
+  static String addressDetail(int id) => 'me/addresses/$id/';
   static const String orders = 'orders/';
   static const String home = 'home/';
   static const String provincesNested = 'provinces/nested/?country=1';
@@ -20,4 +21,5 @@ class ApiEndpoints {
   static const String appAbout = 'app/about/';
   static const String appContactUs = 'app/contact-us/';
   static const String appPolicy = 'app/policy/';
+  static const String deleteAccount = 'me/';
 }

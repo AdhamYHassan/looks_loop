@@ -8,6 +8,7 @@ abstract interface class AuthRemoteDataSource {
   Future<AuthResponseModel> login(LoginRequestModel request);
   Future<AuthResponseModel> register(RegisterRequestModel request);
   Future<void> logout(String refreshToken);
+  Future<void> deleteAccount(String password);
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -38,6 +39,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     await _networkHelper.post(
       ApiEndpoints.logout,
       data: {'refresh': refreshToken},
+    );
+  }
+
+  @override
+  Future<void> deleteAccount(String password) async {
+    await _networkHelper.delete(
+      ApiEndpoints.deleteAccount,
+      data: {'password': password},
     );
   }
 }

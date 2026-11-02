@@ -1,9 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:looks_loop/core/auth/auth_status_cubit.dart';
 import 'package:looks_loop/core/network/failure.dart';
 import 'package:looks_loop/core/network/network_result.dart';
 import 'package:looks_loop/features/auth/domain/entities/auth_response_entity.dart';
 import 'package:looks_loop/features/auth/domain/entities/register_params.dart';
 import 'package:looks_loop/features/auth/domain/repositories/auth_repository.dart';
+import 'package:looks_loop/features/auth/domain/usecases/delete_account_usecase.dart';
 import 'package:looks_loop/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:looks_loop/features/more/domain/entities/app_info_entity.dart';
 import 'package:looks_loop/features/more/domain/entities/contact_us_entity.dart';
@@ -51,69 +53,86 @@ class MockAuthRepository implements AuthRepository {
 
   @override
   Future<ApiResult<void>> logout() async => const ApiSuccess(null);
+
+  @override
+  Future<ApiResult<void>> deleteAccount(String password) async =>
+      const ApiSuccess(null);
 }
 
 void main() {
   const dummyProfile = UserProfileEntity.guest();
 
-  test('MoreCubit emits [MoreLoading, MoreLoaded] upon successful profile fetch',
-      () async {
-    final repo = MockMoreRepository(const ApiSuccess(dummyProfile));
-    final authRepo = MockAuthRepository();
-    final cubit = MoreCubit(
-      GetUserProfileUseCase(repo),
-      LogoutUseCase(authRepo),
-    );
+  test(
+    'MoreCubit emits [MoreLoading, MoreLoaded] upon successful profile fetch',
+    () async {
+      final repo = MockMoreRepository(const ApiSuccess(dummyProfile));
+      final authRepo = MockAuthRepository();
+      final authStatusCubit = AuthStatusCubit(GetUserProfileUseCase(repo));
+      final cubit = MoreCubit(
+        GetUserProfileUseCase(repo),
+        LogoutUseCase(authRepo),
+        DeleteAccountUseCase(authRepo),
+        authStatusCubit,
+      );
 
-    expectLater(
-      cubit.stream,
-      emitsInOrder([
-        const MoreLoading(),
-        const MoreLoaded(profile: dummyProfile),
-      ]),
-    );
+      expectLater(
+        cubit.stream,
+        emitsInOrder([
+          const MoreLoading(),
+          const MoreLoaded(profile: dummyProfile),
+        ]),
+      );
 
-    await cubit.loadUserProfile();
-  });
+      await cubit.loadUserProfile();
+    },
+  );
 
-  test('MoreCubit emits [MoreLoading, MoreError] upon profile fetch failure',
-      () async {
-    final repo =
-        MockMoreRepository(const ApiFailure(UnknownFailure('Fetch failed')));
-    final authRepo = MockAuthRepository();
-    final cubit = MoreCubit(
-      GetUserProfileUseCase(repo),
-      LogoutUseCase(authRepo),
-    );
+  test(
+    'MoreCubit emits [MoreLoading, MoreError] upon profile fetch failure',
+    () async {
+      final repo = MockMoreRepository(
+        const ApiFailure(UnknownFailure('Fetch failed')),
+      );
+      final authRepo = MockAuthRepository();
+      final authStatusCubit = AuthStatusCubit(GetUserProfileUseCase(repo));
+      final cubit = MoreCubit(
+        GetUserProfileUseCase(repo),
+        LogoutUseCase(authRepo),
+        DeleteAccountUseCase(authRepo),
+        authStatusCubit,
+      );
 
-    expectLater(
-      cubit.stream,
-      emitsInOrder([
-        const MoreLoading(),
-        const MoreError('Fetch failed'),
-      ]),
-    );
+      expectLater(
+        cubit.stream,
+        emitsInOrder([const MoreLoading(), const MoreError('Fetch failed')]),
+      );
 
-    await cubit.loadUserProfile();
-  });
+      await cubit.loadUserProfile();
+    },
+  );
 
-  test('MoreCubit.logout() emits [MoreLoading, MoreLoaded] after clearing session',
-      () async {
-    final repo = MockMoreRepository(const ApiSuccess(dummyProfile));
-    final authRepo = MockAuthRepository();
-    final cubit = MoreCubit(
-      GetUserProfileUseCase(repo),
-      LogoutUseCase(authRepo),
-    );
+  test(
+    'MoreCubit.logout() emits [MoreLoading, MoreLoaded] after clearing session',
+    () async {
+      final repo = MockMoreRepository(const ApiSuccess(dummyProfile));
+      final authRepo = MockAuthRepository();
+      final authStatusCubit = AuthStatusCubit(GetUserProfileUseCase(repo));
+      final cubit = MoreCubit(
+        GetUserProfileUseCase(repo),
+        LogoutUseCase(authRepo),
+        DeleteAccountUseCase(authRepo),
+        authStatusCubit,
+      );
 
-    expectLater(
-      cubit.stream,
-      emitsInOrder([
-        const MoreLoading(),
-        const MoreLoaded(profile: dummyProfile),
-      ]),
-    );
+      expectLater(
+        cubit.stream,
+        emitsInOrder([
+          const MoreLoading(),
+          const MoreLoaded(profile: dummyProfile),
+        ]),
+      );
 
-    await cubit.logout();
-  });
+      await cubit.logout();
+    },
+  );
 }

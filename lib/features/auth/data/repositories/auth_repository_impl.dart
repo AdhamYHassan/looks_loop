@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:looks_loop/core/helpers/secure_storage_helper.dart';
+import 'package:looks_loop/core/helpers/shared_prefs_helper.dart';
 import 'package:looks_loop/core/network/network_exceptions.dart';
 import 'package:looks_loop/core/network/network_result.dart';
 import 'package:looks_loop/features/auth/data/datasources/auth_remote_data_source.dart';
@@ -98,6 +99,22 @@ class AuthRepositoryImpl implements AuthRepository {
       return ApiFailure(NetworkExceptions.getFailure(e));
     } catch (e) {
       await SecureStorageHelper.clearAll();
+      return ApiFailure(NetworkExceptions.getFailure(e));
+    }
+  }
+
+  @override
+  Future<ApiResult<void>> deleteAccount(String password) async {
+    try {
+      await _remoteDataSource.deleteAccount(password);
+
+      await SecureStorageHelper.clearToken();
+      await SecureStorageHelper.clearRefreshToken();
+      await SecureStorageHelper.clearAll();
+      await SharedPrefsHelper.clearFcmToken();
+
+      return const ApiSuccess(null);
+    } catch (e) {
       return ApiFailure(NetworkExceptions.getFailure(e));
     }
   }

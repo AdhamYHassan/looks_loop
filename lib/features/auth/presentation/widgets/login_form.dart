@@ -58,7 +58,8 @@ class _LoginFormState extends State<LoginForm>
   }
 
   void _validateInputs() {
-    final filled = _phoneController.text.trim().isNotEmpty &&
+    final filled =
+        _phoneController.text.trim().isNotEmpty &&
         _passwordController.text.isNotEmpty;
     if (filled != _isFormFilled) {
       setState(() => _isFormFilled = filled);
@@ -120,26 +121,26 @@ class _LoginFormState extends State<LoginForm>
             ),
           ),
         ),
-        StaggeredReveal(
-          animation: _entrance,
-          index: 2,
-          child: Align(
-            alignment: AlignmentDirectional.centerEnd,
-            child: TextButton(
-              onPressed: widget.onForgotPassword,
-              child: Text(
-                'auth.forgot_password'.tr(),
-                style: TextStyle(
-                  color: ColorManager.getAccent(context),
-                  fontSize: 13.5.sp,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'Cairo',
-                ),
-              ),
-            ),
-          ),
-        ),
-        SizedBox(height: 4.h),
+        // StaggeredReveal(
+        //   animation: _entrance,
+        //   index: 2,
+        //   child: Align(
+        //     alignment: AlignmentDirectional.centerEnd,
+        //     child: TextButton(
+        //       onPressed: widget.onForgotPassword,
+        //       child: Text(
+        //         'auth.forgot_password'.tr(),
+        //         style: TextStyle(
+        //           color: ColorManager.getAccent(context),
+        //           fontSize: 13.5.sp,
+        //           fontWeight: FontWeight.w700,
+        //           fontFamily: 'Cairo',
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        // ),
+        SizedBox(height: 24.h),
         StaggeredReveal(
           animation: _entrance,
           index: 3,

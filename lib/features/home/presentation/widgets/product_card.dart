@@ -1,11 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:looks_loop/core/helpers/responsive_helper.dart';
 import 'package:looks_loop/core/helpers/secure_storage_helper.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
 import 'package:looks_loop/core/theming/styles.dart';
 import 'package:looks_loop/core/widgets/app_cached_image.dart';
 import 'package:looks_loop/features/home/domain/entities/home_feed_entities.dart';
+import 'package:looks_loop/features/home/presentation/widgets/product_badge.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class ProductCard extends StatelessWidget {
@@ -24,18 +26,22 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isTablet = ResponsiveHelper.isTablet(context);
+    final cardWidth = isTablet ? 190.0 : 156.w;
+    final imageHeight = isTablet ? 240.0 : 200.h;
+
     return GestureDetector(
       onTap: onTap,
       child: SizedBox(
-        width: 156.w,
+        width: cardWidth,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Stack(
               children: [
                 Container(
-                  height: 200.h,
-                  width: 156.w,
+                  height: imageHeight,
+                  width: cardWidth,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(4.r),
                     color: ColorManager.getSurface(context),
@@ -54,7 +60,9 @@ class ProductCard extends StatelessWidget {
                   Positioned(
                     bottom: 8.h,
                     left: 8.w,
-                    child: _buildBadge(),
+                    child: ProductBadge(
+                      discountPercent: product.discountPercent,
+                    ),
                   ),
               ],
             ),
@@ -107,21 +115,6 @@ class ProductCard extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildBadge() {
-    final isDiscount = product.discountPercent > 0;
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 3.h),
-      decoration: BoxDecoration(
-        color: isDiscount ? ColorManager.ink : ColorManager.olive,
-        borderRadius: BorderRadius.circular(2.r),
-      ),
-      child: Text(
-        isDiscount ? '-${product.discountPercent}%' : 'NEW',
-        style: TextStyles.font10DiscountBadge,
-      ),
     );
   }
 

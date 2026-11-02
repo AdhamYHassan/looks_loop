@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:looks_loop/core/helpers/responsive_helper.dart';
 import 'package:looks_loop/features/home/domain/entities/home_feed_entities.dart';
 import 'package:looks_loop/features/home/presentation/widgets/hero_slide_item.dart';
 
@@ -37,8 +38,14 @@ class _HeroCarouselSectionState extends State<HeroCarouselSection> {
   Widget build(BuildContext context) {
     if (widget.slides.isEmpty) return const SizedBox.shrink();
 
+    final isTablet = ResponsiveHelper.isTablet(context);
+    final isLandscape = ResponsiveHelper.isLandscapeTablet(context);
+    final carouselHeight = isLandscape
+        ? 560.0
+        : (isTablet ? 520.0 : 480.h);
+
     return SizedBox(
-      height: 480.h,
+      height: carouselHeight,
       width: double.infinity,
       child: Stack(
         children: [

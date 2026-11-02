@@ -17,8 +17,7 @@ class FakeAuthRepository implements AuthRepository {
     required String phone,
     required String password,
     String? cartToken,
-  }) async =>
-      result;
+  }) async => result;
 
   @override
   Future<ApiResult<AuthResponseEntity>> register(RegisterParams params) async =>
@@ -26,6 +25,10 @@ class FakeAuthRepository implements AuthRepository {
 
   @override
   Future<ApiResult<void>> logout() async => const ApiSuccess(null);
+
+  @override
+  Future<ApiResult<void>> deleteAccount(String password) async =>
+      const ApiSuccess(null);
 }
 
 void main() {
@@ -44,16 +47,24 @@ void main() {
     ),
   );
 
-  test('LoginUseCase returns ApiSuccess with AuthResponseEntity when repository succeeds', () async {
-    final repository = FakeAuthRepository(const ApiSuccess(dummyAuthResponse));
-    final useCase = LoginUseCase(repository);
+  test(
+    'LoginUseCase returns ApiSuccess with AuthResponseEntity when repository succeeds',
+    () async {
+      final repository = FakeAuthRepository(
+        const ApiSuccess(dummyAuthResponse),
+      );
+      final useCase = LoginUseCase(repository);
 
-    final result = await useCase(
-      phone: '+201007951864',
-      password: 'password123',
-    );
+      final result = await useCase(
+        phone: '+201007951864',
+        password: 'password123',
+      );
 
-    expect(result, isA<ApiSuccess<AuthResponseEntity>>());
-    expect((result as ApiSuccess<AuthResponseEntity>).data, dummyAuthResponse);
-  });
+      expect(result, isA<ApiSuccess<AuthResponseEntity>>());
+      expect(
+        (result as ApiSuccess<AuthResponseEntity>).data,
+        dummyAuthResponse,
+      );
+    },
+  );
 }

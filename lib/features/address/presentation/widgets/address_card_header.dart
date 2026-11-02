@@ -3,11 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:looks_loop/core/theming/colors_manager.dart';
 import 'package:looks_loop/core/theming/styles.dart';
 import 'package:looks_loop/features/address/domain/entities/address_entity.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class AddressCardHeader extends StatelessWidget {
   final AddressEntity address;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
 
-  const AddressCardHeader({super.key, required this.address});
+  const AddressCardHeader({
+    super.key,
+    required this.address,
+    this.onEdit,
+    this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +59,52 @@ class AddressCardHeader extends StatelessWidget {
               ),
             ),
           ),
+        if (onEdit != null || onDelete != null) ...[
+          const SizedBox(width: 4),
+          PopupMenuButton<String>(
+            icon: Icon(
+              LucideIcons.moreVertical,
+              size: 18,
+              color: ColorManager.getTextMuted(context),
+            ),
+            padding: EdgeInsets.zero,
+            color: ColorManager.getSurface(context),
+            onSelected: (value) {
+              if (value == 'edit') {
+                onEdit?.call();
+              } else if (value == 'delete') {
+                onDelete?.call();
+              }
+            },
+            itemBuilder: (ctx) => [
+              if (onEdit != null)
+                PopupMenuItem(
+                  value: 'edit',
+                  child: Row(
+                    children: [
+                      const Icon(LucideIcons.pencil, size: 16),
+                      const SizedBox(width: 8),
+                      Text('common.edit'.tr(), style: TextStyles.font13Regular(ctx)),
+                    ],
+                  ),
+                ),
+              if (onDelete != null)
+                PopupMenuItem(
+                  value: 'delete',
+                  child: Row(
+                    children: [
+                      const Icon(LucideIcons.trash2, size: 16, color: Colors.red),
+                      const SizedBox(width: 8),
+                      Text(
+                        'common.delete'.tr(),
+                        style: TextStyles.font13Regular(ctx).copyWith(color: Colors.red),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ],
       ],
     );
   }
