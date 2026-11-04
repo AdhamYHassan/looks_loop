@@ -14,7 +14,7 @@ class CategoryDetailHeader extends StatelessWidget {
   const CategoryDetailHeader({
     super.key,
     required this.title,
-    required this.totalCount,
+    this.totalCount = 0,
     this.onShopBreadcrumbTap,
   });
 
@@ -36,15 +36,6 @@ class CategoryDetailHeader extends StatelessWidget {
               fontSize: 26.sp,
               letterSpacing: 0.5,
               fontWeight: FontWeight.w900,
-            ),
-          ),
-          Gap(4.h),
-          Text(
-            tr('shop.products_count', args: ['$totalCount']),
-            style: TextStyles.font11Eyebrow(context).copyWith(
-              fontSize: 11.sp,
-              letterSpacing: 1.6,
-              fontWeight: FontWeight.w700,
             ),
           ),
         ],

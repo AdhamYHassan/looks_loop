@@ -9,10 +9,12 @@ import 'package:looks_loop/features/main/presentation/bloc/main_cubit.dart';
 import 'package:looks_loop/features/main/presentation/screens/main_screen.dart';
 import 'package:looks_loop/features/shop/presentation/bloc/shop_cubit.dart';
 import 'package:looks_loop/features/shop/presentation/screens/shop_screen.dart';
+import 'package:looks_loop/features/more/presentation/bloc/account_cubit.dart';
 import 'package:looks_loop/features/more/presentation/bloc/app_info_cubit.dart';
 import 'package:looks_loop/features/more/presentation/bloc/app_info_state.dart';
 import 'package:looks_loop/features/more/presentation/bloc/more_cubit.dart';
 import 'package:looks_loop/features/more/presentation/screens/app_info_screen.dart';
+import 'package:looks_loop/features/more/presentation/screens/account_screen.dart';
 import 'package:looks_loop/features/more/presentation/screens/more_screen.dart';
 import 'package:looks_loop/features/more/presentation/screens/settings_screen.dart';
 import 'package:looks_loop/features/splash/presentation/splash_screen.dart';
@@ -236,6 +238,17 @@ class AppRouter {
             ),
           );
         },
+      ),
+      GoRoute(
+        path: Routes.account,
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context: context,
+          state: state,
+          child: BlocProvider(
+            create: (_) => getIt<AccountCubit>()..fetchProfile(),
+            child: const AccountScreen(),
+          ),
+        ),
       ),
       GoRoute(
         path: Routes.categoryDetail,

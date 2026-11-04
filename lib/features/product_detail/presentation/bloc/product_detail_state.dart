@@ -48,7 +48,7 @@ final class ProductDetailLoaded extends ProductDetailState {
     this.expandedSectionIndex = 0,
     this.isWishlisted = false,
     this.helpfulReviewIds = const {},
-    this.bagCount = 3,
+    this.bagCount = 0,
     this.isAddingToBag = false,
     this.bagActionMessage,
   });

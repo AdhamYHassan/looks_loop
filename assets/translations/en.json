@@ -276,5 +276,28 @@
     "go_to_orders": "Go to Orders",
     "back_to_home": "Back to Home",
     "order_number": "Order #{}"
+  },
+  "account": {
+    "title": "Account Details",
+    "edit_profile": "Edit Profile",
+    "personal_info": "Personal Information",
+    "personal_info_sub": "Update your personal details below",
+    "full_name": "Full Name",
+    "full_name_hint": "Enter your full name",
+    "email": "Email Address",
+    "email_hint": "Enter your email address",
+    "phone": "Phone Number",
+    "phone_hint": "Enter your phone number",
+    "gender": "Gender",
+    "birthday": "Birthday",
+    "birthday_hint": "YYYY-MM-DD",
+    "date_joined": "Member Since",
+    "current_password": "Current Password",
+    "current_password_hint": "Enter current password to save changes",
+    "current_password_required": "Current password is required to save changes",
+    "save_changes": "Save Changes",
+    "update_success": "Profile updated successfully",
+    "female": "FEMALE",
+    "male": "MALE"
   }
 }

@@ -23,4 +23,5 @@ class Routes {
   static const String aboutUs = '/about-us';
   static const String policy = '/policy';
   static const String settings = '/settings';
+  static const String account = '/account';
 }

@@ -5,6 +5,8 @@ import 'package:looks_loop/features/more/data/datasources/more_local_data_source
 import 'package:looks_loop/features/more/data/datasources/more_remote_data_source.dart';
 import 'package:looks_loop/features/more/data/models/app_info_model.dart';
 import 'package:looks_loop/features/more/data/models/contact_us_model.dart';
+import 'package:looks_loop/features/more/data/models/update_user_profile_request_model.dart';
+import 'package:looks_loop/features/more/data/models/user_profile_model.dart';
 import 'package:looks_loop/features/more/data/repositories/more_repository_impl.dart';
 import 'package:looks_loop/features/more/domain/entities/app_info_entity.dart';
 import 'package:looks_loop/features/more/domain/entities/contact_us_entity.dart';
@@ -14,6 +16,12 @@ class FakeMoreLocalDataSource implements MoreLocalDataSource {
   final bool shouldThrow;
 
   const FakeMoreLocalDataSource({this.shouldThrow = false});
+
+  @override
+  Future<String?> getToken() async => null;
+
+  @override
+  Future<void> saveUserProfile(UserProfileEntity profile) async {}
 
   @override
   Future<UserProfileEntity> getUserProfile() async {
@@ -45,6 +53,20 @@ class FakeMoreRemoteDataSource implements MoreRemoteDataSource {
   Future<ContactUsModel> getContactUs() async {
     if (shouldThrow) throw Exception('Network error');
     return const ContactUsModel(id: 1, mobile: '+123456789');
+  }
+
+  @override
+  Future<UserProfileModel> getUserProfile() async {
+    if (shouldThrow) throw Exception('Network error');
+    return const UserProfileModel(id: 1, name: 'Test User');
+  }
+
+  @override
+  Future<UserProfileModel> updateUserProfile(
+    UpdateUserProfileRequestModel request,
+  ) async {
+    if (shouldThrow) throw Exception('Network error');
+    return UserProfileModel(id: 1, name: request.name);
   }
 }
 

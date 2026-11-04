@@ -1,4 +1,3 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -51,27 +50,13 @@ class CategorySubcatRow extends StatelessWidget {
             ),
             Gap(16.w),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    subcategory.name.toUpperCase(),
-                    style: TextStyles.font13TextBold(context).copyWith(
-                      fontSize: 13.sp,
-                      letterSpacing: 0.8,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  Gap(3.h),
-                  Text(
-                    tr('shop.products_count_short',
-                        args: ['${subcategory.productCount}']),
-                    style: TextStyles.font13MutedMedium(context).copyWith(
-                      fontSize: 12.sp,
-                    ),
-                  ),
-                ],
+              child: Text(
+                subcategory.name.toUpperCase(),
+                style: TextStyles.font13TextBold(context).copyWith(
+                  fontSize: 13.sp,
+                  letterSpacing: 0.8,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
             Icon(

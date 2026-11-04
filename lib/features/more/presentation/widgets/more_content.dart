@@ -60,7 +60,7 @@ class MoreContent extends StatelessWidget {
               MoreUserCard(
                 name: profile.name,
                 phone: profile.phone,
-                onViewAccountTap: () {},
+                onViewAccountTap: () => context.push(Routes.account),
               ),
             Gap(20.h),
             MoreSectionCard(

@@ -139,7 +139,7 @@ void main() {
     expect(fakeCartRepo.lastAddedParams?.colorId, 16);
     expect(fakeCartRepo.lastAddedParams?.sizeId, 37);
     expect(fakeCartRepo.lastAddedParams?.quantity, 1);
-    expect((cubit.state as ProductDetailLoaded).bagCount, 4);
+    expect((cubit.state as ProductDetailLoaded).bagCount, 1);
     expect((cubit.state as ProductDetailLoaded).bagActionMessage, 'Added to bag');
   });
 }

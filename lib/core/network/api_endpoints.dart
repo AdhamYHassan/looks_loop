@@ -21,5 +21,6 @@ class ApiEndpoints {
   static const String appAbout = 'app/about/';
   static const String appContactUs = 'app/contact-us/';
   static const String appPolicy = 'app/policy/';
+  static const String me = 'me/';
   static const String deleteAccount = 'me/';
 }

@@ -6,6 +6,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class ProductDetailSubNavBar extends StatelessWidget {
   final bool isWishlisted;
+  final bool showWishlist;
   final int bagCount;
   final VoidCallback onBackTap;
   final VoidCallback onWishlistTap;
@@ -14,6 +15,7 @@ class ProductDetailSubNavBar extends StatelessWidget {
   const ProductDetailSubNavBar({
     super.key,
     required this.isWishlisted,
+    this.showWishlist = true,
     required this.bagCount,
     required this.onBackTap,
     required this.onWishlistTap,
@@ -39,16 +41,17 @@ class ProductDetailSubNavBar extends StatelessWidget {
             onPressed: onBackTap,
           ),
           const Spacer(),
-          IconButton(
-            icon: Icon(
-              isWishlisted ? Icons.favorite : LucideIcons.heart,
-              color: isWishlisted ? Colors.redAccent : ColorManager.cream,
-              size: 18.sp,
+          if (showWishlist)
+            IconButton(
+              icon: Icon(
+                isWishlisted ? Icons.favorite : LucideIcons.heart,
+                color: isWishlisted ? Colors.redAccent : ColorManager.cream,
+                size: 18.sp,
+              ),
+              padding: EdgeInsets.zero,
+              constraints: BoxConstraints(minWidth: 40.w, minHeight: 40.h),
+              onPressed: onWishlistTap,
             ),
-            padding: EdgeInsets.zero,
-            constraints: BoxConstraints(minWidth: 40.w, minHeight: 40.h),
-            onPressed: onWishlistTap,
-          ),
           Stack(
             clipBehavior: Clip.none,
             children: [

@@ -55,6 +55,8 @@ import 'package:looks_loop/features/more/domain/usecases/get_about_us_usecase.da
 import 'package:looks_loop/features/more/domain/usecases/get_contact_us_usecase.dart';
 import 'package:looks_loop/features/more/domain/usecases/get_policy_usecase.dart';
 import 'package:looks_loop/features/more/domain/usecases/get_user_profile_usecase.dart';
+import 'package:looks_loop/features/more/domain/usecases/update_user_profile_usecase.dart';
+import 'package:looks_loop/features/more/presentation/bloc/account_cubit.dart';
 import 'package:looks_loop/features/more/presentation/bloc/app_info_cubit.dart';
 import 'package:looks_loop/features/more/presentation/bloc/contact_us_cubit.dart';
 import 'package:looks_loop/features/more/presentation/bloc/more_cubit.dart';
@@ -148,6 +150,7 @@ Future<void> initAppDependencies() async {
   getIt.registerLazySingleton<RemoveFromWishlistUseCase>(() => RemoveFromWishlistUseCase(getIt<WishlistRepository>()));
   getIt.registerLazySingleton<WatchWishlistUseCase>(() => WatchWishlistUseCase(getIt<WishlistRepository>()));
   getIt.registerLazySingleton<GetUserProfileUseCase>(() => GetUserProfileUseCase(getIt<MoreRepository>()));
+  getIt.registerLazySingleton<UpdateUserProfileUseCase>(() => UpdateUserProfileUseCase(getIt<MoreRepository>()));
   getIt.registerLazySingleton<GetAboutUsUseCase>(() => GetAboutUsUseCase(getIt<MoreRepository>()));
   getIt.registerLazySingleton<GetPolicyUseCase>(() => GetPolicyUseCase(getIt<MoreRepository>()));
   getIt.registerLazySingleton<GetContactUsUseCase>(() => GetContactUsUseCase(getIt<MoreRepository>()));
@@ -193,6 +196,13 @@ Future<void> initAppDependencies() async {
       getIt<GetUserProfileUseCase>(),
       getIt<LogoutUseCase>(),
       getIt<DeleteAccountUseCase>(),
+      getIt<AuthStatusCubit>(),
+    ),
+  );
+  getIt.registerFactory<AccountCubit>(
+    () => AccountCubit(
+      getIt<GetUserProfileUseCase>(),
+      getIt<UpdateUserProfileUseCase>(),
       getIt<AuthStatusCubit>(),
     ),
   );

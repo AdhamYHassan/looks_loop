@@ -3,6 +3,7 @@ import 'package:looks_loop/core/network/failure.dart';
 import 'package:looks_loop/core/network/network_result.dart';
 import 'package:looks_loop/features/more/domain/entities/app_info_entity.dart';
 import 'package:looks_loop/features/more/domain/entities/contact_us_entity.dart';
+import 'package:looks_loop/features/more/domain/entities/update_user_profile_params.dart';
 import 'package:looks_loop/features/more/domain/entities/user_profile_entity.dart';
 import 'package:looks_loop/features/more/domain/repositories/more_repository.dart';
 import 'package:looks_loop/features/more/domain/usecases/get_contact_us_usecase.dart';
@@ -16,6 +17,12 @@ class StubContactUsRepository implements MoreRepository {
 
   @override
   Future<ApiResult<UserProfileEntity>> getUserProfile() async =>
+      throw UnimplementedError();
+
+  @override
+  Future<ApiResult<UserProfileEntity>> updateUserProfile(
+    UpdateUserProfileParams params,
+  ) async =>
       throw UnimplementedError();
 
   @override

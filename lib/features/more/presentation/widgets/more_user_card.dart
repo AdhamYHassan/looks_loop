@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -75,31 +76,30 @@ class MoreUserCard extends StatelessWidget {
               ],
             ),
           ),
-          // Gap(10.w),
-          // OutlinedButton(
-          //   onPressed: onViewAccountTap,
-          //   style: OutlinedButton.styleFrom(
-          //     foregroundColor: ColorManager.olive,
-          //     side: BorderSide(
-          //       color: ColorManager.getBorder(context),
-          //       width: 1.w,
-          //     ),
-          //     shape: RoundedRectangleBorder(
-          //       borderRadius: BorderRadius.circular(8.r),
-          //     ),
-          //     padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
-          //   ),
-          //   child: Text(
-          //     'more.view_account'.tr(),
-          //     style: TextStyle(
-          //       fontSize: 10.5.sp,
-          //       fontWeight: FontWeight.w700,
-          //       letterSpacing: 0.8,
-          //       color: ColorManager.getText(context),
-          //     ),
-          //   ),
-          // ),
-          // TODO : to be impl again
+          Gap(10.w),
+          OutlinedButton(
+            onPressed: onViewAccountTap,
+            style: OutlinedButton.styleFrom(
+              foregroundColor: ColorManager.olive,
+              side: BorderSide(
+                color: ColorManager.getBorder(context),
+                width: 1.w,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+            ),
+            child: Text(
+              'more.view_account'.tr(),
+              style: TextStyle(
+                fontSize: 10.5.sp,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.8,
+                color: ColorManager.getText(context),
+              ),
+            ),
+          ),
         ],
       ),
     );

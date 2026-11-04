@@ -9,6 +9,7 @@ import 'package:looks_loop/features/auth/domain/usecases/delete_account_usecase.
 import 'package:looks_loop/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:looks_loop/features/more/domain/entities/app_info_entity.dart';
 import 'package:looks_loop/features/more/domain/entities/contact_us_entity.dart';
+import 'package:looks_loop/features/more/domain/entities/update_user_profile_params.dart';
 import 'package:looks_loop/features/more/domain/entities/user_profile_entity.dart';
 import 'package:looks_loop/features/more/domain/repositories/more_repository.dart';
 import 'package:looks_loop/features/more/domain/usecases/get_user_profile_usecase.dart';
@@ -22,6 +23,12 @@ class MockMoreRepository implements MoreRepository {
 
   @override
   Future<ApiResult<UserProfileEntity>> getUserProfile() async => result;
+
+  @override
+  Future<ApiResult<UserProfileEntity>> updateUserProfile(
+    UpdateUserProfileParams params,
+  ) async =>
+      result;
 
   @override
   Future<ApiResult<AppInfoEntity>> getAboutUs() async =>
